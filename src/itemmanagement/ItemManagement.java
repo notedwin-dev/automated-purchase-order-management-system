@@ -165,7 +165,7 @@ public class ItemManagement implements ItemOperations {
     // - - - - - Save the table to items.txt - - - - - //
         public void saveTableToFile() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        File file = new File("src/itemManagement/items.txt");
+        File file = new File("src/itemmanagement/items.txt");
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
             for (int i = 0; i < model.getRowCount(); i++) {
@@ -288,7 +288,7 @@ public class ItemManagement implements ItemOperations {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         model.setRowCount(0); //----- Clears the row to avoid data repeatation -----//
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/itemManagement/items.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("itemmanagement/items.txt"))) {
             String line;
             int no = 1;
             
@@ -308,7 +308,7 @@ public class ItemManagement implements ItemOperations {
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error reading from this file" + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Error while reading from this file: " + e.getMessage());
         }
     }
     
