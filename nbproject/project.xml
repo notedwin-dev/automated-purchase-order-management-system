@@ -4,7 +4,9 @@
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>automated-purchase-order-management-system</name>
-            <source-roots/>
+            <source-roots>
+                <root id="src.src.dir" name="Source Packages"/>
+            </source-roots>
             <test-roots/>
         </data>
     </configuration>
