@@ -1,0 +1,4 @@
+Username, Email. Password, Confirm Password
+
+Admin,admin@gmail.com,admin,admin
+1,1,1,1,1123,123,123,123

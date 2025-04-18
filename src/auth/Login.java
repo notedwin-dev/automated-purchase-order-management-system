@@ -4,6 +4,10 @@
  */
 package auth;
 
+import java.io.FileReader;
+import java.util.Scanner;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author USER
@@ -84,6 +88,7 @@ public class Login extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void BtnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLoginActionPerformed
@@ -91,6 +96,28 @@ public class Login extends javax.swing.JFrame {
         
         String username = txtUsername.getText();
         String password = txtPassword.getText();
+        
+        try{
+            FileReader fr = new FileReader("txtlogin.txt");
+            Scanner reader =  new Scanner(fr);
+            reader.useDelimiter("[,\n]");
+            
+            while(reader.hasNext())
+            {
+                String un=reader.next();
+                String pw=reader.next();
+                if(username.equals(un.trim()) && password.equals(pw.trim()))
+                {
+                    reader.close();
+                    Test t = new Test();
+                    t.setVisible(true);
+                    this.dispose();
+                }
+            }
+            JOptionPane.showMessageDialog(this, "Invaild Details");
+        }catch(Exception e){
+            
+        }
     }//GEN-LAST:event_BtnLoginActionPerformed
 
     /**
