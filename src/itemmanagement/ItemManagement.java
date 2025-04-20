@@ -288,7 +288,7 @@ public class ItemManagement implements ItemOperations {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         model.setRowCount(0); //----- Clears the row to avoid data repeatation -----//
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("itemManagement/items.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/itemmanagement/items.txt"))) {
             String line;
             int no = 1;
             
