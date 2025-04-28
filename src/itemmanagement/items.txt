@@ -1,4 +1,1 @@
-Tomato,TMT0003,SUP0001,Nelson Tan,Food,100,0.50,5.00,TOMEITOU!,false
-Mango,MG0001,SUP0003,Lee Kim Keong,Fruit,50,1.00,3.00,MANGOU!,false
-Potato,PTT0001,SUP0002,Ho Lee Sheet,Food,40,1.3,4.00,POTEITOU!,false
-Shampoo,SP0001,SUP0002,Nelson Tan,Hair,0,10.00,20.00,For all har use!,false
+Dyson,DS0001,SUP0001,Nelson Tan,HOME,100,150.00,200.00,Vacuum!,false

@@ -12,7 +12,6 @@ import javax.swing.table.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.net.URL;
 
 public class UI extends javax.swing.JFrame {
 
@@ -66,6 +65,9 @@ public class UI extends javax.swing.JFrame {
         public boolean isCellEditable(int row, int column) {
             return false; //----- All column is non-editable -----//
             }
+        
+
+        
         };
 
         itemTable.setModel(model); 
@@ -99,12 +101,13 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
+        // - - - - - DISABLE ROW SORTING - - - - - //
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(itemTable.getModel());
+            itemTable.setRowSorter(sorter);
+            for (int i = 0; i < itemTable.getColumnCount(); i++) {
+                sorter.setSortable(i, false);
+            }
         
-    TableRowSorter<TableModel> sorter = new TableRowSorter<>(itemTable.getModel());
-        itemTable.setRowSorter(sorter);
-        for (int i = 0; i < itemTable.getColumnCount(); i++) {
-            sorter.setSortable(i, false);
-        }
     }
     
     // - - - - -  Method to update the filter combo box with categories - - - - - //
