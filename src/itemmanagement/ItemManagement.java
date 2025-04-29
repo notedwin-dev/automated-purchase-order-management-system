@@ -206,8 +206,9 @@ public class ItemManagement implements ItemOperations {
                         supplierID_comboBox.setSelectedItem(itemTable.getValueAt(selectedRow, 3).toString());
                         supplierName_comboBox.setSelectedItem(itemTable.getValueAt(selectedRow, 4).toString());
                         category_textbox.setText(itemTable.getValueAt(selectedRow, 5).toString());
-                        unitPrice_textbox.setText(itemTable.getValueAt(selectedRow, 6).toString());
-                        description_textbox.setText(itemTable.getValueAt(selectedRow, 7).toString());
+                        unitPrice_textbox.setText(itemTable.getValueAt(selectedRow, 7).toString());
+                        retailPrice_textbox.setText(itemTable.getValueAt(selectedRow, 8).toString());
+                        description_textbox.setText(itemTable.getValueAt(selectedRow, 9).toString());
                     }
                 }
             }
