@@ -11,15 +11,16 @@ package itemmanagement;
 //----- ENCAPSULATION used -----//
 public class Item {
     private String itemName, itemCode, supplierID, supplierName, category, description;
-    private double unitPrice;
+    private double unitPrice, retailPrice;
     
-    public Item(String itemName, String itemCode, String supplierID, String supplierName, String category, double unitPrice, String description) {
+    public Item(String itemName, String itemCode, String supplierID, String supplierName, String category, double unitPrice, double retailPrice, String description) {
         this.itemName = itemName;
         this.itemCode = itemCode;
         this.supplierID = supplierID;
         this.supplierName = supplierName;
         this.category = category;
         this.unitPrice = unitPrice;
+        this.retailPrice = retailPrice;
         this.description = description;
     }
 
