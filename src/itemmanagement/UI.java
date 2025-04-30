@@ -108,6 +108,7 @@ public class UI extends javax.swing.JFrame {
         }
     }
 
+
     
     
     /**
@@ -150,7 +151,6 @@ public class UI extends javax.swing.JFrame {
         setBackground(java.awt.Color.white);
 
         add_Button.setBackground(new java.awt.Color(120, 211, 77));
-        add_Button.setForeground(new java.awt.Color(0, 0, 0));
         add_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Add.png"))); // NOI18N
         add_Button.setBorder(null);
         add_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -160,7 +160,6 @@ public class UI extends javax.swing.JFrame {
         });
 
         delete_Button.setBackground(new java.awt.Color(251, 82, 35));
-        delete_Button.setForeground(new java.awt.Color(0, 0, 0));
         delete_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Delete.png"))); // NOI18N
         delete_Button.setBorder(null);
         delete_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -170,7 +169,6 @@ public class UI extends javax.swing.JFrame {
         });
 
         clean_Button.setBackground(new java.awt.Color(240, 225, 0));
-        clean_Button.setForeground(new java.awt.Color(0, 0, 0));
         clean_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Clean.png"))); // NOI18N
         clean_Button.setBorder(null);
         clean_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -180,7 +178,6 @@ public class UI extends javax.swing.JFrame {
         });
 
         update_Button.setBackground(new java.awt.Color(76, 134, 168));
-        update_Button.setForeground(new java.awt.Color(0, 0, 0));
         update_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Update.png"))); // NOI18N
         update_Button.setBorder(null);
         update_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -192,12 +189,10 @@ public class UI extends javax.swing.JFrame {
         NAVPanel.setBackground(new java.awt.Color(255, 255, 204));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("NAV BAR");
 
         item_Button.setBackground(new java.awt.Color(255, 255, 204));
         item_Button.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        item_Button.setForeground(new java.awt.Color(0, 0, 0));
         item_Button.setText("Item");
         item_Button.setBorderPainted(false);
         item_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -208,7 +203,6 @@ public class UI extends javax.swing.JFrame {
 
         po_Button.setBackground(new java.awt.Color(255, 255, 204));
         po_Button.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        po_Button.setForeground(new java.awt.Color(0, 0, 0));
         po_Button.setText("Purchase Order");
         po_Button.setBorderPainted(false);
 
@@ -263,7 +257,6 @@ public class UI extends javax.swing.JFrame {
         supplierName_lbl.setText("Supplier Name");
 
         refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
-        refresh_Button.setForeground(new java.awt.Color(0, 0, 0));
         refresh_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Refresh.png"))); // NOI18N
         refresh_Button.setBorder(null);
         refresh_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -275,6 +268,11 @@ public class UI extends javax.swing.JFrame {
         supplierID_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SUP0001", "SUP0002", "SUP0003" }));
 
         supplierName_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nelson Tan", "Ho Lee Sheet", "Lee Kim Keong", " " }));
+        supplierName_comboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierName_comboBoxActionPerformed(evt);
+            }
+        });
 
         itemTableScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -451,6 +449,10 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_update_ButtonActionPerformed
 
     
+    private void supplierName_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierName_comboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_supplierName_comboBoxActionPerformed
+
       //- - - - - - - - - - FILTER COMBOBOX FUNCTION - - - - - - - - - -//
     private void filter_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter_comboBoxActionPerformed
         if (evt.getSource() == filter_comboBox) {

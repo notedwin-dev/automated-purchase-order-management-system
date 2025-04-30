@@ -3,5 +3,5 @@ Mango,MG0001,SUP0003,Lee Kim Keong,Fruit,1.00,MANGOU!
 Potato,PTT0001,SUP0002,Ho Lee Sheet,Food,1.3,POTEITOU!
 Grape,GRP0001,SUP0001,Nelson Tan,Fruit,1.20,GRAPE!
 Guava,GV0001,SUP0002,Ho Lee Sheet,Fruit,2.00,GUAVA!
-Durian,DR0001,SUP0002,Ho Lee Sheet,Food,30.00,DURIAN!
+Durian,DR0001,SUP0002,Nelson Tan,Food,30.00,DURIAN!
 Cheese,C0001,SUP0002,Ho Lee Sheet,Food,20.00,CHEESE!

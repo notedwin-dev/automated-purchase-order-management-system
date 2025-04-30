@@ -165,14 +165,17 @@ public class Login extends javax.swing.JFrame {
                 String un=reader.next();
                 String pw=reader.next();
                 if(username.equals(un.trim()) && password.equals(pw.trim()))
+                    
                 {
                     reader.close();
                     Test t = new Test();
                     t.setVisible(true);
                     this.dispose();
+                }else {
+                    JOptionPane.showMessageDialog(this, "Invaild Details");
                 }
             }
-            JOptionPane.showMessageDialog(this, "Invaild Details");
+            
         }catch(Exception e){
             
         }
