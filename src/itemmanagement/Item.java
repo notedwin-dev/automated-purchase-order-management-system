@@ -22,10 +22,11 @@ public class Item {
         this.unitPrice = unitPrice;
         this.description = description;
     }
-
+    
 //----- Getters & Setters -----//
     public String getItemName() {
         return itemName;
+     
     }
 
     public void setItemName(String itemName) {
