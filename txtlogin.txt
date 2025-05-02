@@ -1,4 +1,8 @@
-Username, Email. Password, Confirm Password
-
-Admin,admin@gmail.com,admin,admin
-1,1,1,1,1123,123,123,123
+ID , Username , Password , Department , Role
+0,Admin,admin,Admintrative,Item 1
+1,2,1,1,Item 1
+2,qd,qwe,wqr,Item 2
+3,asd,as,ae,Item 2
+4,weq,qss,asdd,Item 3
+5,sdf,s,df,Item 3
+6,dsf,sdsd,dsfij,Item 2

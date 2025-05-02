@@ -42,22 +42,32 @@ public class UI extends javax.swing.JFrame {
         ImageIcon resizedRefresh = new ImageIcon(scaled_refresh);
         refresh_Button.setIcon(resizedRefresh);
          // - - - - - RESIZE ICON CLEAN - - - - - //
-         ImageIcon cleanIcon = new ImageIcon(getClass().getResource("/resources/icons/Clean.png"));
+        ImageIcon cleanIcon = new ImageIcon(getClass().getResource("/resources/icons/Clean.png"));
         Image scaled_clean = cleanIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon resizedClean = new ImageIcon(scaled_clean);
         clean_Button.setIcon(resizedClean);
+         // - - - - - RESIZE ICON LOGO - - - - - //
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/resources/icons/Logo.png"));
+        Image scaled_logo = logoIcon.getImage().getScaledInstance(144, 144, Image.SCALE_SMOOTH);
+        ImageIcon resizedLogo = new ImageIcon(scaled_logo);
+        logo_lbl.setIcon(resizedLogo);
+
         
         //----- Clear the comboBox when run the program -----//
         supplierID_comboBox.setSelectedIndex(-1);
         supplierName_comboBox.setSelectedIndex(-1);
         
+        
         model = new DefaultTableModel(
-            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Description"}, 0  ) {
+            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Quantity", "Unit Price", "Retail Price", "Description", "Delivery Status"}, 0  ) {
             
         @Override
         public boolean isCellEditable(int row, int column) {
             return false; //----- All column is non-editable -----//
             }
+        
+
+        
         };
 
         itemTable.setModel(model); 
@@ -71,6 +81,7 @@ public class UI extends javax.swing.JFrame {
             supplierName_comboBox,
             category_textbox,
             unitPrice_textbox,
+            retailPrice_textbox,
             description_textbox
         );
 
@@ -90,12 +101,13 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
+        // - - - - - DISABLE ROW SORTING - - - - - //
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(itemTable.getModel());
+            itemTable.setRowSorter(sorter);
+            for (int i = 0; i < itemTable.getColumnCount(); i++) {
+                sorter.setSortable(i, false);
+            }
         
-    TableRowSorter<TableModel> sorter = new TableRowSorter<>(itemTable.getModel());
-        itemTable.setRowSorter(sorter);
-        for (int i = 0; i < itemTable.getColumnCount(); i++) {
-            sorter.setSortable(i, false);
-        }
     }
     
     // - - - - -  Method to update the filter combo box with categories - - - - - //
@@ -108,6 +120,7 @@ public class UI extends javax.swing.JFrame {
         }
     }
 
+
     
     
     /**
@@ -119,14 +132,11 @@ public class UI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        add_Button = new javax.swing.JButton();
-        delete_Button = new javax.swing.JButton();
-        clean_Button = new javax.swing.JButton();
-        update_Button = new javax.swing.JButton();
         NAVPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        logo_lbl = new javax.swing.JLabel();
         item_Button = new javax.swing.JButton();
         po_Button = new javax.swing.JButton();
+        logout_Button = new javax.swing.JButton();
         itemCode_textbox = new javax.swing.JTextField();
         category_textbox = new javax.swing.JTextField();
         unitPrice_textbox = new javax.swing.JTextField();
@@ -139,64 +149,29 @@ public class UI extends javax.swing.JFrame {
         unitPrice_lbl = new javax.swing.JLabel();
         description_lbl = new javax.swing.JLabel();
         supplierName_lbl = new javax.swing.JLabel();
-        refresh_Button = new javax.swing.JButton();
         supplierID_comboBox = new javax.swing.JComboBox<>();
         supplierName_comboBox = new javax.swing.JComboBox<>();
         itemTableScrollPane = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
         filter_comboBox = new javax.swing.JComboBox<>();
+        retailPrice_lbl = new javax.swing.JLabel();
+        retailPrice_textbox = new javax.swing.JTextField();
+        add_Button = new javax.swing.JButton();
+        update_Button = new javax.swing.JButton();
+        delete_Button = new javax.swing.JButton();
+        refresh_Button = new javax.swing.JButton();
+        clean_Button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(java.awt.Color.white);
 
-        add_Button.setBackground(new java.awt.Color(120, 211, 77));
-        add_Button.setForeground(new java.awt.Color(0, 0, 0));
-        add_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Add.png"))); // NOI18N
-        add_Button.setBorder(null);
-        add_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                add_ButtonActionPerformed(evt);
-            }
-        });
-
-        delete_Button.setBackground(new java.awt.Color(251, 82, 35));
-        delete_Button.setForeground(new java.awt.Color(0, 0, 0));
-        delete_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Delete.png"))); // NOI18N
-        delete_Button.setBorder(null);
-        delete_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                delete_ButtonActionPerformed(evt);
-            }
-        });
-
-        clean_Button.setBackground(new java.awt.Color(240, 225, 0));
-        clean_Button.setForeground(new java.awt.Color(0, 0, 0));
-        clean_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Clean.png"))); // NOI18N
-        clean_Button.setBorder(null);
-        clean_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clean_ButtonActionPerformed(evt);
-            }
-        });
-
-        update_Button.setBackground(new java.awt.Color(76, 134, 168));
-        update_Button.setForeground(new java.awt.Color(0, 0, 0));
-        update_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Update.png"))); // NOI18N
-        update_Button.setBorder(null);
-        update_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                update_ButtonActionPerformed(evt);
-            }
-        });
-
         NAVPanel.setBackground(new java.awt.Color(255, 255, 204));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("NAV BAR");
+        logo_lbl.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        logo_lbl.setForeground(new java.awt.Color(0, 0, 0));
 
         item_Button.setBackground(new java.awt.Color(255, 255, 204));
-        item_Button.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        item_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         item_Button.setForeground(new java.awt.Color(0, 0, 0));
         item_Button.setText("Item");
         item_Button.setBorderPainted(false);
@@ -207,32 +182,49 @@ public class UI extends javax.swing.JFrame {
         });
 
         po_Button.setBackground(new java.awt.Color(255, 255, 204));
-        po_Button.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        po_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         po_Button.setForeground(new java.awt.Color(0, 0, 0));
         po_Button.setText("Purchase Order");
         po_Button.setBorderPainted(false);
+
+        logout_Button.setBackground(new java.awt.Color(255, 255, 204));
+        logout_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        logout_Button.setForeground(new java.awt.Color(0, 0, 0));
+        logout_Button.setText("Log Out");
+        logout_Button.setBorderPainted(false);
+        logout_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logout_ButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout NAVPanelLayout = new javax.swing.GroupLayout(NAVPanel);
         NAVPanel.setLayout(NAVPanelLayout);
         NAVPanelLayout.setHorizontalGroup(
             NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(item_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(po_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+            .addComponent(po_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(NAVPanelLayout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(NAVPanelLayout.createSequentialGroup()
+                        .addComponent(logo_lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(logout_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         NAVPanelLayout.setVerticalGroup(
             NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NAVPanelLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(jLabel1)
-                .addGap(92, 92, 92)
+                .addContainerGap()
+                .addComponent(logo_lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(item_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(po_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(logout_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(54, 54, 54))
         );
 
         itemName_textbox.addActionListener(new java.awt.event.ActionListener() {
@@ -262,19 +254,14 @@ public class UI extends javax.swing.JFrame {
         supplierName_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         supplierName_lbl.setText("Supplier Name");
 
-        refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
-        refresh_Button.setForeground(new java.awt.Color(0, 0, 0));
-        refresh_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Refresh.png"))); // NOI18N
-        refresh_Button.setBorder(null);
-        refresh_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refresh_ButtonActionPerformed(evt);
-            }
-        });
-
         supplierID_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SUP0001", "SUP0002", "SUP0003" }));
 
         supplierName_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nelson Tan", "Ho Lee Sheet", "Lee Kim Keong", " " }));
+        supplierName_comboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierName_comboBoxActionPerformed(evt);
+            }
+        });
 
         itemTableScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -284,20 +271,20 @@ public class UI extends javax.swing.JFrame {
 
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Description"
+                "No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Quantity", "Unit Price", "Retail Price", "Description", "Delivery Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -308,11 +295,55 @@ public class UI extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        itemTable.getTableHeader().setReorderingAllowed(false);
         itemTableScrollPane.setViewportView(itemTable);
 
         filter_comboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 filter_comboBoxActionPerformed(evt);
+            }
+        });
+
+        retailPrice_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        retailPrice_lbl.setText("Retail Price");
+
+        add_Button.setBackground(new java.awt.Color(120, 211, 77));
+        add_Button.setBorder(null);
+        add_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                add_ButtonActionPerformed(evt);
+            }
+        });
+
+        update_Button.setBackground(new java.awt.Color(76, 134, 168));
+        update_Button.setBorder(null);
+        update_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                update_ButtonActionPerformed(evt);
+            }
+        });
+
+        delete_Button.setBackground(new java.awt.Color(251, 82, 35));
+        delete_Button.setBorder(null);
+        delete_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                delete_ButtonActionPerformed(evt);
+            }
+        });
+
+        refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
+        refresh_Button.setBorder(null);
+        refresh_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refresh_ButtonActionPerformed(evt);
+            }
+        });
+
+        clean_Button.setBackground(new java.awt.Color(240, 225, 0));
+        clean_Button.setBorder(null);
+        clean_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clean_ButtonActionPerformed(evt);
             }
         });
 
@@ -322,17 +353,19 @@ public class UI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(NAVPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(filter_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(retailPrice_lbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(retailPrice_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(supplierID_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(itemCode_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(itemName_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(category_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(unitPrice_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(description_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(supplierName_lbl, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -340,10 +373,13 @@ public class UI extends javax.swing.JFrame {
                             .addComponent(itemName_textbox, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(category_textbox, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(unitPrice_textbox, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(description_textbox, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(supplierID_comboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(supplierName_comboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(description_lbl)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(description_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -352,20 +388,21 @@ public class UI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(39, 39, 39)
+                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(filter_comboBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(NAVPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(50, 50, 50)
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(62, 62, 62)
                         .addComponent(filter_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(102, 102, 102)
+                        .addGap(68, 68, 68)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(itemName_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(itemName_lbl))
@@ -391,20 +428,24 @@ public class UI extends javax.swing.JFrame {
                             .addComponent(unitPrice_lbl))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(retailPrice_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(retailPrice_lbl))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(description_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(description_lbl))
                         .addGap(52, 52, 52)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(146, 146, 146))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(50, 50, 50))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(add_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(refresh_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(delete_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
 
         pack();
@@ -418,39 +459,15 @@ public class UI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_itemName_textboxActionPerformed
 
-//- - - - - - - - - - ADD FUNCTION - - - - - - - - - -//
-    private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
-        itemOps.add();
-        updateFilterComboBox();
-    }//GEN-LAST:event_add_ButtonActionPerformed
-
-//- - - - - - - - - - REFRESH FUNCTION - - - - - - - - - -//
-    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
-        itemOps.refresh();
-        updateFilterComboBox();
-    }//GEN-LAST:event_refresh_ButtonActionPerformed
-
-//- - - - - - - - - - DELETE FUNCTION - - - - - - - - - -//
-    private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
-        itemOps.delete();
-        updateFilterComboBox();
-    }//GEN-LAST:event_delete_ButtonActionPerformed
-
-//- - - - - - - - - - CLEAN FUNCTION - - - - - - - - - -//
-    private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
-        itemOps.clean();
-    }//GEN-LAST:event_clean_ButtonActionPerformed
-
     private void itemTableScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPaneMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_itemTableScrollPaneMouseClicked
    
-    //- - - - - - - - - - UPDATE FUNCTION - - - - - - - - - -//
-    private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
-        itemOps.update();
-    }//GEN-LAST:event_update_ButtonActionPerformed
-
     
+    private void supplierName_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierName_comboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_supplierName_comboBoxActionPerformed
+
       //- - - - - - - - - - FILTER COMBOBOX FUNCTION - - - - - - - - - -//
     private void filter_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter_comboBoxActionPerformed
         if (evt.getSource() == filter_comboBox) {
@@ -461,6 +478,36 @@ public class UI extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_filter_comboBoxActionPerformed
+
+    // - - - - - - - - - - ADD FUNCTION - - - - - - - - - - //
+    private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
+        itemOps.add();
+    }//GEN-LAST:event_add_ButtonActionPerformed
+    
+    // - - - - - - - - - - UPDATE FUNCTION - - - - - - - - - - //
+    private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
+        itemOps.update();
+    }//GEN-LAST:event_update_ButtonActionPerformed
+
+    // - - - - - - - - - - DELETE FUNCTION - - - - - - - - - - //
+    private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
+        itemOps.delete();
+    }//GEN-LAST:event_delete_ButtonActionPerformed
+
+    // - - - - - - - - - - REFRESH FUNCTION - - - - - - - - - - //
+    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
+        itemOps.refresh();
+    }//GEN-LAST:event_refresh_ButtonActionPerformed
+
+    // - - - - - - - - - - CLEAN FUNCTION - - - - - - - - - - //
+    private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
+        itemOps.clean();
+    }//GEN-LAST:event_clean_ButtonActionPerformed
+
+    // - - - - - - - - - - CLOSE WINDOW FUNCTION - - - - - - - - - - //
+    private void logout_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logout_ButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logout_ButtonActionPerformed
 
     
     
@@ -495,6 +542,7 @@ public class UI extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new UI().setVisible(true);
             }
@@ -520,9 +568,12 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JTable itemTable;
     private javax.swing.JScrollPane itemTableScrollPane;
     private javax.swing.JButton item_Button;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel logo_lbl;
+    private javax.swing.JButton logout_Button;
     private javax.swing.JButton po_Button;
     private javax.swing.JButton refresh_Button;
+    private javax.swing.JLabel retailPrice_lbl;
+    private javax.swing.JTextField retailPrice_textbox;
     private javax.swing.JComboBox<String> supplierID_comboBox;
     private javax.swing.JLabel supplierID_lbl;
     private javax.swing.JComboBox<String> supplierName_comboBox;
