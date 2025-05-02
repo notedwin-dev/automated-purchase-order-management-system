@@ -120,6 +120,7 @@ public class UI extends javax.swing.JFrame {
         }
     }
 
+
     
     
     /**
@@ -256,6 +257,11 @@ public class UI extends javax.swing.JFrame {
         supplierID_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SUP0001", "SUP0002", "SUP0003" }));
 
         supplierName_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nelson Tan", "Ho Lee Sheet", "Lee Kim Keong", " " }));
+        supplierName_comboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierName_comboBoxActionPerformed(evt);
+            }
+        });
 
         itemTableScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -458,6 +464,10 @@ public class UI extends javax.swing.JFrame {
     }//GEN-LAST:event_itemTableScrollPaneMouseClicked
    
     
+    private void supplierName_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierName_comboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_supplierName_comboBoxActionPerformed
+
       //- - - - - - - - - - FILTER COMBOBOX FUNCTION - - - - - - - - - -//
     private void filter_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filter_comboBoxActionPerformed
         if (evt.getSource() == filter_comboBox) {
