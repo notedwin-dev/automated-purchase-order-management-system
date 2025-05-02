@@ -4,17 +4,76 @@
  */
 package auth;
 
+import java.awt.Image;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author USER
  */
 public class Register extends javax.swing.JFrame {
 
+    public User user = new User();
+
+    int did;
+    String id = "";
+    String username = "";
+    String password = "";
+    String department = "";
+    String role = "";
+
     /**
      * Creates new form Register
      */
     public Register() {
         initComponents();
+        tableLoad();
+        ImageIcon addIcon = new ImageIcon(getClass().getResource("/resources/icons/Add.png"));
+        Image scaled_add = addIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon resizedAdd = new ImageIcon(scaled_add);
+        add_Button.setIcon(resizedAdd);
+        // - - - - - RESIZE ICON DELETE - - - - - //
+        ImageIcon deleteIcon = new ImageIcon(getClass().getResource("/resources/icons/Delete.png"));
+        Image scaled_delete = deleteIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon resizedDelete = new ImageIcon(scaled_delete);
+        delete_Button.setIcon(resizedDelete);
+        // - - - - - RESIZE ICON UPDATE - - - - - //
+        ImageIcon updateIcon = new ImageIcon(getClass().getResource("/resources/icons/Update.png"));
+        Image scaled_update = updateIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon resizedUpdate = new ImageIcon(scaled_update);
+        update_Button.setIcon(resizedUpdate);
+        // - - - - - RESIZE ICON REFRESH - - - - - //
+        ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/resources/icons/Refresh.png"));
+        Image scaled_refresh = refreshIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon resizedRefresh = new ImageIcon(scaled_refresh);
+        refresh_Button.setIcon(resizedRefresh);
+        // - - - - - RESIZE ICON CLEAN - - - - - //
+        ImageIcon cleanIcon = new ImageIcon(getClass().getResource("/resources/icons/Clean.png"));
+        Image scaled_clean = cleanIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon resizedClean = new ImageIcon(scaled_clean);
+        clean_Button.setIcon(resizedClean);
+
+    }
+
+    private void getData() {
+        user.setID(txtID.getText());
+        user.setUsername(txtUsername.getText());
+        user.setPassword(txtPassword.getText());
+        user.setDepartment(txtDepartment.getText());
+        user.setRole(cbRole.getSelectedItem().toString());
+    }
+
+    private void clear() {
+        txtID.setText("");
+        txtUsername.setText("");
+        txtPassword.setText("");
+        txtDepartment.setText("");
+        cbRole.setSelectedIndex(-1);
     }
 
     /**
@@ -34,14 +93,18 @@ public class Register extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        txtDepartment = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JTextField();
+        txtUsername = new javax.swing.JTextField();
+        txtID = new javax.swing.JTextField();
+        cbRole = new javax.swing.JComboBox<>();
         jScrollPane2 = new javax.swing.JScrollPane();
-        Tbl1 = new javax.swing.JTable();
+        UserTable = new javax.swing.JTable();
+        refresh_Button = new javax.swing.JButton();
         add_Button = new javax.swing.JButton();
+        delete_Button = new javax.swing.JButton();
+        clean_Button = new javax.swing.JButton();
+        update_Button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,7 +127,7 @@ public class Register extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(39, 39, 39)
                 .addComponent(jLabel1)
-                .addContainerGap(653, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
@@ -84,36 +147,74 @@ public class Register extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         jLabel6.setText("Role:");
 
-        jTextField1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        txtDepartment.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
 
-        jTextField2.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        txtPassword.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
 
-        jTextField3.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        txtUsername.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
 
-        jTextField4.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        txtID.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
 
-        jComboBox1.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbRole.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        cbRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        Tbl1.setModel(new javax.swing.table.DefaultTableModel(
+        UserTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"001", "Sam", "1234", "Sales", "Manager"}
+
             },
             new String [] {
                 "ID", "Username", "Password", "Department", "Role"
             }
         ));
-        jScrollPane2.setViewportView(Tbl1);
+        UserTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                UserTableMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(UserTable);
+
+        refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
+        refresh_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Refresh.png"))); // NOI18N
+        refresh_Button.setBorder(null);
+        refresh_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refresh_ButtonActionPerformed(evt);
+            }
+        });
 
         add_Button.setBackground(new java.awt.Color(120, 211, 77));
         add_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Add.png"))); // NOI18N
         add_Button.setBorder(null);
-        add_Button.setMaximumSize(new java.awt.Dimension(35, 35));
-        add_Button.setMinimumSize(new java.awt.Dimension(35, 35));
-        add_Button.setPreferredSize(new java.awt.Dimension(35, 35));
         add_Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 add_ButtonActionPerformed(evt);
+            }
+        });
+
+        delete_Button.setBackground(new java.awt.Color(251, 82, 35));
+        delete_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Delete.png"))); // NOI18N
+        delete_Button.setBorder(null);
+        delete_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                delete_ButtonActionPerformed(evt);
+            }
+        });
+
+        clean_Button.setBackground(new java.awt.Color(240, 225, 0));
+        clean_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Clean.png"))); // NOI18N
+        clean_Button.setBorder(null);
+        clean_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clean_ButtonActionPerformed(evt);
+            }
+        });
+
+        update_Button.setBackground(new java.awt.Color(76, 134, 168));
+        update_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Update.png"))); // NOI18N
+        update_Button.setBorder(null);
+        update_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                update_ButtonActionPerformed(evt);
             }
         });
 
@@ -132,8 +233,8 @@ public class Register extends javax.swing.JFrame {
                                     .addComponent(jLabel2))
                                 .addGap(18, 18, 18)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel5)
@@ -141,14 +242,23 @@ public class Register extends javax.swing.JFrame {
                                     .addComponent(jLabel4))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jTextField1)
-                                        .addComponent(jComboBox1, 0, 355, Short.MAX_VALUE))))))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(111, 111, 111)
-                        .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(txtDepartment)
+                                        .addComponent(cbRole, 0, 355, Short.MAX_VALUE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(109, 109, 109)))
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 796, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -157,32 +267,36 @@ public class Register extends javax.swing.JFrame {
                 .addGap(141, 141, 141)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtUsername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(151, 151, 151)
-                .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbRole, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(140, 140, 140)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 767, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
-
-        add_Button.getAccessibleContext().setAccessibleParent(this);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -203,9 +317,71 @@ public class Register extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
+        tableLoad();
+        JOptionPane.showMessageDialog(this, "Table Refreshed!");
+    }//GEN-LAST:event_refresh_ButtonActionPerformed
+
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
-        
+        //Add Data Button
+        try {
+            getData();
+            user.add();
+            tableLoad();
+            clear();
+        } catch (Exception e) {
+            
+        }
     }//GEN-LAST:event_add_ButtonActionPerformed
+
+    private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
+        //Delete Data Button
+        user.delete();
+        tableLoad();
+        clear();
+    }//GEN-LAST:event_delete_ButtonActionPerformed
+
+    private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
+        clear();
+        JOptionPane.showMessageDialog(this, "Table Cleaned!");
+    }//GEN-LAST:event_clean_ButtonActionPerformed
+
+    private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
+        getData();
+        user.update();
+        tableLoad();
+        clear();
+    }//GEN-LAST:event_update_ButtonActionPerformed
+
+    private void UserTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserTableMouseClicked
+        // TODO add your handling code here:
+        DefaultTableModel tmodel = (DefaultTableModel) UserTable.getModel();
+        int selectrowindex = UserTable.getSelectedRow();
+
+        if (selectrowindex >= 0) { // Check if a valid row is selected
+            id = tmodel.getValueAt(selectrowindex, 0).toString();
+            username = tmodel.getValueAt(selectrowindex, 1).toString();
+            password = tmodel.getValueAt(selectrowindex, 2).toString();
+            department = tmodel.getValueAt(selectrowindex, 3).toString();
+            role = tmodel.getValueAt(selectrowindex, 4).toString();
+            did = selectrowindex + 2;
+
+            txtID.setText(id);
+            txtUsername.setText(username);
+            txtPassword.setText(password);
+            txtDepartment.setText(department);
+
+            // Set the selected item in the combo box
+            cbRole.setSelectedItem(role);
+
+            user.setDataID(did);
+            user.setID(id);
+            user.setUsername(username);
+            user.setPassword(password);
+            user.setDepartment(department);
+            user.setRole(role);
+        }
+    }//GEN-LAST:event_UserTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -242,10 +418,44 @@ public class Register extends javax.swing.JFrame {
         });
     }
 
+    private void tableLoad() {
+        DefaultTableModel model = (DefaultTableModel) UserTable.getModel();
+        model.setRowCount(0);
+//        String columName[] = {"Id" , "Name"};
+//        model = new DefaultTableModel(columName, 2);
+
+        String filePath = "txtlogin.txt";
+        File file = new File(filePath);
+
+        try {
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String fline = br.readLine().trim();
+            String[] columname = fline.split(",");
+            //DefaultTableModel  model = (DefaultTableModel) jTable1.getModel();
+            model.setColumnIdentifiers(columname);
+
+            Object[] tableLines = br.lines().toArray();
+            for (int i = 0; i < tableLines.length; i++) {
+                String line = tableLines[i].toString().trim();
+                String[] datarow = line.split(",");
+                model.addRow(datarow);
+
+            }
+
+            br.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable Tbl1;
+    private javax.swing.JTable UserTable;
     private javax.swing.JButton add_Button;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cbRole;
+    private javax.swing.JButton clean_Button;
+    private javax.swing.JButton delete_Button;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -255,9 +465,11 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JButton refresh_Button;
+    private javax.swing.JTextField txtDepartment;
+    private javax.swing.JTextField txtID;
+    private javax.swing.JTextField txtPassword;
+    private javax.swing.JTextField txtUsername;
+    private javax.swing.JButton update_Button;
     // End of variables declaration//GEN-END:variables
 }
