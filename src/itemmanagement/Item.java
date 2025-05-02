@@ -23,10 +23,11 @@ public class Item {
         this.retailPrice = retailPrice;
         this.description = description;
     }
-
+    
 //----- Getters & Setters -----//
     public String getItemName() {
         return itemName;
+     
     }
 
     public void setItemName(String itemName) {
