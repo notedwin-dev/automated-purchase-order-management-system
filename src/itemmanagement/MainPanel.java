@@ -8,6 +8,11 @@ import itemmanagement.ItemManagement;
 import javax.swing.table.*;
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
+
 
 /**
  *
@@ -17,6 +22,8 @@ public class MainPanel extends javax.swing.JFrame {
 
     private DefaultTableModel model;
     private ItemManagement itemOps;
+    private Map<String, String> supplierMap = new HashMap<>();
+
 
     public MainPanel() {
         initComponents();
@@ -99,10 +106,48 @@ public class MainPanel extends javax.swing.JFrame {
             for (int i = 0; i < itemTable.getColumnCount(); i++) {
                 sorter.setSortable(i, false);
             }
+            
+        loadSupplierData();
         
+        supplierID_comboBox.addActionListener(e -> { //----- [ e -> {...} ] is a lambda expression -----//
+            String selectedID = (String) supplierID_comboBox.getSelectedItem();
+            if (selectedID != null && supplierMap.containsKey(selectedID)) {
+                supplierName_comboBox.setSelectedItem(supplierMap.get(selectedID));
+            } else {
+                supplierName_comboBox.setSelectedIndex(-1);
+            }
+        });
+        
+        //----- Non-editable comboBox to prevent changing data for supplierName -----//
+        supplierName_comboBox.setEditable(false);
+        supplierName_comboBox.setEnabled(false); // Optional: disables it completely
+
+
     }
    
 
+    
+    // - - - - - Read supplier.txt - - - - - //
+    private void loadSupplierData() {
+       try (BufferedReader br = new BufferedReader(new FileReader("src/SupplierManagement/Suppliers.txt"))) {
+           String line;
+           while ((line = br.readLine()) != null) {
+               String[] parts = line.split(",", 2);
+               if (parts.length == 2) {
+                   String id = parts[0].trim();
+                   String name = parts[1].trim();
+                   supplierMap.put(id, name);
+                   supplierID_comboBox.addItem(id); // Populate supplier ID combo
+               }
+           }
+       } catch (IOException e) {
+           JOptionPane.showMessageDialog(this, "Error reading supplier.txt: " + e.getMessage());
+       }
+    }
+
+
+        
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -245,6 +290,11 @@ public class MainPanel extends javax.swing.JFrame {
         });
 
         supplierID_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SUP0001", "SUP0002", "SUP0003" }));
+        supplierID_comboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                supplierID_comboBoxActionPerformed(evt);
+            }
+        });
 
         clean_Button.setBackground(new java.awt.Color(240, 225, 0));
         clean_Button.setBorder(null);
@@ -459,6 +509,10 @@ public class MainPanel extends javax.swing.JFrame {
     private void itemEntry_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEntry_ButtonActionPerformed
         JTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_itemEntry_ButtonActionPerformed
+
+    private void supplierID_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierID_comboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_supplierID_comboBoxActionPerformed
 
 
 
