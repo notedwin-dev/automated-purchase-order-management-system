@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new UI().setVisible(true); // It opens my UI.java
+                new MainPanel().setVisible(true); // It opens my MainPanel.java
             }
         });
      }
