@@ -57,11 +57,6 @@ public class MainPanel extends javax.swing.JFrame {
         Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon resizedLogo = new ImageIcon(scaled_logo);
         Logo_lbl.setIcon(resizedLogo);
-
-        
-        //----- Clear the comboBox when run the program -----//
-        supplierID_comboBox.setSelectedIndex(-1);
-        supplierName_comboBox.setSelectedIndex(-1);
         
         
         model = new DefaultTableModel(
@@ -73,11 +68,27 @@ public class MainPanel extends javax.swing.JFrame {
             }
         };
 
-        // - - - - - Hides the tabs - - - - - //
+        // - - - - - HIDES THE TABS - - - - - //
         JTabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
             @Override
             protected int calculateTabAreaHeight(int tabPlacement, int horizRunCount, int maxTabHeight) {
                 return 0;
+            } 
+            @Override
+            protected void paintTab(Graphics g, int tabPlacement, Rectangle[] rects, int tabIndex, Rectangle iconRect, Rectangle textRect) {
+                //----- Do nothing: skip painting tabs -----//
+            }
+            @Override
+            protected void paintContentBorder(Graphics g, int tabPlacement, int selectedIndex) {
+                //----- Remove the tab panel border -----//
+            }
+        });
+        
+         // - - - - - DISABLE CLICKING TABS - - - - - //
+        JTabbedPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                evt.consume(); // prevent clicking on tabs
             }
         });
         
@@ -89,65 +100,63 @@ public class MainPanel extends javax.swing.JFrame {
             itemName_textbox,
             itemCode_textbox,
             supplierID_comboBox,
-            supplierName_comboBox,
+            supplierName_textbox,
             unitPrice_textbox,
             retailPrice_textbox
         );
-
+      
         //----- Double click the row to edit then put to textbox / comboBox -----//
-        itemOps.doubleClickRow();
+        itemOps.doubleClickRow();       
         
-        //----- Load data into table -----//
-        itemOps.refresh();
+        // - - - - - LOAD DATA INTO TABLE - - - - - //
+        itemOps.refresh();     
         
         // - - - - - DISABLE ROW SORTING - - - - - //
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(itemTable.getModel());
             itemTable.setRowSorter(sorter);
             for (int i = 0; i < itemTable.getColumnCount(); i++) {
                 sorter.setSortable(i, false);
-            }
+            }        
             
         loadSupplierData();
-        
+                
+        // - - - - - Auto fill textbox when supplierID is selected - - - - - //
         supplierID_comboBox.addActionListener(e -> { //----- [ e -> {...} ] is a lambda expression -----//
             String selectedID = (String) supplierID_comboBox.getSelectedItem();
             if (selectedID != null && supplierMap.containsKey(selectedID)) {
-                supplierName_comboBox.setSelectedItem(supplierMap.get(selectedID));
+                supplierName_textbox.setText(supplierMap.get(selectedID)); 
             } else {
-                supplierName_comboBox.setSelectedIndex(-1);
+                supplierName_textbox.setText(""); 
             }
         });
+
         
         //----- Non-editable comboBox to prevent changing data for supplierName -----//
-        supplierName_comboBox.setEditable(false);
-        supplierName_comboBox.setEnabled(false); // Optional: disables it completely
+        supplierName_textbox.setEditable(false);
 
-
+        
+        //----- Clear the comboBox when run the program -----//
+        supplierID_comboBox.setSelectedIndex(-1);
+        
     }
    
 
-    
     // - - - - - Read supplier.txt - - - - - //
     private void loadSupplierData() {
-       try (BufferedReader br = new BufferedReader(new FileReader("src/SupplierManagement/Suppliers.txt"))) {
-           String line;
-           while ((line = br.readLine()) != null) {
-               String[] parts = line.split(",", 2);
-               if (parts.length == 2) {
-                   String id = parts[0].trim();
-                   String name = parts[1].trim();
-                   supplierMap.put(id, name);
-                   supplierID_comboBox.addItem(id); // Populate supplier ID combo
-               }
-           }
-       } catch (IOException e) {
-           JOptionPane.showMessageDialog(this, "Error reading supplier.txt: " + e.getMessage());
-       }
+        try (BufferedReader br = new BufferedReader(new FileReader("src/SupplierManagement/Suppliers.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 2) {
+                    supplierMap.put(parts[0], parts[1]); // ID → Name
+                    supplierID_comboBox.addItem(parts[0]); // Only IDs go in comboBox
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
-
-        
-        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -178,11 +187,11 @@ public class MainPanel extends javax.swing.JFrame {
         supplierID_comboBox = new javax.swing.JComboBox<>();
         clean_Button = new javax.swing.JButton();
         unitPrice_textbox = new javax.swing.JTextField();
-        supplierName_comboBox = new javax.swing.JComboBox<>();
         itemTableScrollPane = new javax.swing.JScrollPane();
         itemTable = new javax.swing.JTable();
         itemName_textbox = new javax.swing.JTextField();
         itemCode_lbl = new javax.swing.JLabel();
+        supplierName_textbox = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -289,7 +298,6 @@ public class MainPanel extends javax.swing.JFrame {
             }
         });
 
-        supplierID_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "SUP0001", "SUP0002", "SUP0003" }));
         supplierID_comboBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 supplierID_comboBoxActionPerformed(evt);
@@ -301,13 +309,6 @@ public class MainPanel extends javax.swing.JFrame {
         clean_Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clean_ButtonActionPerformed(evt);
-            }
-        });
-
-        supplierName_comboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nelson Tan", "Ho Lee Sheet", "Lee Kim Keong", " " }));
-        supplierName_comboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                supplierName_comboBoxActionPerformed(evt);
             }
         });
 
@@ -360,38 +361,41 @@ public class MainPanel extends javax.swing.JFrame {
         ItemEntryLayout.setHorizontalGroup(
             ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ItemEntryLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(ItemEntryLayout.createSequentialGroup()
-                        .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(supplierID_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(itemCode_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(itemName_lbl, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(supplierName_lbl, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(itemCode_textbox, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(itemName_textbox, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(supplierID_comboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(supplierName_comboBox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(ItemEntryLayout.createSequentialGroup()
-                        .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(ItemEntryLayout.createSequentialGroup()
+                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ItemEntryLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(unitPrice_lbl)
-                            .addComponent(retailPrice_lbl))
+                            .addComponent(supplierName_lbl)
+                            .addComponent(supplierID_lbl)
+                            .addComponent(itemCode_lbl)
+                            .addComponent(itemName_lbl))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(unitPrice_textbox)
-                            .addComponent(retailPrice_textbox, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))))
+                            .addComponent(itemCode_textbox, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(supplierID_comboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 113, Short.MAX_VALUE)
+                            .addComponent(supplierName_textbox, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(itemName_textbox)))
+                    .addGroup(ItemEntryLayout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(ItemEntryLayout.createSequentialGroup()
+                                .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(ItemEntryLayout.createSequentialGroup()
+                                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(unitPrice_lbl)
+                                    .addComponent(retailPrice_lbl))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(unitPrice_textbox)
+                                    .addComponent(retailPrice_textbox, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))))))
                 .addGap(820, 820, 820))
             .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(ItemEntryLayout.createSequentialGroup()
@@ -417,7 +421,7 @@ public class MainPanel extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(supplierName_lbl)
-                    .addComponent(supplierName_comboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(supplierName_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(unitPrice_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -489,10 +493,6 @@ public class MainPanel extends javax.swing.JFrame {
     private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
         itemOps.clean();
     }//GEN-LAST:event_clean_ButtonActionPerformed
-
-    private void supplierName_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierName_comboBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_supplierName_comboBoxActionPerformed
 
     private void itemTableScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPaneMouseClicked
         // TODO add your handling code here:
@@ -576,8 +576,8 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JTextField retailPrice_textbox;
     private javax.swing.JComboBox<String> supplierID_comboBox;
     private javax.swing.JLabel supplierID_lbl;
-    private javax.swing.JComboBox<String> supplierName_comboBox;
     private javax.swing.JLabel supplierName_lbl;
+    private javax.swing.JTextField supplierName_textbox;
     private javax.swing.JLabel unitPrice_lbl;
     private javax.swing.JTextField unitPrice_textbox;
     private javax.swing.JButton update_Button;

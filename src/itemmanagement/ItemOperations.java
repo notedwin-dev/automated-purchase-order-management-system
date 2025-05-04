@@ -16,7 +16,5 @@ public interface ItemOperations {
     void update();
     void clean();
     void delete();
-    void filter(String category);
-    List<String> updateFilter();
     void refresh();
 }

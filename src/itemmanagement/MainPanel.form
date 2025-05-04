@@ -154,43 +154,48 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="supplierName_lbl" min="-2" max="-2" attributes="0"/>
                                   <Component id="supplierID_lbl" alignment="1" min="-2" max="-2" attributes="0"/>
                                   <Component id="itemCode_lbl" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="itemName_lbl" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="supplierName_lbl" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="itemCode_textbox" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="itemName_textbox" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="supplierID_comboBox" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="supplierName_comboBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Component id="add_Button" min="-2" pref="35" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="update_Button" min="-2" pref="35" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="delete_Button" min="-2" pref="35" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="refresh_Button" min="-2" pref="35" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="clean_Button" min="-2" pref="35" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="unitPrice_lbl" min="-2" max="-2" attributes="0"/>
-                                  <Component id="retailPrice_lbl" min="-2" max="-2" attributes="0"/>
+                                  <Component id="itemName_lbl" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="unitPrice_textbox" max="32767" attributes="0"/>
-                                  <Component id="retailPrice_textbox" pref="113" max="32767" attributes="0"/>
+                                  <Component id="itemCode_textbox" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="supplierID_comboBox" alignment="1" pref="113" max="32767" attributes="0"/>
+                                  <Component id="supplierName_textbox" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="itemName_textbox" max="32767" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <Component id="add_Button" min="-2" pref="35" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="update_Button" min="-2" pref="35" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="delete_Button" min="-2" pref="35" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="refresh_Button" min="-2" pref="35" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="clean_Button" min="-2" pref="35" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="unitPrice_lbl" min="-2" max="-2" attributes="0"/>
+                                          <Component id="retailPrice_lbl" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="unitPrice_textbox" max="32767" attributes="0"/>
+                                          <Component id="retailPrice_textbox" pref="113" max="32767" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
                           </Group>
                       </Group>
@@ -226,7 +231,7 @@
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="supplierName_lbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="supplierName_comboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="supplierName_textbox" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -360,11 +365,7 @@
             <Component class="javax.swing.JComboBox" name="supplierID_comboBox">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="3">
-                    <StringItem index="0" value="SUP0001"/>
-                    <StringItem index="1" value="SUP0002"/>
-                    <StringItem index="2" value="SUP0003"/>
-                  </StringArray>
+                  <StringArray count="0"/>
                 </Property>
               </Properties>
               <Events>
@@ -388,24 +389,6 @@
               </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="unitPrice_textbox">
-            </Component>
-            <Component class="javax.swing.JComboBox" name="supplierName_comboBox">
-              <Properties>
-                <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Nelson Tan"/>
-                    <StringItem index="1" value="Ho Lee Sheet"/>
-                    <StringItem index="2" value="Lee Kim Keong"/>
-                    <StringItem index="3" value=" "/>
-                  </StringArray>
-                </Property>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="supplierName_comboBoxActionPerformed"/>
-              </Events>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-              </AuxValues>
             </Component>
             <Container class="javax.swing.JScrollPane" name="itemTableScrollPane">
               <Events>
@@ -497,6 +480,8 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Item Code"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JTextField" name="supplierName_textbox">
             </Component>
           </SubComponents>
         </Container>
