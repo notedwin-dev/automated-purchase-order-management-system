@@ -21,8 +21,8 @@ import java.awt.event.MouseEvent;
 public class ItemManagement implements ItemOperations {
     //----- Basically these are passed from the UI.java -----//
     private JTable itemTable;
-    private JTextField itemName_textbox, itemCode_textbox, unitPrice_textbox, retailPrice_textbox;
-    private JComboBox supplierID_comboBox, supplierName_comboBox;
+    private JTextField itemName_textbox, itemCode_textbox, unitPrice_textbox, retailPrice_textbox, supplierName_textbox;
+    private JComboBox supplierID_comboBox;
     private TableRowSorter<DefaultTableModel> sorter;
 
     //----- As you can see this is a constructor -----//
@@ -30,14 +30,14 @@ public class ItemManagement implements ItemOperations {
                                             JTextField name, 
                                             JTextField code, 
                                             JComboBox supID, 
-                                            JComboBox supName, 
+                                            JTextField supName, 
                                             JTextField price, 
                                             JTextField rprice ) {
         this.itemTable = table;
         this.itemName_textbox = name;
         this.itemCode_textbox = code;
         this.supplierID_comboBox = supID;
-        this.supplierName_comboBox = supName;
+        this.supplierName_textbox = supName;
         this.unitPrice_textbox = price;
         this.retailPrice_textbox = rprice;
     }
@@ -50,12 +50,12 @@ public class ItemManagement implements ItemOperations {
         String name = itemName_textbox.getText().trim();
         String code = itemCode_textbox.getText().trim();
         String supID = (String) supplierID_comboBox.getSelectedItem();
-        String supName = (String) supplierName_comboBox.getSelectedItem();
+        String supName = (String) supplierName_textbox.getText().trim();
         String price = unitPrice_textbox.getText().trim();
         String rprice = retailPrice_textbox.getText().trim();
         
         //----- Check for errors before adding to the table -----//
-        if (name.isEmpty() || code.isEmpty()  || supID == null || supName == null ||  price.isEmpty() || rprice.isEmpty()) {
+        if (name.isEmpty() || code.isEmpty()  || supID == null || supName.isEmpty() ||  price.isEmpty() || rprice.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill up everything before adding to table");
             return;
         }
@@ -86,7 +86,7 @@ public class ItemManagement implements ItemOperations {
         itemName_textbox.setText("");
         itemCode_textbox.setText("");
         supplierID_comboBox.setSelectedIndex(-1);
-        supplierName_comboBox.setSelectedIndex(-1);
+        supplierName_textbox.setText("");
         unitPrice_textbox.setText("");
         retailPrice_textbox.setText("");
     }
@@ -102,12 +102,12 @@ public class ItemManagement implements ItemOperations {
             String name = itemName_textbox.getText().trim();
             String code = itemCode_textbox.getText().trim();
             String supID = (String) supplierID_comboBox.getSelectedItem();
-            String supName = (String) supplierName_comboBox.getSelectedItem();
+            String supName = supplierName_textbox.getText().trim();
             String price = unitPrice_textbox.getText().trim();
             String rprice = retailPrice_textbox.getText().trim();
 
             //----- Check if any fields are empty -----//
-            if (name.isEmpty() || code.isEmpty() || supID == null || supName == null || price.isEmpty() || rprice.isEmpty()) {
+            if (name.isEmpty() || code.isEmpty() || supID == null || supName.isEmpty() || price.isEmpty() || rprice.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please fill up everything before updating.");
                 return;
             }
@@ -143,7 +143,7 @@ public class ItemManagement implements ItemOperations {
             itemName_textbox.setText("");
             itemCode_textbox.setText("");
             supplierID_comboBox.setSelectedIndex(-1);
-            supplierName_comboBox.setSelectedIndex(-1);
+            supplierName_textbox.setText("");
             unitPrice_textbox.setText("");
             retailPrice_textbox.setText("");
 
@@ -186,7 +186,7 @@ public class ItemManagement implements ItemOperations {
                         itemName_textbox.setText(itemTable.getValueAt(selectedRow, 1).toString());
                         itemCode_textbox.setText(itemTable.getValueAt(selectedRow, 2).toString());
                         supplierID_comboBox.setSelectedItem(itemTable.getValueAt(selectedRow, 3).toString());
-                        supplierName_comboBox.setSelectedItem(itemTable.getValueAt(selectedRow, 4).toString());
+                        supplierName_textbox.setText(itemTable.getValueAt(selectedRow, 4).toString());
                         unitPrice_textbox.setText(itemTable.getValueAt(selectedRow, 7).toString());
                         retailPrice_textbox.setText(itemTable.getValueAt(selectedRow, 8).toString());
                     }
@@ -202,7 +202,7 @@ public class ItemManagement implements ItemOperations {
         itemName_textbox.setText("");
         itemCode_textbox.setText("");
         supplierID_comboBox.setSelectedIndex(-1);
-        supplierName_comboBox.setSelectedIndex(-1);
+        supplierName_textbox.setText("");
         unitPrice_textbox.setText("");
         retailPrice_textbox.setText("");
     }
@@ -231,43 +231,6 @@ public class ItemManagement implements ItemOperations {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error occured while deleting item" + e.getMessage());
         }
-    }
-
-    
-    // - - - - - - - - - - FILTER FUNCTION - - - - - - - - - - //
-    @Override 
-    public void filter(String category) {
-        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        sorter = new TableRowSorter<>(model);
-        itemTable.setRowSorter(sorter);
-
-        if (category.equals("All")) {
-            sorter.setRowFilter(null); 
-        } else {
-            sorter.setRowFilter(RowFilter.regexFilter("(?i)^" + Pattern.quote(category) + "$", 5)); 
-        }
-        
-        System.out.println("Applied filter: " + category);
-        System.out.println("Visible rows after filter: " + itemTable.getRowCount());
-    }  
-    
-    
-     // - - - - - - - - - - UPDATE FILTER MENU FUNCTION - - - - - - - - - - //
-    @Override
-    public List<String> updateFilter() {
-        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        Set<String> uniqueCategory = new HashSet<>();
-
-        for (int i = 0; i < model.getRowCount(); i++) {
-            String category = model.getValueAt(i, 5).toString().trim();
-            if (!category.isEmpty()) {
-                uniqueCategory.add(category);
-            }
-        }
-
-        List<String> categoryList = new ArrayList<>(uniqueCategory);
-        Collections.sort(categoryList);
-        return categoryList;
     }
     
     

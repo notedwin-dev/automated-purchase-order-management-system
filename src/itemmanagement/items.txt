@@ -1,1 +1,2 @@
 Dyson,DS0001,SUP0001,Nelson Tan,100,150.00,200.00,false
+Xiaomi Cleaner,XM0001,SP0001,Supplier 1,0,300,500,false
