@@ -67,6 +67,7 @@ public class MainPanel extends javax.swing.JFrame {
             return false; //----- All column is non-editable -----//
             }
         };
+        
 
         // - - - - - HIDES THE TABS - - - - - //
         JTabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
@@ -320,10 +321,7 @@ public class MainPanel extends javax.swing.JFrame {
 
         itemTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Retail Price", "Delivery Status"
@@ -333,7 +331,7 @@ public class MainPanel extends javax.swing.JFrame {
                 java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -346,6 +344,9 @@ public class MainPanel extends javax.swing.JFrame {
         });
         itemTable.getTableHeader().setReorderingAllowed(false);
         itemTableScrollPane.setViewportView(itemTable);
+        if (itemTable.getColumnModel().getColumnCount() > 0) {
+            itemTable.getColumnModel().getColumn(0).setMaxWidth(35);
+        }
 
         itemName_textbox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -12,18 +12,16 @@ package itemmanagement;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.io.*;
-import java.util.*;
-import java.util.regex.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
 public class ItemManagement implements ItemOperations {
-    //----- Basically these are passed from the UI.java -----//
+    //----- Basically these are passed from the MainPanel.java -----//
     private JTable itemTable;
     private JTextField itemName_textbox, itemCode_textbox, unitPrice_textbox, retailPrice_textbox, supplierName_textbox;
     private JComboBox supplierID_comboBox;
-    private TableRowSorter<DefaultTableModel> sorter;
+//    private TableRowSorter<DefaultTableModel> sorter;
 
     //----- As you can see this is a constructor -----//
     public ItemManagement( JTable table, 
@@ -50,7 +48,7 @@ public class ItemManagement implements ItemOperations {
         String name = itemName_textbox.getText().trim();
         String code = itemCode_textbox.getText().trim();
         String supID = (String) supplierID_comboBox.getSelectedItem();
-        String supName = (String) supplierName_textbox.getText().trim();
+        String supName = supplierName_textbox.getText().trim();
         String price = unitPrice_textbox.getText().trim();
         String rprice = retailPrice_textbox.getText().trim();
         
@@ -187,8 +185,8 @@ public class ItemManagement implements ItemOperations {
                         itemCode_textbox.setText(itemTable.getValueAt(selectedRow, 2).toString());
                         supplierID_comboBox.setSelectedItem(itemTable.getValueAt(selectedRow, 3).toString());
                         supplierName_textbox.setText(itemTable.getValueAt(selectedRow, 4).toString());
-                        unitPrice_textbox.setText(itemTable.getValueAt(selectedRow, 7).toString());
-                        retailPrice_textbox.setText(itemTable.getValueAt(selectedRow, 8).toString());
+                        unitPrice_textbox.setText(itemTable.getValueAt(selectedRow, 6).toString());
+                        retailPrice_textbox.setText(itemTable.getValueAt(selectedRow, 7).toString());
                     }
                 }
             }

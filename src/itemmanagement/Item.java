@@ -10,24 +10,21 @@ package itemmanagement;
  */
 //----- ENCAPSULATION used -----//
 public class Item {
-    private String itemName, itemCode, supplierID, supplierName, category, description;
+    private String itemName, itemCode, supplierID, supplierName;
     private double unitPrice, retailPrice;
     
-    public Item(String itemName, String itemCode, String supplierID, String supplierName, String category, double unitPrice, double retailPrice, String description) {
+    public Item(String itemName, String itemCode, String supplierID, String supplierName, double unitPrice, double retailPrice) {
         this.itemName = itemName;
         this.itemCode = itemCode;
         this.supplierID = supplierID;
         this.supplierName = supplierName;
-        this.category = category;
         this.unitPrice = unitPrice;
         this.retailPrice = retailPrice;
-        this.description = description;
     }
     
 //----- Getters & Setters -----//
     public String getItemName() {
         return itemName;
-     
     }
 
     public void setItemName(String itemName) {
@@ -58,22 +55,6 @@ public class Item {
         this.supplierName = supplierName;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public double getUnitPrice() {
         return unitPrice;
     }
@@ -81,6 +62,15 @@ public class Item {
     public void setUnitPrice(double unitPrice) {
         this.unitPrice = unitPrice;
     }
+
+    public double getRetailPrice() {
+        return retailPrice;
+    }
+
+    public void setRetailPrice(double retailPrice) {
+        this.retailPrice = retailPrice;
+    }
+    
     
     
 }

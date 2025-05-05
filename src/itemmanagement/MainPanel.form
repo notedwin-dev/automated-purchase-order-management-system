@@ -400,7 +400,7 @@
                 <Component class="javax.swing.JTable" name="itemTable">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="9" rowCount="4">
+                      <Table columnCount="9" rowCount="0">
                         <Column editable="false" title="No." type="java.lang.Object"/>
                         <Column editable="false" title="Item Name" type="java.lang.String"/>
                         <Column editable="false" title="Item Code" type="java.lang.String"/>
@@ -409,12 +409,12 @@
                         <Column editable="false" title="Category" type="java.lang.String"/>
                         <Column editable="false" title="Unit Price" type="java.lang.String"/>
                         <Column editable="false" title="Retail Price" type="java.lang.String"/>
-                        <Column editable="false" title="Delivery Status" type="java.lang.Boolean"/>
+                        <Column editable="true" title="Delivery Status" type="java.lang.Boolean"/>
                       </Table>
                     </Property>
                     <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                       <TableColumnModel selectionModel="0">
-                        <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
+                        <Column maxWidth="35" minWidth="-1" prefWidth="-1" resizable="true">
                           <Title/>
                           <Editor/>
                           <Renderer/>
