@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 public class PROperation {
 
     private int did;
-    private String no, prid, date, smname, smid, remarks, itemcode, description, quantity, status;
+    private String no, prid, date, smname, smid, itemcode, quantity, status;
 
     public PROperation() {
 
@@ -70,14 +70,7 @@ public class PROperation {
     public void setSMID(String smid) {
         this.smid = smid;
     }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
+    
 
     public String getItemCode() {
         return itemcode;
@@ -85,14 +78,6 @@ public class PROperation {
 
     public void setItemCode(String itemcode) {
         this.itemcode = itemcode;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getQuntity() {
@@ -112,8 +97,8 @@ public class PROperation {
     }
 
     public void add() {
-        if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null || this.remarks == null
-                || this.itemcode == null || this.description == null || this.quantity == null || this.status == null) {
+        if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null 
+                || this.itemcode == null  || this.quantity == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
         }
@@ -153,8 +138,8 @@ public class PROperation {
 
         try {
             FileWriter writer = new FileWriter("src/PurchaseRequisition/PR.txt", true);
-            writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," + this.remarks + ","
-                    + this.itemcode + "," + this.description + "," + this.quantity + "," + this.status);
+            writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," 
+                    + this.itemcode  + "," + this.quantity + "," + this.status);
             writer.write(System.getProperty("line.separator"));
             writer.close();
             JOptionPane.showMessageDialog(null, "Data Added");
@@ -186,8 +171,8 @@ public class PROperation {
     }
     
     public void update() {
-        if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null || this.remarks == null
-                || this.itemcode == null || this.description == null || this.quantity == null || this.status == null) {
+        if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null 
+                || this.itemcode == null  || this.quantity == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
         }
@@ -208,8 +193,8 @@ public class PROperation {
                 String[] parts = currentLine.split(",");
                 if (parts.length >= 5 && parts[0].equals(this.no)) {
                     // Found the record to update - write the new data
-                    writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," + this.remarks + ","
-                    + this.itemcode + "," + this.description + "," + this.quantity + "," + this.status);
+                    writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," 
+                    + this.itemcode  + "," + this.quantity + "," + this.status);
                     found = true;
                 } else {
                     // Write the existing record as is
