@@ -176,7 +176,7 @@ public class MainPanel extends javax.swing.JFrame {
         Welcome_panel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         Calendar_Panel = new javax.swing.JPanel();
-        jCalendar2 = new com.toedter.calendar.JCalendar();
+        jCalendar1 = new com.toedter.calendar.JCalendar();
         Time_Panel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -280,14 +280,14 @@ public class MainPanel extends javax.swing.JFrame {
             Calendar_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Calendar_PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCalendar2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
         Calendar_PanelLayout.setVerticalGroup(
             Calendar_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Calendar_PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jCalendar2, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -708,7 +708,7 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JTextField itemName_textbox;
     private javax.swing.JTable itemTable;
     private javax.swing.JScrollPane itemTableScrollPane;
-    private com.toedter.calendar.JCalendar jCalendar2;
+    private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;

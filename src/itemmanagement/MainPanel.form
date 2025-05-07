@@ -233,7 +233,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jCalendar2" pref="288" max="32767" attributes="0"/>
+                          <Component id="jCalendar1" pref="288" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -242,14 +242,14 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jCalendar2" pref="288" max="32767" attributes="0"/>
+                          <Component id="jCalendar1" pref="288" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
               </Layout>
               <SubComponents>
-                <Component class="com.toedter.calendar.JCalendar" name="jCalendar2">
+                <Component class="com.toedter.calendar.JCalendar" name="jCalendar1">
                 </Component>
               </SubComponents>
             </Container>
