@@ -26,9 +26,7 @@ public class PRMain extends javax.swing.JFrame {
     String date = "";
     String smname = "";
     String smid = "";
-    String remarks = "";
     String itemcode = "";
-    String description = "";
     String quantity = "";
     String status = "";
 
@@ -70,9 +68,7 @@ public class PRMain extends javax.swing.JFrame {
         prop.setDate(txtDate.getText());
         prop.setSMName(txtSMName.getText());
         prop.setSMID(txtSMID.getText());
-        prop.setRemarks(txtRemarks.getText());
         prop.setItemCode(txtItemCode.getText());
-        prop.setDescription(txtDescription.getText());
         prop.setQuantity(txtQuantity.getText());
         prop.setStatus(cbStatus.getSelectedItem().toString());
     }
@@ -83,9 +79,7 @@ public class PRMain extends javax.swing.JFrame {
         txtDate.setText("");
         txtSMName.setText("");
         txtSMID.setText("");
-        txtRemarks.setText("");
         txtItemCode.setText("");
-        txtDescription.setText("");
         txtQuantity.setText("");
         cbStatus.setSelectedIndex(0);
     }
@@ -113,12 +107,8 @@ public class PRMain extends javax.swing.JFrame {
         txtSMName = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         txtSMID = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        txtRemarks = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         txtItemCode = new javax.swing.JTextField();
-        jLabel8 = new javax.swing.JLabel();
-        txtDescription = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         txtQuantity = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
@@ -142,7 +132,7 @@ public class PRMain extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 720, Short.MAX_VALUE)
+            .addGap(0, 718, Short.MAX_VALUE)
         );
 
         PRTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -150,7 +140,7 @@ public class PRMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "PR ID", "Date", "SM Name", "SM ID", "Remarks", "Item Code", "Description", "Quantity", "Status"
+                "No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Status"
             }
         ));
         PRTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -185,25 +175,10 @@ public class PRMain extends javax.swing.JFrame {
 
         txtSMID.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        jLabel6.setText("Remarks");
-
-        txtRemarks.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-
         jLabel7.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel7.setText("Item Code");
 
         txtItemCode.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-
-        jLabel8.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        jLabel8.setText("Description");
-
-        txtDescription.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        txtDescription.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDescriptionActionPerformed(evt);
-            }
-        });
 
         jLabel9.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel9.setText("Quantity");
@@ -283,13 +258,9 @@ public class PRMain extends javax.swing.JFrame {
                                 .addComponent(jLabel5)
                                 .addComponent(txtSMID, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
                         .addComponent(jLabel3)
-                        .addComponent(jLabel8)
                         .addComponent(jLabel9)
-                        .addComponent(jLabel6)
                         .addComponent(jLabel7)
-                        .addComponent(txtDescription)
                         .addComponent(txtItemCode)
-                        .addComponent(txtRemarks)
                         .addComponent(txtQuantity)
                         .addComponent(txtDate)
                         .addGroup(jPanel2Layout.createSequentialGroup()
@@ -345,35 +316,28 @@ public class PRMain extends javax.swing.JFrame {
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtSMID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtRemarks, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDescription, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel10)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel10))
+                        .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -385,11 +349,11 @@ public class PRMain extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -399,10 +363,6 @@ public class PRMain extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(1294, 727));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void txtDescriptionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescriptionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDescriptionActionPerformed
 
     private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
         // TODO add your handling code here:
@@ -455,11 +415,9 @@ public class PRMain extends javax.swing.JFrame {
             date = tmodel.getValueAt(selectrowindex, 2).toString();
             smname = tmodel.getValueAt(selectrowindex, 3).toString();
             smid = tmodel.getValueAt(selectrowindex, 4).toString();
-            remarks = tmodel.getValueAt(selectrowindex, 5).toString();
-            itemcode = tmodel.getValueAt(selectrowindex, 6).toString();
-            description = tmodel.getValueAt(selectrowindex, 7).toString();
-            quantity = tmodel.getValueAt(selectrowindex, 8).toString();
-            status = tmodel.getValueAt(selectrowindex, 9).toString();
+            itemcode = tmodel.getValueAt(selectrowindex, 5).toString();
+            quantity = tmodel.getValueAt(selectrowindex, 6).toString();
+            status = tmodel.getValueAt(selectrowindex, 7).toString();
             did = selectrowindex + 2;
 
             txtNo.setText(no);
@@ -467,9 +425,7 @@ public class PRMain extends javax.swing.JFrame {
             txtDate.setText(date);
             txtSMName.setText(smname);
             txtSMID.setText(smid);
-            txtRemarks.setText(remarks);
             txtItemCode.setText(itemcode);
-            txtDescription.setText(description);
             txtQuantity.setText(quantity);
 
             // Set the selected item in the combo box
@@ -481,9 +437,7 @@ public class PRMain extends javax.swing.JFrame {
             prop.setDate(date);
             prop.setSMName(smname);
             prop.setSMID(smid);
-            prop.setRemarks(remarks);
             prop.setItemCode(itemcode);
-            prop.setDescription(description);
             prop.setQuantity(quantity);
             prop.setStatus(status);
         }
@@ -569,21 +523,17 @@ public class PRMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton refresh_Button;
     private javax.swing.JTextField txtDate;
-    private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtItemCode;
     private javax.swing.JTextField txtNo;
     private javax.swing.JTextField txtPRID;
     private javax.swing.JTextField txtQuantity;
-    private javax.swing.JTextField txtRemarks;
     private javax.swing.JTextField txtSMID;
     private javax.swing.JTextField txtSMName;
     private javax.swing.JButton update_Button;

@@ -1,4 +1,5 @@
-No, PR ID, Date, SM Name, SM ID, Remarks, Item Code, Description, Quantity, Status
-01,01,01,01,01,01,01,01,01,Pending
-02,02,02,02,02,02,02,02,02,Pending
-03,03,03,03,03,03,03,03,03,Pending
+No, PR ID, Date, SM Name, SM ID, Item Code, Quantity, Status
+01,01,01,01,01,01,01,Pending
+02,02,02,02,02,02,02,Pending
+03,03,03,03,03,03,03,Pending
+04,04,05,supplier1,0004,05,1,Pending
