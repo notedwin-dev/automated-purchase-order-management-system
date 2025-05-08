@@ -153,7 +153,7 @@ public class Login extends javax.swing.JFrame {
     private void BtnLogin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLogin1ActionPerformed
         // TODO add your handling code here:
         String username = txtUsername.getText();
-        String password = txtPassword.getText();
+        String password = new String(txtPassword.getPassword());
         boolean found = false; // Flag to track if login details are found
 
         try {
