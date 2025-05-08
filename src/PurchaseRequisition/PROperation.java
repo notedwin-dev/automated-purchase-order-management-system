@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package auth;
+package PurchaseRequisition;
+
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -17,76 +18,115 @@ import javax.swing.JOptionPane;
  *
  * @author USER
  */
-public class User {
+public class PROperation {
 
     private int did;
-    private String id, username, password, department, role;
+    private String no, prid, date, smname, smid, itemcode, quantity, status;
 
-    public User() {
+    public PROperation() {
+
     }
 
     public void setDataID(int did) {
         this.did = did;
     }
 
-    public String getID() {
-        return id;
+    public String getNo() {
+        return no;
     }
 
-    public void setID(String id) {
-        this.id = id;
+    public void setNo(String no) {
+        this.no = no;
     }
 
-    public String getUsername() {
-        return username;
+    public String getPRID() {
+        return prid;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setPRID(String prid) {
+        this.prid = prid;
     }
 
-    public String getPassword() {
-        return password;
+    public String getDate() {
+        return date;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getDepartment() {
-        return department;
+    public String getSMName() {
+        return smname;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setSMName(String smname) {
+        this.smname = smname;
     }
 
-    public String getRole() {
-        return role;
+    public String getSMID() {
+        return smid;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setSMID(String smid) {
+        this.smid = smid;
+    }
+    
+
+    public String getItemCode() {
+        return itemcode;
+    }
+
+    public void setItemCode(String itemcode) {
+        this.itemcode = itemcode;
+    }
+
+    public String getQuntity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public void add() {
-        if (this.id == null || this.username == null || this.password == null || this.department == null || this.role == null) {
+        if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null 
+                || this.itemcode == null  || this.quantity == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
         }
 
         // ID must be numeric
-        if (!this.id.matches("\\d+")) {
+        if (!this.no.matches("\\d+")) {
             JOptionPane.showMessageDialog(null, "ID must be numeric!");
             return;
         }
 
+        // PRID must be numeric
+        if (!this.prid.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "PRID must be numeric!");
+            return;
+        }
+
+        // SMID must be numeric
+        if (!this.smid.matches("\\d+")) {
+            JOptionPane.showMessageDialog(null, "SMID must be numeric!");
+            return;
+        }
+
         // Check if ID is already used
-        try (BufferedReader reader = new BufferedReader(new FileReader("txtlogin.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/PurchaseRequisition/PR.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length > 0 && parts[0].equals(this.id)) {
+                if (parts.length > 0 && parts[0].equals(this.no)) {
                     JOptionPane.showMessageDialog(null, "This ID already exists!");
                     throw new Error();
                 }
@@ -97,8 +137,9 @@ public class User {
         }
 
         try {
-            FileWriter writer = new FileWriter("txtlogin.txt", true);
-            writer.write(this.id + "," + this.username + "," + this.password + "," + this.department + "," + this.role);
+            FileWriter writer = new FileWriter("src/PurchaseRequisition/PR.txt", true);
+            writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," 
+                    + this.itemcode  + "," + this.quantity + "," + this.status);
             writer.write(System.getProperty("line.separator"));
             writer.close();
             JOptionPane.showMessageDialog(null, "Data Added");
@@ -107,7 +148,8 @@ public class User {
         }
 
     }
-public void delete() {
+
+    public void delete() {
         if (did == 0) {
             JOptionPane.showMessageDialog(null, "Please select a row to delete!");
             return;
@@ -115,7 +157,7 @@ public void delete() {
         int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this record?", "Confirmation", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             try {
-                removeRecord("txtlogin.txt", did);
+                removeRecord("src/PurchaseRequisition/PR.txt", did);
                 JOptionPane.showMessageDialog(null, "Successfully Deleted");
                 did = 0; // Reset did after successful deletion
             } catch (Exception e) {
@@ -126,19 +168,18 @@ public void delete() {
             JOptionPane.showMessageDialog(null, "Delete operation cancelled");
             did = 0; // Reset did after cancellation
         }
-
     }
     
-
     public void update() {
-        if (this.id == null || this.username == null || this.password == null || this.department == null || this.role == null) {
+        if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null 
+                || this.itemcode == null  || this.quantity == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
         }
 
         try {
             // Create temporary file
-            File inputFile = new File("txtlogin.txt");
+            File inputFile = new File("src/PurchaseRequisition/PR.txt");
             File tempFile = new File("temp.txt");
 
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
@@ -150,10 +191,10 @@ public void delete() {
             // Read through the file line by line
             while ((currentLine = reader.readLine()) != null) {
                 String[] parts = currentLine.split(",");
-                if (parts.length >= 5 && parts[0].equals(this.id)) {
+                if (parts.length >= 5 && parts[0].equals(this.no)) {
                     // Found the record to update - write the new data
-                    writer.write(this.id + "," + this.username + "," + this.password + ","
-                            + this.department + "," + this.role);
+                    writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," 
+                    + this.itemcode  + "," + this.quantity + "," + this.status);
                     found = true;
                 } else {
                     // Write the existing record as is
@@ -166,7 +207,7 @@ public void delete() {
             reader.close();
 
             if (!found) {
-                JOptionPane.showMessageDialog(null, "Record with ID " + this.id + " not found!");
+                JOptionPane.showMessageDialog(null, "Record with No. " + this.no + " not found!");
                 tempFile.delete();
                 return;
             }
@@ -185,7 +226,11 @@ public void delete() {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
     }
-
+    
+    
+    
+    
+    
     public static void removeRecord(String fileFath, int deleteLine) {
 
         String tempFile = "temp.txt";
@@ -228,5 +273,4 @@ public void delete() {
         }
 
     }
-
 }

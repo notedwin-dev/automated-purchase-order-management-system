@@ -12,38 +12,32 @@ package itemmanagement;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.io.*;
-import java.util.*;
-import java.util.regex.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 
 public class ItemManagement implements ItemOperations {
-    //----- Basically these are passed from the UI.java -----//
+    //----- Basically these are passed from the MainPanel.java -----//
     private JTable itemTable;
-    private JTextField itemName_textbox, itemCode_textbox, category_textbox, unitPrice_textbox, retailPrice_textbox, description_textbox;
-    private JComboBox supplierID_comboBox, supplierName_comboBox;
-    private TableRowSorter<DefaultTableModel> sorter;
+    private JTextField itemName_textbox, itemCode_textbox, unitPrice_textbox, retailPrice_textbox, supplierName_textbox;
+    private JComboBox supplierID_comboBox;
+//    private TableRowSorter<DefaultTableModel> sorter;
 
     //----- As you can see this is a constructor -----//
     public ItemManagement( JTable table, 
                                             JTextField name, 
                                             JTextField code, 
                                             JComboBox supID, 
-                                            JComboBox supName, 
-                                            JTextField category, 
+                                            JTextField supName, 
                                             JTextField price, 
-                                            JTextField rprice,
-                                            JTextField desc) {
+                                            JTextField rprice ) {
         this.itemTable = table;
         this.itemName_textbox = name;
         this.itemCode_textbox = code;
         this.supplierID_comboBox = supID;
-        this.supplierName_comboBox = supName;
-        this.category_textbox = category;
+        this.supplierName_textbox = supName;
         this.unitPrice_textbox = price;
         this.retailPrice_textbox = rprice;
-        this.description_textbox = desc;
     }
     
 
@@ -54,14 +48,12 @@ public class ItemManagement implements ItemOperations {
         String name = itemName_textbox.getText().trim();
         String code = itemCode_textbox.getText().trim();
         String supID = (String) supplierID_comboBox.getSelectedItem();
-        String supName = (String) supplierName_comboBox.getSelectedItem();
-        String category = category_textbox.getText().trim();
+        String supName = supplierName_textbox.getText().trim();
         String price = unitPrice_textbox.getText().trim();
         String rprice = retailPrice_textbox.getText().trim();
-        String desc = description_textbox.getText().trim();
         
         //----- Check for errors before adding to the table -----//
-        if (name.isEmpty() || code.isEmpty()  || supID == null || supName == null || category.isEmpty() || price.isEmpty() || rprice.isEmpty() || desc.isEmpty()) {
+        if (name.isEmpty() || code.isEmpty()  || supID == null || supName.isEmpty() ||  price.isEmpty() || rprice.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill up everything before adding to table");
             return;
         }
@@ -73,10 +65,8 @@ public class ItemManagement implements ItemOperations {
                 code.equalsIgnoreCase(itemTable.getValueAt(i, 2).toString()) &&  
                 supID.equals(itemTable.getValueAt(i, 3).toString()) &&          
                 supName.equals(itemTable.getValueAt(i, 4).toString()) &&        
-                category.equalsIgnoreCase(itemTable.getValueAt(i, 5).toString()) &&
-                price.equals(itemTable.getValueAt(i, 7).toString()) &&
-                rprice.equals(itemTable.getValueAt(i, 8).toString()) &&
-                desc.equalsIgnoreCase(itemTable.getValueAt(i, 9).toString())
+                price.equals(itemTable.getValueAt(i, 6).toString()) &&
+                rprice.equals(itemTable.getValueAt(i, 7).toString()) 
             ) {
             JOptionPane.showMessageDialog(null, "This item already exists in the table.");
             return;
@@ -86,7 +76,7 @@ public class ItemManagement implements ItemOperations {
         //----- Now add the data to the table -----//
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         int rowCount = model.getRowCount() + 1;
-        model.addRow(new Object[] {rowCount, name, code, supID, supName, category, "0", price, rprice, desc, false});
+        model.addRow(new Object[] {rowCount, name, code, supID, supName, "0", price, rprice, false});
          saveTableToFile();
         JOptionPane.showMessageDialog(null, "Item added");
         
@@ -94,11 +84,9 @@ public class ItemManagement implements ItemOperations {
         itemName_textbox.setText("");
         itemCode_textbox.setText("");
         supplierID_comboBox.setSelectedIndex(-1);
-        supplierName_comboBox.setSelectedIndex(-1);
-        category_textbox.setText("");
+        supplierName_textbox.setText("");
         unitPrice_textbox.setText("");
         retailPrice_textbox.setText("");
-        description_textbox.setText("");
     }
     
     
@@ -112,14 +100,12 @@ public class ItemManagement implements ItemOperations {
             String name = itemName_textbox.getText().trim();
             String code = itemCode_textbox.getText().trim();
             String supID = (String) supplierID_comboBox.getSelectedItem();
-            String supName = (String) supplierName_comboBox.getSelectedItem();
-            String category = category_textbox.getText().trim();
+            String supName = supplierName_textbox.getText().trim();
             String price = unitPrice_textbox.getText().trim();
             String rprice = retailPrice_textbox.getText().trim();
-            String desc = description_textbox.getText().trim();
 
             //----- Check if any fields are empty -----//
-            if (name.isEmpty() || code.isEmpty() || supID == null || supName == null || category.isEmpty() || price.isEmpty() || rprice.isEmpty() || desc.isEmpty()) {
+            if (name.isEmpty() || code.isEmpty() || supID == null || supName.isEmpty() || price.isEmpty() || rprice.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Please fill up everything before updating.");
                 return;
             }
@@ -132,10 +118,8 @@ public class ItemManagement implements ItemOperations {
                     code.equalsIgnoreCase(itemTable.getValueAt(i, 2).toString()) &&
                     supID.equals(itemTable.getValueAt(i, 3).toString()) &&
                     supName.equals(itemTable.getValueAt(i, 4).toString()) &&
-                    category.equalsIgnoreCase(itemTable.getValueAt(i, 5).toString()) &&
-                    price.equals(itemTable.getValueAt(i, 7).toString()) &&
-                    rprice.equals(itemTable.getValueAt(i, 8).toString()) &&
-                    desc.equalsIgnoreCase(itemTable.getValueAt(i, 9).toString())
+                    price.equals(itemTable.getValueAt(i, 6).toString()) &&
+                    rprice.equals(itemTable.getValueAt(i, 7).toString()) 
                 ) {
                     JOptionPane.showMessageDialog(null, "This item already exists in the table.");
                     return;
@@ -147,10 +131,8 @@ public class ItemManagement implements ItemOperations {
             model.setValueAt(code, selectedRow, 2);
             model.setValueAt(supID, selectedRow, 3);
             model.setValueAt(supName, selectedRow, 4);
-            model.setValueAt(category, selectedRow, 5);
-            model.setValueAt(price, selectedRow, 7);
-            model.setValueAt(rprice, selectedRow, 8);
-            model.setValueAt(desc, selectedRow, 9);
+            model.setValueAt(price, selectedRow, 6);
+            model.setValueAt(rprice, selectedRow, 7);
 
             //----- Save to items.txt -----//
             saveTableToFile();
@@ -159,11 +141,9 @@ public class ItemManagement implements ItemOperations {
             itemName_textbox.setText("");
             itemCode_textbox.setText("");
             supplierID_comboBox.setSelectedIndex(-1);
-            supplierName_comboBox.setSelectedIndex(-1);
-            category_textbox.setText("");
+            supplierName_textbox.setText("");
             unitPrice_textbox.setText("");
             retailPrice_textbox.setText("");
-            description_textbox.setText("");
 
         } else {
             JOptionPane.showMessageDialog(null, "Please select a row to update");
@@ -204,11 +184,9 @@ public class ItemManagement implements ItemOperations {
                         itemName_textbox.setText(itemTable.getValueAt(selectedRow, 1).toString());
                         itemCode_textbox.setText(itemTable.getValueAt(selectedRow, 2).toString());
                         supplierID_comboBox.setSelectedItem(itemTable.getValueAt(selectedRow, 3).toString());
-                        supplierName_comboBox.setSelectedItem(itemTable.getValueAt(selectedRow, 4).toString());
-                        category_textbox.setText(itemTable.getValueAt(selectedRow, 5).toString());
-                        unitPrice_textbox.setText(itemTable.getValueAt(selectedRow, 7).toString());
-                        retailPrice_textbox.setText(itemTable.getValueAt(selectedRow, 8).toString());
-                        description_textbox.setText(itemTable.getValueAt(selectedRow, 9).toString());
+                        supplierName_textbox.setText(itemTable.getValueAt(selectedRow, 4).toString());
+                        unitPrice_textbox.setText(itemTable.getValueAt(selectedRow, 6).toString());
+                        retailPrice_textbox.setText(itemTable.getValueAt(selectedRow, 7).toString());
                     }
                 }
             }
@@ -222,11 +200,9 @@ public class ItemManagement implements ItemOperations {
         itemName_textbox.setText("");
         itemCode_textbox.setText("");
         supplierID_comboBox.setSelectedIndex(-1);
-        supplierName_comboBox.setSelectedIndex(-1);
-        category_textbox.setText("");
+        supplierName_textbox.setText("");
         unitPrice_textbox.setText("");
         retailPrice_textbox.setText("");
-        description_textbox.setText("");
     }
     
     
@@ -254,43 +230,6 @@ public class ItemManagement implements ItemOperations {
             JOptionPane.showMessageDialog(null, "Error occured while deleting item" + e.getMessage());
         }
     }
-
-    
-    // - - - - - - - - - - FILTER FUNCTION - - - - - - - - - - //
-    @Override 
-    public void filter(String category) {
-        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        sorter = new TableRowSorter<>(model);
-        itemTable.setRowSorter(sorter);
-
-        if (category.equals("All")) {
-            sorter.setRowFilter(null); 
-        } else {
-            sorter.setRowFilter(RowFilter.regexFilter("(?i)^" + Pattern.quote(category) + "$", 5)); 
-        }
-        
-        System.out.println("Applied filter: " + category);
-        System.out.println("Visible rows after filter: " + itemTable.getRowCount());
-    }  
-    
-    
-     // - - - - - - - - - - UPDATE FILTER MENU FUNCTION - - - - - - - - - - //
-    @Override
-    public List<String> updateFilter() {
-        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        Set<String> uniqueCategory = new HashSet<>();
-
-        for (int i = 0; i < model.getRowCount(); i++) {
-            String category = model.getValueAt(i, 5).toString().trim();
-            if (!category.isEmpty()) {
-                uniqueCategory.add(category);
-            }
-        }
-
-        List<String> categoryList = new ArrayList<>(uniqueCategory);
-        Collections.sort(categoryList);
-        return categoryList;
-    }
     
     
     // - - - - - - - - - - REFRESH FUNCTION - - - - - - - - - - //
@@ -305,7 +244,7 @@ public class ItemManagement implements ItemOperations {
             
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length == 10) { 
+                if (data.length == 8) { 
                     model.addRow(new Object[] {
                         no++,       //----- No. 
                         data[0],    
@@ -315,9 +254,7 @@ public class ItemManagement implements ItemOperations {
                         data[4],
                         data[5],
                         data[6],
-                        data[7],
-                        data[8],
-                        data[9]//----- Description
+                        data[7]     //----- DeliveryStatus
                     });
                 }
             }

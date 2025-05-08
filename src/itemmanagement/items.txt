@@ -1,1 +1,2 @@
-Dyson,DS0001,SUP0001,Nelson Tan,HOME,100,150.00,200.00,Vacuum!,false
+Dyson,DS0001,SUP0001,Nelson Tan,100,150.00,200.00,false
+Huawei,HW0001,SP0001,Supplier 1,0,3000,3500,false
