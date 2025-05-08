@@ -4,7 +4,7 @@
  */
 package auth;
 
-import java.io.FileReader;
+import java.io.InputStream;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -157,8 +157,14 @@ public class Login extends javax.swing.JFrame {
         boolean found = false; // Flag to track if login details are found
 
         try {
-            FileReader fr = new FileReader("src/auth/txtlogin.txt");
-            Scanner reader = new Scanner(fr);
+            InputStream is = getClass().getClassLoader().getResourceAsStream("auth/txtlogin.txt");
+
+            if (is == null) {
+                JOptionPane.showMessageDialog(this, "Login file not found in classpath.");
+                return;
+            }
+
+            Scanner reader = new Scanner(is);
             reader.useDelimiter("[,\n]");
 
             while (reader.hasNext()) {
