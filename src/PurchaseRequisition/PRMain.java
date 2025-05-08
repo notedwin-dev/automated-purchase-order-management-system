@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -22,13 +24,14 @@ public class PRMain extends javax.swing.JFrame {
 
     int did;
     String no = "";
-    String prid = "";
+    String prid = "PR";
     String date = "";
     String smname = "";
     String smid = "";
     String itemcode = "";
     String quantity = "";
     String status = "";
+    private DecimalFormat df = new DecimalFormat("00"); // Added DecimalFormat
 
     /**
      * Creates new form PRMain
@@ -76,13 +79,62 @@ public class PRMain extends javax.swing.JFrame {
 
     private void clear() {
         txtNo.setText("");
-        txtPRID.setText("");
+        txtPRID.setText("PR");
         txtDate.setDate(null); // This line clears the JDateChooser
         txtSMName.setText("");
         txtSMID.setText("");
         txtItemCode.setText("");
         txtQuantity.setText("");
         cbStatus.setSelectedIndex(0);
+    }
+
+    private String generateNextNo() {
+        int maxNo = 0;
+        String filePath = "src/PurchaseRequisition/PR.txt";
+        File file = new File(filePath);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String firstLine = br.readLine(); // Read the header line
+            if (firstLine != null) {
+                String[] columnNames = firstLine.split(",");
+                int noColumnIndex = -1;
+                for (int i = 0; i < columnNames.length; i++) {
+                    if (columnNames[i].trim().equals("No.")) {
+                        noColumnIndex = i;
+                        break;
+                    }
+                }
+
+                if (noColumnIndex != -1) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        String[] dataRow = line.split(",");
+                        if (dataRow.length > noColumnIndex) {
+                            try {
+                                int currentNo = Integer.parseInt(dataRow[noColumnIndex].trim());
+                                if (currentNo > maxNo) {
+                                    maxNo = currentNo;
+                                }
+                            } catch (NumberFormatException e) {
+                                // Handle cases where 'No.' might not be a valid number
+                                System.err.println("Warning: Non-numeric value found in 'No.' column: " + dataRow[noColumnIndex]);
+                            }
+                        }
+                    }
+                } else {
+                    System.err.println("Error: 'No.' column not found in the header.");
+                     // Default to 01 if header is incorrect
+                }
+            } else {
+                return "01"; // File is empty, start with 01
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Error reading PR file: " + e.getMessage());
+            e.printStackTrace();
+            return "01"; // Return a default value in case of an error
+        }
+
+        return df.format(maxNo + 1); // Use DecimalFormat to format the number
     }
 
     /**
@@ -141,7 +193,7 @@ public class PRMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "PR ID", "Date", "SM Name", "SM ID", "Remarks", "Item Code", "Description", "Quantity", "Status"
+                "No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Status"
             }
         ));
         PRTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -160,6 +212,7 @@ public class PRMain extends javax.swing.JFrame {
         jLabel2.setText("PR ID");
 
         txtPRID.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtPRID.setText("PR");
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel3.setText("Date");
@@ -381,12 +434,18 @@ public class PRMain extends javax.swing.JFrame {
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
         //Add Data Button
         try {
+            // Generate the automated 'No.'
+            String nextNo = generateNextNo();
+            txtNo.setText(nextNo); // Set the automated 'No.' in the text field
+
             getData();
             prop.add();
             tableLoad();
             clear();
         } catch (Exception e) {
-
+            JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
+            // Good practice to print the error for debugging
+            e.printStackTrace();
         }
     }//GEN-LAST:event_add_ButtonActionPerformed
 
@@ -420,18 +479,20 @@ public class PRMain extends javax.swing.JFrame {
             date = tmodel.getValueAt(selectrowindex, 2).toString();
             smname = tmodel.getValueAt(selectrowindex, 3).toString();
             smid = tmodel.getValueAt(selectrowindex, 4).toString();
-            itemcode = tmodel.getValueAt(selectrowindex, 6).toString();
-            quantity = tmodel.getValueAt(selectrowindex, 8).toString();
-            status = tmodel.getValueAt(selectrowindex, 9).toString();
+            itemcode = tmodel.getValueAt(selectrowindex, 5).toString();
+            quantity = tmodel.getValueAt(selectrowindex, 6).toString();
+            status = tmodel.getValueAt(selectrowindex, 7).toString();
             did = selectrowindex + 2;
 
+            txtNo.setText(no);
+            txtPRID.setText(prid);
             // Parse the date string into a java.util.Date object
             try {
                 java.util.Date parsedDate = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(date);
                 txtDate.setDate(parsedDate); // Use the parsed Date object
             } catch (java.text.ParseException e) {
                 JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
-                e.printStackTrace(); // It's good practice to print the stack trace for debugging
+                // It's good practice to print the stack trace for debugging
             }
             txtSMName.setText(smname);
             txtSMID.setText(smid);
@@ -439,6 +500,7 @@ public class PRMain extends javax.swing.JFrame {
             txtQuantity.setText(quantity);
             // Set the selected item in the combo box
             cbStatus.setSelectedItem(status);
+
             prop.setDataID(did);
             prop.setNo(no);
             prop.setPRID(prid);

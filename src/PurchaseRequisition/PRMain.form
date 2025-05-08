@@ -208,31 +208,19 @@
             <Component class="javax.swing.JTable" name="PRTable">
               <Properties>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                  <Table columnCount="10" rowCount="0">
+                  <Table columnCount="8" rowCount="0">
                     <Column editable="true" title="No." type="java.lang.Object"/>
                     <Column editable="true" title="PR ID" type="java.lang.Object"/>
                     <Column editable="true" title="Date" type="java.lang.Object"/>
                     <Column editable="true" title="SM Name" type="java.lang.Object"/>
                     <Column editable="true" title="SM ID" type="java.lang.Object"/>
-                    <Column editable="true" title="Remarks" type="java.lang.Object"/>
                     <Column editable="true" title="Item Code" type="java.lang.Object"/>
-                    <Column editable="true" title="Description" type="java.lang.Object"/>
                     <Column editable="true" title="Quantity" type="java.lang.Object"/>
                     <Column editable="true" title="Status" type="java.lang.Object"/>
                   </Table>
                 </Property>
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                   <TableColumnModel selectionModel="0">
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                      <Title/>
-                      <Editor/>
-                      <Renderer/>
-                    </Column>
-                    <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                      <Title/>
-                      <Editor/>
-                      <Renderer/>
-                    </Column>
                     <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                       <Title/>
                       <Editor/>
@@ -313,6 +301,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Arial" size="18" style="0"/>
             </Property>
+            <Property name="text" type="java.lang.String" value="PR"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel3">

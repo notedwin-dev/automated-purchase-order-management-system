@@ -109,18 +109,6 @@ public class PROperation {
             return;
         }
 
-        // PRID must be numeric
-        if (!this.prid.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "PRID must be numeric!");
-            return;
-        }
-
-        // SMID must be numeric
-        if (!this.smid.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "SMID must be numeric!");
-            return;
-        }
-
         // Check if ID is already used
         try (BufferedReader reader = new BufferedReader(new FileReader("src/PurchaseRequisition/PR.txt"))) {
             String line;
@@ -256,7 +244,7 @@ public class PROperation {
                 }
 
             }
-
+            
             pw.flush();
             pw.close();
             fr.close();
