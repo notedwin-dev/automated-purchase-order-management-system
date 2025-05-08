@@ -154,32 +154,35 @@ public class Login extends javax.swing.JFrame {
         // TODO add your handling code here:
         String username = txtUsername.getText();
         String password = txtPassword.getText();
-        
-        try{
+        boolean found = false; // Flag to track if login details are found
+
+        try {
             FileReader fr = new FileReader("txtlogin.txt");
-            Scanner reader =  new Scanner(fr);
+            Scanner reader = new Scanner(fr);
             reader.useDelimiter("[,\n]");
-            
-            while(reader.hasNext())
-            {
-                String un=reader.next();
-                String pw=reader.next();
-                if(username.equals(un.trim()) && password.equals(pw.trim()))
-                    
-                {
+
+            while (reader.hasNext()) {
+                String un = reader.next().trim(); // Trim whitespace for accurate comparison
+                String pw = reader.next().trim(); // Trim whitespace for accurate comparison
+
+                if (username.equals(un) && password.equals(pw)) {
+                    found = true;
                     reader.close();
                     Test t = new Test();
                     t.setVisible(true);
                     this.dispose();
-                }else {
-                    JOptionPane.showMessageDialog(this, "Invaild Details");
+                    break; // Exit the loop once credentials are found
                 }
             }
-            
-        }catch(Exception e){
-            
+            reader.close(); // Close the reader after the loop
+
+            if (!found) {
+                JOptionPane.showMessageDialog(this, "Invalid Details");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error reading login file: " + e.getMessage()); // Display error message
         }
-        
     }//GEN-LAST:event_BtnLogin1ActionPerformed
 
     /**
