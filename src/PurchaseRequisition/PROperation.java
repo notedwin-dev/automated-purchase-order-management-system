@@ -96,41 +96,44 @@ public class PROperation {
         this.status = status;
     }
 
+    private String generateNextNo() {
+        int nextNo = 1;
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/PurchaseRequisition/PR.txt"))) {
+            String lastLine = null;
+            String currentLine;
+            while ((currentLine = reader.readLine()) != null) {
+                lastLine = currentLine;
+            }
+            if (lastLine != null) {
+                String[] parts = lastLine.split(",");
+                if (parts.length > 0 && parts[0].matches("\\d+")) {
+                    nextNo = Integer.parseInt(parts[0]) + 1;
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading file for generating No.: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error parsing No. from file: " + e.getMessage());
+        }
+        return String.format("%04d", nextNo); // Format to 4 digits with leading zeros
+    }
+    
     public void add() {
-        if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null 
+        this.no = generateNextNo(); // Generate the "No." automatically
+
+        if (this.prid == null || this.date == null || this.smname == null || this.smid == null
                 || this.itemcode == null  || this.quantity == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
         }
 
-        // ID must be numeric
-        if (!this.no.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "ID must be numeric!");
-            return;
-        }
-
-        // Check if ID is already used
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/PurchaseRequisition/PR.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length > 0 && parts[0].equals(this.no)) {
-                    JOptionPane.showMessageDialog(null, "This ID already exists!");
-                    throw new Error();
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error reading file: " + e.getMessage());
-            return;
-        }
-
         try {
             FileWriter writer = new FileWriter("src/PurchaseRequisition/PR.txt", true);
-            writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," 
+            writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + ","
                     + this.itemcode  + "," + this.quantity + "," + this.status);
             writer.write(System.getProperty("line.separator"));
             writer.close();
-            JOptionPane.showMessageDialog(null, "Data Added");
+            JOptionPane.showMessageDialog(null, "Data Added with No.: " + this.no);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }

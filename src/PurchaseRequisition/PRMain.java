@@ -27,7 +27,7 @@ public class PRMain extends javax.swing.JFrame {
     String prid = "PR";
     String date = "";
     String smname = "";
-    String smid = "";
+    String smid = "SM";
     String itemcode = "";
     String quantity = "";
     String status = "";
@@ -82,60 +82,12 @@ public class PRMain extends javax.swing.JFrame {
         txtPRID.setText("PR");
         txtDate.setDate(null); // This line clears the JDateChooser
         txtSMName.setText("");
-        txtSMID.setText("");
+        txtSMID.setText("SM");
         txtItemCode.setText("");
         txtQuantity.setText("");
         cbStatus.setSelectedIndex(0);
     }
 
-    private String generateNextNo() {
-        int maxNo = 0;
-        String filePath = "src/PurchaseRequisition/PR.txt";
-        File file = new File(filePath);
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String firstLine = br.readLine(); // Read the header line
-            if (firstLine != null) {
-                String[] columnNames = firstLine.split(",");
-                int noColumnIndex = -1;
-                for (int i = 0; i < columnNames.length; i++) {
-                    if (columnNames[i].trim().equals("No.")) {
-                        noColumnIndex = i;
-                        break;
-                    }
-                }
-
-                if (noColumnIndex != -1) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String[] dataRow = line.split(",");
-                        if (dataRow.length > noColumnIndex) {
-                            try {
-                                int currentNo = Integer.parseInt(dataRow[noColumnIndex].trim());
-                                if (currentNo > maxNo) {
-                                    maxNo = currentNo;
-                                }
-                            } catch (NumberFormatException e) {
-                                // Handle cases where 'No.' might not be a valid number
-                                System.err.println("Warning: Non-numeric value found in 'No.' column: " + dataRow[noColumnIndex]);
-                            }
-                        }
-                    }
-                } else {
-                    System.err.println("Error: 'No.' column not found in the header.");
-                     // Default to 01 if header is incorrect
-                }
-            } else {
-                return "01"; // File is empty, start with 01
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error reading PR file: " + e.getMessage());
-            e.printStackTrace();
-            return "01"; // Return a default value in case of an error
-        }
-
-        return df.format(maxNo + 1); // Use DecimalFormat to format the number
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -226,6 +178,7 @@ public class PRMain extends javax.swing.JFrame {
         jLabel5.setText("SM ID");
 
         txtSMID.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtSMID.setText("SM");
 
         jLabel7.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel7.setText("Item Code");
@@ -434,18 +387,12 @@ public class PRMain extends javax.swing.JFrame {
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
         //Add Data Button
         try {
-            // Generate the automated 'No.'
-            String nextNo = generateNextNo();
-            txtNo.setText(nextNo); // Set the automated 'No.' in the text field
-
             getData();
             prop.add();
             tableLoad();
             clear();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
-            // Good practice to print the error for debugging
-            e.printStackTrace();
         }
     }//GEN-LAST:event_add_ButtonActionPerformed
 
