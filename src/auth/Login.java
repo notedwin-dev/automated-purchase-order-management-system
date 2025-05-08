@@ -157,7 +157,7 @@ public class Login extends javax.swing.JFrame {
         boolean found = false; // Flag to track if login details are found
 
         try {
-            FileReader fr = new FileReader("txtlogin.txt");
+            FileReader fr = new FileReader("src/auth/txtlogin.txt");
             Scanner reader = new Scanner(fr);
             reader.useDelimiter("[,\n]");
 
