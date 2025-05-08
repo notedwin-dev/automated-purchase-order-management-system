@@ -8,6 +8,8 @@ import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.text.DecimalFormat;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -22,15 +24,14 @@ public class PRMain extends javax.swing.JFrame {
 
     int did;
     String no = "";
-    String prid = "";
+    String prid = "PR";
     String date = "";
     String smname = "";
-    String smid = "";
-    String remarks = "";
+    String smid = "SM";
     String itemcode = "";
-    String description = "";
     String quantity = "";
     String status = "";
+    private DecimalFormat df = new DecimalFormat("00"); // Added DecimalFormat
 
     /**
      * Creates new form PRMain
@@ -67,24 +68,26 @@ public class PRMain extends javax.swing.JFrame {
     private void getData() {
         prop.setNo(txtNo.getText());
         prop.setPRID(txtPRID.getText());
-        prop.setDate(txtDate.getText());
+        prop.setDate(((com.toedter.calendar.JTextFieldDateEditor) txtDate.getDateEditor().getUiComponent()).getText());
         prop.setSMName(txtSMName.getText());
         prop.setSMID(txtSMID.getText());
         prop.setItemCode(txtItemCode.getText());
         prop.setQuantity(txtQuantity.getText());
         prop.setStatus(cbStatus.getSelectedItem().toString());
+
     }
 
     private void clear() {
         txtNo.setText("");
-        txtPRID.setText("");
-        txtDate.setText("");
+        txtPRID.setText("PR");
+        txtDate.setDate(null); // This line clears the JDateChooser
         txtSMName.setText("");
-        txtSMID.setText("");
+        txtSMID.setText("SM");
         txtItemCode.setText("");
         txtQuantity.setText("");
         cbStatus.setSelectedIndex(0);
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -104,7 +107,6 @@ public class PRMain extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtPRID = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txtDate = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         txtSMName = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -120,6 +122,7 @@ public class PRMain extends javax.swing.JFrame {
         delete_Button = new javax.swing.JButton();
         clean_Button = new javax.swing.JButton();
         update_Button = new javax.swing.JButton();
+        txtDate = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -142,7 +145,7 @@ public class PRMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "PR ID", "Date", "SM Name", "SM ID", "Remarks", "Item Code", "Description", "Quantity", "Status"
+                "No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Status"
             }
         ));
         PRTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -161,11 +164,10 @@ public class PRMain extends javax.swing.JFrame {
         jLabel2.setText("PR ID");
 
         txtPRID.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtPRID.setText("PR");
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel3.setText("Date");
-
-        txtDate.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel4.setText("SM Name");
@@ -176,6 +178,7 @@ public class PRMain extends javax.swing.JFrame {
         jLabel5.setText("SM ID");
 
         txtSMID.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtSMID.setText("SM");
 
         jLabel7.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel7.setText("Item Code");
@@ -243,6 +246,9 @@ public class PRMain extends javax.swing.JFrame {
             }
         });
 
+        txtDate.setDateFormatString("yyyy-MM-dd");
+        txtDate.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -252,29 +258,27 @@ public class PRMain extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel4)
-                                        .addComponent(txtSMName, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(10, 10, 10)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel5)
-                                        .addComponent(txtSMID, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel9)
-                                .addComponent(jLabel7)
-                                .addComponent(txtItemCode)
-                                .addComponent(txtQuantity)
-                                .addComponent(txtDate)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel1)
-                                        .addComponent(txtNo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGap(10, 10, 10)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jLabel2)
-                                        .addComponent(txtPRID, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(txtSMName, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(txtSMID, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel7)
+                            .addComponent(txtItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(txtNo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel2)
+                                    .addComponent(txtPRID, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(jLabel10)
                             .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -287,7 +291,10 @@ public class PRMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -309,8 +316,8 @@ public class PRMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
@@ -385,7 +392,7 @@ public class PRMain extends javax.swing.JFrame {
             tableLoad();
             clear();
         } catch (Exception e) {
-
+            JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
         }
     }//GEN-LAST:event_add_ButtonActionPerformed
 
@@ -419,26 +426,32 @@ public class PRMain extends javax.swing.JFrame {
             date = tmodel.getValueAt(selectrowindex, 2).toString();
             smname = tmodel.getValueAt(selectrowindex, 3).toString();
             smid = tmodel.getValueAt(selectrowindex, 4).toString();
-            itemcode = tmodel.getValueAt(selectrowindex, 6).toString();
-            quantity = tmodel.getValueAt(selectrowindex, 8).toString();
-            status = tmodel.getValueAt(selectrowindex, 9).toString();
+            itemcode = tmodel.getValueAt(selectrowindex, 5).toString();
+            quantity = tmodel.getValueAt(selectrowindex, 6).toString();
+            status = tmodel.getValueAt(selectrowindex, 7).toString();
             did = selectrowindex + 2;
 
             txtNo.setText(no);
             txtPRID.setText(prid);
-            txtDate.setText(date);
+            // Parse the date string into a java.util.Date object
+            try {
+                java.util.Date parsedDate = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(date);
+                txtDate.setDate(parsedDate); // Use the parsed Date object
+            } catch (java.text.ParseException e) {
+                JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
+                // It's good practice to print the stack trace for debugging
+            }
             txtSMName.setText(smname);
             txtSMID.setText(smid);
             txtItemCode.setText(itemcode);
             txtQuantity.setText(quantity);
-
             // Set the selected item in the combo box
             cbStatus.setSelectedItem(status);
 
             prop.setDataID(did);
             prop.setNo(no);
             prop.setPRID(prid);
-            prop.setDate(date);
+            prop.setDate(date); // Keep the String for your `prop` object if that's what it expects
             prop.setSMName(smname);
             prop.setSMID(smid);
             prop.setItemCode(itemcode);
@@ -477,7 +490,6 @@ public class PRMain extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e);
         }
-
     }
 
     /**
@@ -533,7 +545,7 @@ public class PRMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton refresh_Button;
-    private javax.swing.JTextField txtDate;
+    private com.toedter.calendar.JDateChooser txtDate;
     private javax.swing.JTextField txtItemCode;
     private javax.swing.JTextField txtNo;
     private javax.swing.JTextField txtPRID;
