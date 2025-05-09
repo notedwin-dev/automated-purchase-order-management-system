@@ -424,7 +424,7 @@ public class Register extends javax.swing.JFrame {
 //        String columName[] = {"Id" , "Name"};
 //        model = new DefaultTableModel(columName, 2);
 
-        String filePath = "txtlogin.txt";
+        String filePath = "src/auth/txtlogin.txt";
         File file = new File(filePath);
 
         try {
