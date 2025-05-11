@@ -8,15 +8,13 @@ package itemmanagement;
  *
  * @author nixon
  */
-import java.util.*;
-//----- Act as an Interface to enter add(), delete(), clean(), update(), filter(), refresh() -----//
+
+//----- Act as an Interface to enter add(), delete(), clean(), filter(), refresh() -----//
 // ----- ABSTRACTION used ----- //
 public interface ItemOperations {
     void add();
     void update();
     void clean();
     void delete();
-    void filter(String category);
-    List<String> updateFilter();
     void refresh();
 }
