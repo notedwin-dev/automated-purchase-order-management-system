@@ -1,4 +1,2 @@
 No, PR ID, Date, SM Name, SM ID, Item Code, Quantity, Status
-01,01,01,01,01,01,01,Pending
-02,02,02,02,02,02,02,Pending
-03,03,03,03,03,03,03,Pending
+1, PR0001, 25-3-2025, Simon, SM0001, DY0001, 20, PENDING

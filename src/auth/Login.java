@@ -4,7 +4,7 @@
  */
 package auth;
 
-import java.io.FileReader;
+import java.io.InputStream;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -153,33 +153,42 @@ public class Login extends javax.swing.JFrame {
     private void BtnLogin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLogin1ActionPerformed
         // TODO add your handling code here:
         String username = txtUsername.getText();
-        String password = txtPassword.getText();
-        
-        try{
-            FileReader fr = new FileReader("txtlogin.txt");
-            Scanner reader =  new Scanner(fr);
+        String password = new String(txtPassword.getPassword());
+        boolean found = false; // Flag to track if login details are found
+
+        try {
+            InputStream is = getClass().getClassLoader().getResourceAsStream("auth/txtlogin.txt");
+
+            if (is == null) {
+                JOptionPane.showMessageDialog(this, "Login file not found in classpath.");
+                return;
+            }
+
+            Scanner reader = new Scanner(is);
             reader.useDelimiter("[,\n]");
-            
-            while(reader.hasNext())
-            {
-                String un=reader.next();
-                String pw=reader.next();
-                if(username.equals(un.trim()) && password.equals(pw.trim()))
-                    
-                {
+
+            while (reader.hasNext()) {
+                String un = reader.next().trim(); // Trim whitespace for accurate comparison
+                String pw = reader.next().trim(); // Trim whitespace for accurate comparison
+
+                if (username.equals(un) && password.equals(pw)) {
+                    found = true;
                     reader.close();
                     Test t = new Test();
                     t.setVisible(true);
                     this.dispose();
-                }else {
-                    JOptionPane.showMessageDialog(this, "Invaild Details");
+                    break; // Exit the loop once credentials are found
                 }
             }
-            
-        }catch(Exception e){
-            
+            reader.close(); // Close the reader after the loop
+
+            if (!found) {
+                JOptionPane.showMessageDialog(this, "Invalid Details");
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error reading login file: " + e.getMessage()); // Display error message
         }
-        
     }//GEN-LAST:event_BtnLogin1ActionPerformed
 
     /**
