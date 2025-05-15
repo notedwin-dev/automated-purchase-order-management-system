@@ -65,7 +65,7 @@ public class DailySalesManagement {
             String[] data = line.split(",");
             if(data.length >= 6 && data[1].equals(itemCode)){
                 try{
-                    return Double.parseDouble(data[5].trim());
+                    return Double.parseDouble(data[6].trim());
                 }catch(NumberFormatException e){
                     e.printStackTrace();
                 }
