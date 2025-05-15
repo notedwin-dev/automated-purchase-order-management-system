@@ -15,7 +15,7 @@ import javax.swing.table.*;
 
 public class SupplierManagement implements SupplierOperations{
     
-    private static final String filePath = "C:\\Users\\User\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\SupplierManagement\\Suppliers.txt";
+    private static final String filePath = "src/SupplierManagement/Suppliers.txt";
     
     private JTable SupplierTable;
     private JTextField SupplierID_TextField, SupplierName_TextField, SupplierContact_TextField, 
