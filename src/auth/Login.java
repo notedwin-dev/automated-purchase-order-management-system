@@ -4,13 +4,16 @@
  */
 package auth;
 
+import dashboard.Dashboard;
 import java.io.InputStream;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
+import roles.SecurityUtils;
 
 /**
  *
  * @author USER
+ * @author notedwin-dev
  */
 public class Login extends javax.swing.JFrame {
 
@@ -148,10 +151,9 @@ public class Login extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
-
+    }// </editor-fold>//GEN-END:initComponents    
+    
     private void BtnLogin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLogin1ActionPerformed
-        // TODO add your handling code here:
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
         boolean found = false; // Flag to track if login details are found
@@ -167,22 +169,38 @@ public class Login extends javax.swing.JFrame {
             Scanner reader = new Scanner(is);
             reader.useDelimiter("[,\n]");
 
+            User loggedInUser = null;
+            
             while (reader.hasNext()) {
+                String id = reader.next().trim();
                 String un = reader.next().trim(); // Trim whitespace for accurate comparison
                 String pw = reader.next().trim(); // Trim whitespace for accurate comparison
+                String department = reader.hasNext() ? reader.next().trim() : "";
+                String role = reader.hasNext() ? reader.next().trim() : "";
 
                 if (username.equals(un) && password.equals(pw)) {
                     found = true;
-                    reader.close();
-                    Test t = new Test();
-                    t.setVisible(true);
-                    this.dispose();
+                    // Create and set up the user object
+                    loggedInUser = new User();
+                    loggedInUser.setID(id);
+                    loggedInUser.setUsername(un);
+                    loggedInUser.setPassword(pw);
+                    loggedInUser.setDepartment(department);
+                    loggedInUser.setRole(role);
                     break; // Exit the loop once credentials are found
                 }
             }
             reader.close(); // Close the reader after the loop
-
-            if (!found) {
+            
+            if (found && loggedInUser != null) {
+                // Set the current user in SecurityUtils
+                SecurityUtils.setCurrentUser(loggedInUser);
+                
+                // Open dashboard with the logged in user
+                Dashboard dashboard = new Dashboard(loggedInUser);
+                dashboard.setVisible(true);
+                this.dispose();
+            } else {
                 JOptionPane.showMessageDialog(this, "Invalid Details");
             }
 

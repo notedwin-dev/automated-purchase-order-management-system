@@ -1,8 +1,8 @@
 ID , Username , Password , Department , Role
-0,Admin,admin,Admintrative,Item 1
-1,2,1,1,Item 1
-2,qd,qwe,wqr,Item 2
-3,asd,as,ae,Item 2
-4,weq,qss,asdd,Item 3
-5,sdf,s,df,Item 3
-6,dsf,sdsd,dsfij,Item 2
+0,Admin,admin,Admintrative,Administrator
+1,2,1,1,Sales Manager
+2,qd,qwe,wqr,Sales Manager
+3,asd,as,ae,Inventory Manager
+4,weq,qss,asdd,Purchase Manager
+5,sdf,s,df,Purchase Manager
+6,dsf,sdsd,dsfij,Finance Manager

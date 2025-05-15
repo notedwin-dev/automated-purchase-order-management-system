@@ -8,13 +8,17 @@ import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import roles.RoleFactory;
 
 /**
  *
  * @author USER
+ * @author notedwin-dev
  */
 public class Register extends javax.swing.JFrame {
 
@@ -33,6 +37,7 @@ public class Register extends javax.swing.JFrame {
     public Register() {
         initComponents();
         tableLoad();
+        
         ImageIcon addIcon = new ImageIcon(getClass().getResource("/resources/icons/Add.png"));
         Image scaled_add = addIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon resizedAdd = new ImageIcon(scaled_add);
@@ -156,7 +161,13 @@ public class Register extends javax.swing.JFrame {
         txtID.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
 
         cbRole.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
-        cbRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {
+            RoleFactory.ADMINISTRATOR,
+            RoleFactory.SALES_MANAGER,
+            RoleFactory.PURCHASE_MANAGER,
+            RoleFactory.INVENTORY_MANAGER,
+            RoleFactory.FINANCE_MANAGER
+        }));
 
         UserTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -354,7 +365,6 @@ public class Register extends javax.swing.JFrame {
     }//GEN-LAST:event_update_ButtonActionPerformed
 
     private void UserTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_UserTableMouseClicked
-        // TODO add your handling code here:
         DefaultTableModel tmodel = (DefaultTableModel) UserTable.getModel();
         int selectrowindex = UserTable.getSelectedRow();
 
@@ -423,9 +433,26 @@ public class Register extends javax.swing.JFrame {
         model.setRowCount(0);
 //        String columName[] = {"Id" , "Name"};
 //        model = new DefaultTableModel(columName, 2);
-
+        
         String filePath = "src/auth/txtlogin.txt";
         File file = new File(filePath);
+        
+        // Create the file if it doesn't exist
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs(); // Create directories if they don't exist
+                file.createNewFile(); // Create the file
+                // Create header row for the file
+                FileWriter writer = new FileWriter(file);
+                writer.write("ID,Username,Password,Department,Role");
+                writer.write(System.getProperty("line.separator"));
+                writer.close();
+                JOptionPane.showMessageDialog(null, "Created new user database file.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error creating file: " + e.getMessage());
+                return;
+            }
+        }
 
         try {
 
