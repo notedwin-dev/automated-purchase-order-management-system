@@ -1,2 +1,1 @@
-No, PR ID, Date, SM Name, SM ID, Item Code, Quantity, Status
-1, PR0001, 25-3-2025, Simon, SM0001, DY0001, 20, PENDING
+PR0001, 25-3-2025, Simon, SM0001, {AppleKorean, AppleJapan}, {20, 10}, 04-04-2025, PENDING

@@ -11,7 +11,7 @@ import javax.swing.*;
 public class PO_Panel extends javax.swing.JFrame {
 
     private DefaultTableModel tmodel;
-    private PO_Management poManage;
+
     
     public PO_Panel() {
         initComponents();
@@ -22,7 +22,7 @@ public class PO_Panel extends javax.swing.JFrame {
         Logo_lbl.setIcon(resizedLogo);
 
         tmodel = new DefaultTableModel(
-            new Object[]{"No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Status"}, 0  ) {
+            new Object[]{"No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Expected Delivery Date", "Status"}, 0  ) {
             
         @Override
         public boolean isCellEditable(int row, int column) {
@@ -57,13 +57,74 @@ public class PO_Panel extends javax.swing.JFrame {
         
         //----- Link model to table -----//
         prTable.setModel(tmodel); 
-        //----- Initialize with the table -----//
-        poManage = new PO_Management(prTable); 
-        
-        // - - - - - LOAD DATA INTO TABLE - - - - - //
-        poManage.refresh();
-    }
 
+//        refreshTable();
+        setColumnWidth();
+
+    }
+    
+    // ========== APPLY CUSTOM RENDERER ========== // 
+    public void applyCustomRenderer() {
+        prTable.getColumnModel().getColumn(5).setCellRenderer(new MultiLineRenderer());
+        prTable.getColumnModel().getColumn(6).setCellRenderer(new MultiLineRenderer());
+        }
+
+            public class MultiLineRenderer extends JTextArea implements TableCellRenderer {
+                public MultiLineRenderer() {
+                    setLineWrap(true);
+                    setWrapStyleWord(true);
+                    setOpaque(true);
+                }
+                
+                // ---------- Adjust the row height to fit the data ---------- //
+                @Override
+                public Component getTableCellRendererComponent(JTable table, Object value,
+                        boolean isSelected, boolean hasFocus, int row, int column) {
+                    setText(value == null ? "" : value.toString().trim());
+                    setFont(table.getFont());
+
+                    int lineHeight = getFontMetrics(getFont()).getHeight();
+                    int lines = value.toString().split("\n").length;
+                    int preferredHeight = Math.max(lineHeight * lines, 20); // ----- Set default height = 20
+
+                    if (table.getRowHeight(row) != preferredHeight) {
+                        table.setRowHeight(row, preferredHeight);
+                    }
+
+                    setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+                    setForeground(isSelected ? table.getSelectionForeground() : table.getForeground());
+
+                    return this;
+             }
+    }
+    
+            
+    // ========== LOAD DATA INTO TABLE ========== //   
+//    public void refreshTable() {
+//        DefaultTableModel tmodel = (DefaultTableModel) prTable.getModel();
+//        tmodel.setRowCount(0); // Clear table
+//
+//        for (Object[] row : poManage.getTableData()) {
+//            tmodel.addRow(row);
+//        }
+//
+//        applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
+//    }
+    
+    
+    // ========== ADJUST TABLE COLUMN SIZE ========== //   
+    public void setColumnWidth() {
+        prTable.getColumnModel().getColumn(0).setPreferredWidth(40);   //-- "No."
+        prTable.getColumnModel().getColumn(1).setPreferredWidth(90);   //-- "PR ID"
+        prTable.getColumnModel().getColumn(2).setPreferredWidth(90);   //-- "Date"
+        prTable.getColumnModel().getColumn(3).setPreferredWidth(100); //-- "SM Name"
+        prTable.getColumnModel().getColumn(4).setPreferredWidth(90);   //-- "SM ID"
+        prTable.getColumnModel().getColumn(5).setPreferredWidth(90);   //-- "Item Code"
+        prTable.getColumnModel().getColumn(6).setPreferredWidth(90);   //-- "Quantity"
+        prTable.getColumnModel().getColumn(7).setPreferredWidth(130); //-- "Expected Delivery Date"
+        prTable.getColumnModel().getColumn(8).setPreferredWidth(90);   //-- "Status"
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -154,11 +215,11 @@ public class PO_Panel extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Status"
+                "No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Expected Delivery Date", "Status"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -243,6 +304,11 @@ public class PO_Panel extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_prTableMouseClicked
 
+    
+ 
+    
+    
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  ENDS HERE  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
     /**
      * @param args the command line arguments
      */
