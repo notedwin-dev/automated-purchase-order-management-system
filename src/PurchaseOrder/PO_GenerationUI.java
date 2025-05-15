@@ -261,6 +261,7 @@ public class PO_GenerationUI extends javax.swing.JFrame {
         new PO_Panel().setVisible(true);
     }
     
+     //----- Double click the table row to add the data to the textBox / comboBox -----//
     public final void doubleClickRow() {
         jTable1.addMouseListener(new MouseAdapter() {
             @Override
