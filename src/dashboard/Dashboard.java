@@ -62,7 +62,7 @@ public class Dashboard extends javax.swing.JFrame {
         }
         
         // Add buttons based on permissions
-        addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.Main");
+        addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
         addFeatureButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
         addFeatureButtonIfPermitted(Feature.SALES_ENTRY, "Daily Sales", "DailySalesManagement.DailySalesUI");
         addFeatureButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Purchase Requisition", "PurchaseRequisition.PRMain");
