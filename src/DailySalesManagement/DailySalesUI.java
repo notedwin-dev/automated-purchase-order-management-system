@@ -70,7 +70,7 @@ public class DailySalesUI extends javax.swing.JFrame {
                 String selectedCode = (String) jComboBox1.getSelectedItem();
                 if (selectedCode != null) {
                     String itemName = dailySalesManagement.getItemNameByItemCode(selectedCode);
-                    jTextField2.setText(itemName); // 
+                    jTextField2.setText(itemName); 
                 }
             }
         });
