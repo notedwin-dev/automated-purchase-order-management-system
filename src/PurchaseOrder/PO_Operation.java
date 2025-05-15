@@ -9,5 +9,5 @@ package PurchaseOrder;
  * @author nixon
  */
 public interface PO_Operation {
-    void refresh();
+    
 }

@@ -12,15 +12,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.swing.JOptionPane;
+import roles.Role;
+import roles.RoleFactory;
 
 /**
  *
  * @author USER
+ * @author notedwin-dev
  */
 public class User {
 
     private int did;
     private String id, username, password, department, role;
+    private Role userRole; // Role object from the roles package
 
     public User() {
     }
@@ -59,14 +63,63 @@ public class User {
 
     public void setDepartment(String department) {
         this.department = department;
-    }
-
-    public String getRole() {
+    }    public String getRole() {
         return role;
     }
 
     public void setRole(String role) {
         this.role = role;
+        this.userRole = roles.RoleFactory.createRole(role);
+    }
+    
+    /**
+     * Gets the Role object for this user
+     * 
+     * @return The Role object
+     */
+    public Role getUserRole() {
+        if (userRole == null && role != null) {
+            userRole = roles.RoleFactory.createRole(role);
+        }
+        return userRole;
+    }
+    
+    /**
+     * Checks if the user has access to a specific feature
+     * 
+     * @param featureName The name of the feature
+     * @return True if the user has access, false otherwise
+     */
+    public boolean hasAccess(String featureName) {
+        return getUserRole() != null && getUserRole().hasAccess(featureName);
+    }
+    
+    /**
+     * Checks if the user can modify a specific feature
+     * 
+     * @param featureName The name of the feature
+     * @return True if the user can modify, false otherwise
+     */
+    public boolean canModify(String featureName) {
+        return getUserRole() != null && getUserRole().canModify(featureName);
+    }
+
+    /**
+     * Get the proper path to the user login file
+     * 
+     * @return The path to the login file
+     */
+    private String getLoginFilePath() {
+        return "src/auth/txtlogin.txt";
+    }
+    
+    /**
+     * Get the proper path to the temporary file used during updates
+     * 
+     * @return The path to the temporary file
+     */
+    private String getTempFilePath() {
+        return "src/auth/temp.txt";
     }
 
     public void add() {
@@ -79,10 +132,8 @@ public class User {
         if (!this.id.matches("\\d+")) {
             JOptionPane.showMessageDialog(null, "ID must be numeric!");
             return;
-        }
-
-        // Check if ID is already used
-        try (BufferedReader reader = new BufferedReader(new FileReader("txtlogin.txt"))) {
+        }        // Check if ID is already used
+        try (BufferedReader reader = new BufferedReader(new FileReader(getLoginFilePath()))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -97,7 +148,7 @@ public class User {
         }
 
         try {
-            FileWriter writer = new FileWriter("txtlogin.txt", true);
+            FileWriter writer = new FileWriter(getLoginFilePath(), true);
             writer.write(this.id + "," + this.username + "," + this.password + "," + this.department + "," + this.role);
             writer.write(System.getProperty("line.separator"));
             writer.close();
@@ -111,11 +162,10 @@ public void delete() {
         if (did == 0) {
             JOptionPane.showMessageDialog(null, "Please select a row to delete!");
             return;
-        }
-        int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this record?", "Confirmation", JOptionPane.YES_NO_OPTION);
+        }        int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this record?", "Confirmation", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             try {
-                removeRecord("txtlogin.txt", did);
+                removeRecord(getLoginFilePath(), did);
                 JOptionPane.showMessageDialog(null, "Successfully Deleted");
                 did = 0; // Reset did after successful deletion
             } catch (Exception e) {
@@ -134,12 +184,10 @@ public void delete() {
         if (this.id == null || this.username == null || this.password == null || this.department == null || this.role == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
-        }
-
-        try {
+        }        try {
             // Create temporary file
-            File inputFile = new File("txtlogin.txt");
-            File tempFile = new File("temp.txt");
+            File inputFile = new File(getLoginFilePath());
+            File tempFile = new File(getTempFilePath());
 
             BufferedReader reader = new BufferedReader(new FileReader(inputFile));
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
@@ -184,23 +232,20 @@ public void delete() {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
-    }
+    }    public static void removeRecord(String filePath, int deleteLine) {
 
-    public static void removeRecord(String fileFath, int deleteLine) {
-
-        String tempFile = "temp.txt";
-        File oldFile = new File(fileFath);
+        String tempFile = "src/auth/temp.txt";
+        File oldFile = new File(filePath);
         File newFile = new File(tempFile);
 
         int line = 0;
         String currentLine;
 
         try {
-            FileWriter fw = new FileWriter(tempFile, true);
-            BufferedWriter bw = new BufferedWriter(fw);
+            FileWriter fw = new FileWriter(tempFile, true);            BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
 
-            FileReader fr = new FileReader(fileFath);
+            FileReader fr = new FileReader(filePath);
             BufferedReader br = new BufferedReader(fr);
 
             while ((currentLine = br.readLine()) != null) {
@@ -218,9 +263,8 @@ public void delete() {
             br.close();
             bw.close();
             fw.close();
-
             oldFile.delete();
-            File dump = new File(fileFath);
+            File dump = new File(filePath);
             newFile.renameTo(dump);
 
         } catch (Exception e) {
