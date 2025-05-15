@@ -21,7 +21,7 @@ import javax.swing.JOptionPane;
 public class PROperation {
 
     private int did;
-    private String no, prid, date, smname, smid, itemcode, quantity, status;
+    private String no, prid, date, smname, smid, itemcode, quantity, exdate, status;
 
     public PROperation() {
 
@@ -87,6 +87,14 @@ public class PROperation {
     public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
+    
+    public String getExDate() {
+        return exdate;
+    }
+
+    public void setExDate(String exdate) {
+        this.exdate = exdate;
+    }
 
     public String getStatus() {
         return status;
@@ -95,34 +103,62 @@ public class PROperation {
     public void setStatus(String status) {
         this.status = status;
     }
-
+    
     private String generateNextNo() {
         int nextNo = 1;
         try (BufferedReader reader = new BufferedReader(new FileReader("src/PurchaseRequisition/PR.txt"))) {
-            String lastLine = null;
             String currentLine;
             while ((currentLine = reader.readLine()) != null) {
-                lastLine = currentLine;
-            }
-            if (lastLine != null) {
-                String[] parts = lastLine.split(",");
-                if (parts.length > 0 && parts[0].matches("\\d+")) {
-                    nextNo = Integer.parseInt(parts[0]) + 1;
+                String[] parts = currentLine.split(",");
+                if (parts.length > 0) {
+                    try {
+                        int currentNo = Integer.parseInt(parts[0]);
+                        if (currentNo >= nextNo) {
+                            nextNo = currentNo + 1;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Ignore lines where the first part is not a valid number
+                    }
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error reading file for generating No.: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Error parsing No. from file: " + e.getMessage());
+            // Handle file reading error, maybe log it or show a message
+            JOptionPane.showMessageDialog(null, "Error reading PR file to generate No.: " + e.getMessage());
         }
-        return String.format("%04d", nextNo); // Format to 4 digits with leading zeros
+        return String.format("%04d", nextNo); // Format to ensure 4 digits with leading zeros
+    }
+
+    private boolean isNoUsed(String noToCheck) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/PurchaseRequisition/PR.txt"))) {
+            String currentLine;
+            while ((currentLine = reader.readLine()) != null) {
+                String[] parts = currentLine.split(",");
+                if (parts.length > 0 && parts[0].equals(noToCheck)) {
+                    return true; // No. already exists
+                }
+            }
+        } catch (IOException e) {
+            // Handle file reading error
+            JOptionPane.showMessageDialog(null, "Error reading PR file to check No.: " + e.getMessage());
+        }
+        return false; // No. is not used
     }
     
     public void add() {
-        this.no = generateNextNo(); // Generate the "No." automatically
+        String newNo;
+        do {
+            newNo = generateNextNo();
+        } while (isNoUsed(newNo));
+        this.no = newNo;
 
         if (this.prid == null || this.date == null || this.smname == null || this.smid == null
-                || this.itemcode == null  || this.quantity == null || this.status == null) {
+                || this.itemcode == null  || this.quantity == null || this.exdate == null || this.status == null) {
+            JOptionPane.showMessageDialog(null, "All fields must be filled!");
+            return;
+        }
+        
+        if (this.prid == null || this.date == null || this.smname == null || this.smid == null
+                || this.itemcode == null  || this.quantity == null || this.exdate == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
         }
@@ -130,7 +166,7 @@ public class PROperation {
         try {
             FileWriter writer = new FileWriter("src/PurchaseRequisition/PR.txt", true);
             writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + ","
-                    + this.itemcode  + "," + this.quantity + "," + this.status);
+                    + this.itemcode  + "," + this.quantity + "," + this.exdate + "," + this.status);
             writer.write(System.getProperty("line.separator"));
             writer.close();
             JOptionPane.showMessageDialog(null, "Data Added with No.: " + this.no);
@@ -163,7 +199,7 @@ public class PROperation {
     
     public void update() {
         if (this.no == null || this.prid == null || this.date == null || this.smname == null || this.smid == null 
-                || this.itemcode == null  || this.quantity == null || this.status == null) {
+                || this.itemcode == null  || this.quantity == null || this.exdate == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
         }
@@ -185,7 +221,7 @@ public class PROperation {
                 if (parts.length >= 5 && parts[0].equals(this.no)) {
                     // Found the record to update - write the new data
                     writer.write(this.no + "," + this.prid + "," + this.date + "," + this.smname + "," + this.smid + "," 
-                    + this.itemcode  + "," + this.quantity + "," + this.status);
+                    + this.itemcode  + "," + this.quantity + "," + this.exdate + "," + this.status);
                     found = true;
                 } else {
                     // Write the existing record as is
