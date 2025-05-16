@@ -82,7 +82,6 @@ public class PO_GenerationManagement {
                 }
             }
         }
-        System.out.println("Total items loaded into PRData: " + prData.items.size());
         return prData;
     }
 
@@ -135,15 +134,40 @@ public class PO_GenerationManagement {
     }
     
     public void saveToPOtxt(String PO_ID, String PR_ID, String date, String PM_Name, String PM_ID,String SM_Name, String SM_ID, String expectedDeliveryDate, List<PurchaseOrderItem> items) {
-        for (PurchaseOrderItem item : items) {
-            String line = String.format("%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %d, Pending", 
-                    PO_ID, PR_ID, date,
-                    PM_Name, PM_ID, SM_Name, SM_ID, expectedDeliveryDate,
-                    item.getSupplierID(), item.getSupplierName(),
-                    item.getItemCode(), item.getItemName(),
-                    item.getQuantity());
-            TextFile.appendTo(POfile, line);
+        StringBuilder supplierName = new StringBuilder();
+        StringBuilder supplierID = new StringBuilder();
+        StringBuilder itemName = new StringBuilder();
+        StringBuilder itemCode = new StringBuilder();
+        StringBuilder quantity = new StringBuilder();
+        
+        for(int i = 0; i < items.size(); i++){
+            PurchaseOrderItem item = items.get(i);
+            supplierName.append(item.getSupplierName());
+            supplierID.append(item.getSupplierID());
+            itemName.append(item.getItemName());
+            itemCode.append(item.getItemCode());
+            quantity.append(item.getQuantity());
+            
+            if(i < items.size() -1 ){
+                supplierName.append(", ");
+                supplierID.append(", ");
+                itemName.append(", ");
+                itemCode.append(", ");
+                quantity.append(", ");
+            }
         }
+        String line = String.format("%s, %s, %s, %s, %s, %s, %s, %s, {%s}, {%s}, {%s}, {%s}, {%s}, Pending",
+                PO_ID, PR_ID, date,
+                PM_Name, PM_ID,
+                SM_Name, SM_ID,
+                expectedDeliveryDate,
+                supplierName.toString(),
+                supplierID.toString(),
+                itemName.toString(),
+                itemCode.toString(),
+                quantity.toString());
+        
+        TextFile.appendTo(POfile, line);
     }
 
     
@@ -152,23 +176,29 @@ public class PO_GenerationManagement {
         
         for(String line : lines){
             if(line.startsWith(PR_ID + ",")){
-                String[] data = line.split(",", 5);
-                if(data.length < 4){
-                    continue;
-                }
+                int itemStart = line.indexOf('{');
+                int itemEnd = line.indexOf('}');
+                int qtyStart = line.indexOf('{', itemEnd);
+                int qtyEnd = line.indexOf('}', qtyStart);
                 
-                String newItemCode = "";
-                String newQuantity = "";
+                String beforeItems = line.substring(0, itemStart).trim();
+                String afterQuantities = line.substring(qtyEnd + 1 ).trim();
+                
+                StringBuilder itemBuilder = new StringBuilder("{");
+                StringBuilder quantityBuilder = new StringBuilder("{");
+                
                 for(int i = 0; i < items.size(); i++){
-                    newItemCode += items.get(i).getItemCode();
-                    newQuantity += items.get(i).getQuantity();
+                    itemBuilder.append(items.get(i).getItemCode());
+                    quantityBuilder.append(items.get(i).getQuantity());
                     if(i < items.size() - 1){
-                        newItemCode += ", ";
-                        newQuantity += ", ";
+                        itemBuilder.append(", ");
+                        quantityBuilder.append(", ");
                     }
                 }
+                itemBuilder.append('}');
+                quantityBuilder.append('}');
                 
-                String updatedLine = data[0].trim() + ", " + data[1].trim() + ", " + data[3].trim() + ", {" + newItemCode + "}, {" + newQuantity + "}, " + expectedDeliveryDate + ", Approved";
+                String updatedLine = beforeItems + itemBuilder.toString() + ", " + quantityBuilder.toString() + ", " + expectedDeliveryDate + ", APPROVED";
                 
                 TextFile.replaceLine(PRfile, line, updatedLine);
                 break;
