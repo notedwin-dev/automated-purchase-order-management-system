@@ -12,12 +12,10 @@ import java.util.List;
  * @author user
  */
 import InventoryManagement.Inventory;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 public class PO_GenerationManagement {
-    private static final String ItemFile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\InventoryManagement\\Items.txt"; 
-    private static final String PRfile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\PurchaseRequisition\\PR.txt" ;
-    private static final String POfile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\PurchaseOrder\\PO.txt";
+    private static final String ItemFile = "src/InventoryManagement/Items.txt"; 
+    private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
+    private static final String POfile = "src/PurchaseOrder/PO.txt";
 
     
     public class PRData{
@@ -178,6 +176,5 @@ public class PO_GenerationManagement {
         }
     }
     
-    //----- Double click the table row to add the data to the textBox / comboBox -----//
     
 }

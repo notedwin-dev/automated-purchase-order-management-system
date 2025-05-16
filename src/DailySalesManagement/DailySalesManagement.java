@@ -12,8 +12,8 @@ import java.util.List;
  * @author user
  */
 public class DailySalesManagement {
-    private static final String ItemFile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\InventoryManagement\\Items.txt";
-    private static final String SalesFile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\DailySalesManagement\\sales.txt";
+    private static final String ItemFile = "src/InventoryManagement/Items.txt";
+    private static final String SalesFile = "src/DailySalesManagement/sales.txt";
     private List<Sales> salesData = new ArrayList<>();
     
     public List<String> getAllItemCode(){
