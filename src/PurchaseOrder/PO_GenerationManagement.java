@@ -6,12 +6,17 @@ package PurchaseOrder;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 /**
  *
  * @author user
  */
 import InventoryManagement.Inventory;
+
 public class PO_GenerationManagement {
     private static final String ItemFile = "src/InventoryManagement/Items.txt"; 
     private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
@@ -21,8 +26,59 @@ public class PO_GenerationManagement {
     public class PRData{
         public String PR_ID, date, SM_Name, SM_ID, expectedDeliveryDate;
         public List<PurchaseOrderItem> items = new ArrayList<>();
+        private List<Object[]> tableData = new ArrayList<>();
+
+        // ========== Read the PR_List text file ========== //
+        public PRData() {
+            readDataFromPR_List();
+        }
+
+        private void readDataFromPR_List() {
+            try (BufferedReader reader = new BufferedReader(new FileReader(PRfile))) {
+                String line;
+                boolean isFirstLine = true;
+                int rowNo = 1;
+
+                while ((line = reader.readLine()) != null) {
+                    if (isFirstLine) {
+                        isFirstLine = false;
+                        continue;
+                    }
+                    
+                    String[] data = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)");
+                    if (data.length == 8) {
+                        String prID = data[0].trim();
+                        String date = data[1].trim();
+                        String smName = data[2].trim();
+                        String smID = data[3].trim();
+                        String[] itemCodes = data[4].replace("{", "").replace("}", "").split(",");
+                        String[] quantities = data[5].replace("{", "").replace("}", "").split(",");
+                        String expectedDate = data[6].trim();
+                        String status = data[7].trim();
+
+                        String itemCodeText = Arrays.stream(itemCodes).map(String::trim).collect(Collectors.joining("\n"));
+                        String quantityText = Arrays.stream(quantities).map(String::trim).collect(Collectors.joining("\n"));
+
+                        tableData.add(new Object[]{
+                            rowNo++, prID, date, smName, smID, itemCodeText, quantityText, expectedDate, status
+                        });
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("Error reading file: " + e.getMessage());
+            }
+        }
+        public List<Object[]> getTableData() {
+            return tableData;  // where tableData is a List<Object[]> field
+        }
     }
     
+    // ========== PUBLIC METHOD TO ACCESS PR TABLE DATA ========== //
+    public List<Object[]> getTableData() {
+        PRData prData = new PRData();
+        return prData.getTableData();
+    }
+
     
     public PRData getFirstPR() {
 
