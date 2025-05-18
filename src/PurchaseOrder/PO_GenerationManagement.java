@@ -19,8 +19,8 @@ import InventoryManagement.Inventory;
 
 public class PO_GenerationManagement {
     private static final String ItemFile = "src/InventoryManagement/Items.txt"; 
-    private static final String PRfile = "src/InventoryManagement/PR.txt" ;
-    private static final String POfile = "src/InventoryManagement/PO.txt";
+    private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
+    private static final String POfile = "src/PurchaseOrder/PO.txt";
 
     
     public class PRData{
