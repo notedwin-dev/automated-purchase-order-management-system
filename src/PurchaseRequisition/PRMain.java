@@ -22,7 +22,6 @@ public class PRMain extends javax.swing.JFrame {
     public PROperation prop = new PROperation();
 
     int did;
-    String no = "";
     String prid = "PR";
     String date = "";
     String smname = "";
@@ -66,7 +65,6 @@ public class PRMain extends javax.swing.JFrame {
     }
 
     private void getData() {
-        prop.setNo(txtNo.getText());
         prop.setPRID(txtPRID.getText());
         prop.setDate(((com.toedter.calendar.JTextFieldDateEditor) txtDate.getDateEditor().getUiComponent()).getText());
         prop.setSMName(txtSMName.getText());
@@ -148,7 +146,7 @@ public class PRMain extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Expected Delivery", "Status"
+                "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Expected Delivery", "Status"
             }
         ));
         PRTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -428,18 +426,16 @@ public class PRMain extends javax.swing.JFrame {
         int selectrowindex = PRTable.getSelectedRow();
 
         if (selectrowindex >= 0) { // Check if a valid row is selected
-            no = tmodel.getValueAt(selectrowindex, 0).toString();
-            prid = tmodel.getValueAt(selectrowindex, 1).toString();
-            date = tmodel.getValueAt(selectrowindex, 2).toString();
-            smname = tmodel.getValueAt(selectrowindex, 3).toString();
-            smid = tmodel.getValueAt(selectrowindex, 4).toString();
-            itemcode = tmodel.getValueAt(selectrowindex, 5).toString();
-            quantity = tmodel.getValueAt(selectrowindex, 6).toString();
-            exdate = tmodel.getValueAt(selectrowindex, 7).toString();
-            status = tmodel.getValueAt(selectrowindex, 8).toString();
+            prid = tmodel.getValueAt(selectrowindex, 0).toString();
+            date = tmodel.getValueAt(selectrowindex, 1).toString();
+            smname = tmodel.getValueAt(selectrowindex, 2).toString();
+            smid = tmodel.getValueAt(selectrowindex, 3).toString();
+            itemcode = tmodel.getValueAt(selectrowindex, 4).toString();
+            quantity = tmodel.getValueAt(selectrowindex, 5).toString();
+            exdate = tmodel.getValueAt(selectrowindex, 6).toString();
+            status = tmodel.getValueAt(selectrowindex, 7).toString();
             did = selectrowindex + 2;
 
-            txtNo.setText(no);
             txtPRID.setText(prid);
             // Date
             try {
@@ -464,7 +460,6 @@ public class PRMain extends javax.swing.JFrame {
             cbStatus.setSelectedItem(status);
 
             prop.setDataID(did);
-            prop.setNo(no);
             prop.setPRID(prid);
             prop.setDate(date); // Keep the String for your `prop` object if that's what it expects
             prop.setSMName(smname);
@@ -492,9 +487,9 @@ public class PRMain extends javax.swing.JFrame {
             while ((line = br.readLine()) != null) {
                 String[] dataRow = line.split(",");
                 if (dataRow.length >= 9) { // Ensure all columns exist
-                    String smID = dataRow[4].trim();
-                    String itemCode = dataRow[5].trim();
-                    String quantity = dataRow[6].trim();
+                    String smID = dataRow[3].trim();
+                    String itemCode = dataRow[4].trim();
+                    String quantity = dataRow[5].trim();
 
                     if (!smItems.containsKey(smID)) {
                         smItems.put(smID, new java.util.ArrayList<>());
@@ -512,13 +507,12 @@ public class PRMain extends javax.swing.JFrame {
                 while ((line2 = br2.readLine()) != null) {
                     String[] dataRow2 = line2.split(",");
                     if (dataRow2.length >= 9) {
-                        String no = dataRow2[0].trim();
-                        String prID = dataRow2[1].trim();
-                        String date = dataRow2[2].trim();
-                        String smName = dataRow2[3].trim();
-                        String smID = dataRow2[4].trim();
-                        String exDate = dataRow2[7].trim();
-                        String status = dataRow2[8].trim();
+                        String prID = dataRow2[0].trim();
+                        String date = dataRow2[1].trim();
+                        String smName = dataRow2[2].trim();
+                        String smID = dataRow2[3].trim();
+                        String exDate = dataRow2[6].trim();
+                        String status = dataRow2[7].trim();
 
                         if (!smProcessed.containsKey(smID)) {
                             StringBuilder itemsBuilder = new StringBuilder();
@@ -527,7 +521,7 @@ public class PRMain extends javax.swing.JFrame {
                                     itemsBuilder.append(itemQty[0]).append("(").append(itemQty[1]).append(") ");
                                 }
                             }
-                            model.addRow(new Object[]{no, prID, date, smName, smID, itemsBuilder.toString().trim(), exDate, status});
+                            model.addRow(new Object[]{prID, date, smName, smID, itemsBuilder.toString().trim(), exDate, status});
                             smProcessed.put(smID, true);
                         }
                     }
