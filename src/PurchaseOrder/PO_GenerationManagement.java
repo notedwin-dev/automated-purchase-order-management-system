@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 import InventoryManagement.Inventory;
 
 public class PO_GenerationManagement {
-    private static final String ItemFile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\InventoryManagement\\Items.txt"; 
-    private static final String PRfile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\PurchaseRequisition\\PR.txt" ;
-    private static final String POfile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\PurchaseOrder\\PO.txt";
+    private static final String ItemFile = "src/InventoryManagement/Items.txt"; 
+    private static final String PRfile = "src/InventoryManagement/PR.txt" ;
+    private static final String POfile = "src/InventoryManagement/PO.txt";
 
     
     public class PRData{
