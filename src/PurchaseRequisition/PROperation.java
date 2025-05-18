@@ -22,8 +22,14 @@ public class PROperation {
     private int did;
     private String prid, date, smname, smid, itemcode, quantity, exdate, status;
 
-    public PROperation() {
-
+    public PROperation(String prid, String date, String smname, String smid, String itemcode, String quantity, String exdate, String status) {
+        this.prid = prid;
+        this.smname = smname;
+        this.smid = smid;
+        this.itemcode = itemcode;
+        this.quantity = quantity;
+        this.exdate = exdate;
+        this.status = status;
     }
 
     public void setDataID(int did) {
@@ -70,7 +76,7 @@ public class PROperation {
         this.itemcode = itemcode;
     }
 
-    public String getQuntity() {
+    public String getQuantity() {
         return quantity;
     }
 
@@ -232,4 +238,7 @@ public class PROperation {
         }
 
     }
+    
+  
+    
 }
