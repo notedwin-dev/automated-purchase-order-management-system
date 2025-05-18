@@ -4,15 +4,19 @@
  */
 package PurchaseOrder;
 
+import PurchaseRequisition.PR_Management;
+
 /**
  *
  * @author nixon
  */
 public class Main_PO {
+    private PR_Management prmanagement;
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new PO_Panel().setVisible(true);
+                PR_Management prmanagement = new PR_Management();
+                new PO_Panel(prmanagement).setVisible(true);
             }
         });
     }

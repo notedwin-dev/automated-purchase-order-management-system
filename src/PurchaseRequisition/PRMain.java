@@ -19,7 +19,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PRMain extends javax.swing.JFrame {
 
-    public PROperation prop = new PROperation();
+    public PROperation prop;
 
     int did;
     String prid = "PR";
@@ -30,13 +30,14 @@ public class PRMain extends javax.swing.JFrame {
     String quantity = "";
     String exdate = "";
     String status = "";
-    private DecimalFormat df = new DecimalFormat("00"); // Added DecimalFormat
+    private DecimalFormat df = new DecimalFormat("00");
 
     /**
      * Creates new form PRMain
      */
     public PRMain() {
         initComponents();
+        prop = new PROperation(prid, date, smname, smid, itemcode, quantity, exdate, status);
         tableLoad();
         ImageIcon addIcon = new ImageIcon(getClass().getResource("/resources/icons/Add.png"));
         Image scaled_add = addIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);

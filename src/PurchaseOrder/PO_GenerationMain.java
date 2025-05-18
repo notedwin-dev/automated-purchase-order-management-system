@@ -13,10 +13,10 @@ public class PO_GenerationMain {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        java.awt.EventQueue.invokeLater(() -> {
-            new PO_GenerationUI().setVisible(true);
-        });
-    }
+//    public static void main(String[] args) {
+//        java.awt.EventQueue.invokeLater(() -> {
+//            new PO_GenerationUI().setVisible(true);
+//        });
+//    }
     
 }
