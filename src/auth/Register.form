@@ -259,13 +259,8 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Arial" size="24" style="0"/>
             </Property>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-              </StringArray>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new javax.swing.DefaultComboBoxModel&lt;&gt;(new String[] {&#xa;    RoleFactory.ADMINISTRATOR,&#xa;    RoleFactory.SALES_MANAGER,&#xa;    RoleFactory.PURCHASE_MANAGER,&#xa;    RoleFactory.INVENTORY_MANAGER,&#xa;    RoleFactory.FINANCE_MANAGER&#xa;})" type="code"/>
             </Property>
           </Properties>
           <AuxValues>

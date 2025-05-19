@@ -12,8 +12,8 @@ import java.util.List;
  * @author user
  */
 public class DailySalesManagement {
-    private static final String ItemFile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\InventoryManagement\\Items.txt";
-    private static final String SalesFile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\DailySalesManagement\\sales.txt";
+    private static final String ItemFile = "src/InventoryManagement/Items.txt";
+    private static final String SalesFile = "src/DailySalesManagement/sales.txt";
     private List<Sales> salesData = new ArrayList<>();
     
     public List<String> getAllItemCode(){
@@ -65,7 +65,7 @@ public class DailySalesManagement {
             String[] data = line.split(",");
             if(data.length >= 6 && data[1].equals(itemCode)){
                 try{
-                    return Double.parseDouble(data[5].trim());
+                    return Double.parseDouble(data[6].trim());
                 }catch(NumberFormatException e){
                     e.printStackTrace();
                 }

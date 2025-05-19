@@ -5,13 +5,16 @@
 package PurchaseOrder;
 
 import java.awt.*;
+import java.util.Arrays;
 import javax.swing.table.*;
 import javax.swing.*;
+import java.util.List;
+
 
 public class PO_Panel extends javax.swing.JFrame {
 
     private DefaultTableModel tmodel;
-    private PO_Management poManage;
+    private PO_GenerationManagement manage;
     
     public PO_Panel() {
         initComponents();
@@ -58,7 +61,9 @@ public class PO_Panel extends javax.swing.JFrame {
         //----- Link model to table -----//
         prTable.setModel(tmodel); 
 
-        poManage = new PO_Management();
+        //----- Initialize manage -----//
+        manage = new PO_GenerationManagement();
+
         refreshTable();
         setColumnWidth();
 
@@ -102,10 +107,14 @@ public class PO_Panel extends javax.swing.JFrame {
             
     // ========== LOAD DATA INTO TABLE ========== //   
     public void refreshTable() {
-        DefaultTableModel tmodel = (DefaultTableModel) prTable.getModel();
+//        DefaultTableModel tmodel = (DefaultTableModel) prTable.getModel();
         tmodel.setRowCount(0); // Clear table
 
-        for (Object[] row : poManage.getTableData()) {
+        List<Object[]> data = manage.getTableData();
+        System.out.println("Data rows count: " + data.size());
+    
+        for (Object[] row : manage.getTableData()) {
+            System.out.println(Arrays.toString(row));
             tmodel.addRow(row);
         }
 
@@ -236,7 +245,6 @@ public class PO_Panel extends javax.swing.JFrame {
 
         generatePO_button.setBackground(new java.awt.Color(255, 255, 204));
         generatePO_button.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        generatePO_button.setForeground(new java.awt.Color(0, 0, 0));
         generatePO_button.setText("Generate");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
