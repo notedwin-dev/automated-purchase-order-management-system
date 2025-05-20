@@ -166,6 +166,7 @@ public class Dashboard extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         pnlMain = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
@@ -176,31 +177,30 @@ public class Dashboard extends javax.swing.JFrame {
         setTitle("OWSB - Dashboard");
         setPreferredSize(new java.awt.Dimension(1200, 800));
 
-        pnlMain.setLayout(new BorderLayout(10, 10));
+        pnlMain.setLayout(new java.awt.BorderLayout(10, 10));
 
-        pnlHeader.setBackground(new Color(153, 153, 255));
-        pnlHeader.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlHeader.setLayout(new BorderLayout());
+        pnlHeader.setBackground(new java.awt.Color(153, 153, 255));
+        pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        pnlHeader.setLayout(new java.awt.BorderLayout());
 
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 36));
-        lblTitle.setForeground(Color.WHITE);
+        lblTitle.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
         lblTitle.setText("OMEGA WHOLESALE SDN BHD - Dashboard");
-        pnlHeader.add(lblTitle, BorderLayout.WEST);
+        pnlHeader.add(lblTitle, java.awt.BorderLayout.WEST);
 
-        lblWelcome.setFont(new Font("Arial", Font.BOLD, 18));
-        lblWelcome.setForeground(Color.WHITE);
+        lblWelcome.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        lblWelcome.setForeground(new java.awt.Color(255, 255, 255));
+        lblWelcome.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblWelcome.setText("Welcome, User");
-        lblWelcome.setHorizontalAlignment(SwingConstants.RIGHT);
-        pnlHeader.add(lblWelcome, BorderLayout.EAST);
+        pnlHeader.add(lblWelcome, java.awt.BorderLayout.EAST);
 
-        pnlMain.add(pnlHeader, BorderLayout.NORTH);
+        pnlMain.add(pnlHeader, java.awt.BorderLayout.NORTH);
 
-        pnlFeatures.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlFeatures.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        
-        pnlMain.add(pnlFeatures, BorderLayout.CENTER);
+        pnlFeatures.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        pnlFeatures.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 20));
+        pnlMain.add(pnlFeatures, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(pnlMain);
+        getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
 
         pack();
         setLocationRelativeTo(null);
