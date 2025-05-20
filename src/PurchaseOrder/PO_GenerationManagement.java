@@ -91,68 +91,6 @@ public class PO_GenerationManagement {
         }
         return null; 
     }
-     
-//    public PRData getFirstPR() {
-//
-//        List<String> lines = TextFile.readFile(PRfile);
-//        if (lines.isEmpty())return null;
-//
-//        String line = lines.get(0); // First PR only
-//        PRData prData = new PRData();
-//
-//        // Extract fixed parts
-//        int firstBrace = line.indexOf('{');
-//        String beforeItems = line.substring(0, firstBrace).trim().replaceAll(",$", "");
-//        String[] firstParts = beforeItems.split(",", 4);
-//
-//        prData.PR_ID = firstParts[0].trim();
-//        prData.date = firstParts[1].trim();
-//        prData.SM_Name = firstParts[2].trim();
-//        prData.SM_ID = firstParts[3].trim();  
-//
-//
-//        // Extract item codes
-//        int itemStart = line.indexOf('{');
-//        int itemEnd = line.indexOf('}');
-//        String itemCodeStr = line.substring(itemStart + 1, itemEnd).trim();
-//
-//        // Extract quantities
-//        int qtyStart = line.indexOf('{', itemEnd);
-//        int qtyEnd = line.indexOf('}', qtyStart);
-//        String quantityStr = line.substring(qtyStart + 1, qtyEnd).trim();
-//
-//        // Remaining string after quantity closing }
-//        String remaining = line.substring(qtyEnd + 1).trim();
-//        if (remaining.startsWith(",")) {
-//            remaining = remaining.substring(1).trim();  
-//        }
-//
-//        String[] tailParts = remaining.split(",", 2);
-//        prData.expectedDeliveryDate = tailParts.length > 0 ? tailParts[0].trim() : "";
-//        String status = tailParts.length > 1 ? tailParts[1].trim() : "";
-//
-//        // DEBUG PRINT
-//        System.out.println("Parsed expectedDeliveryDate: '" + prData.expectedDeliveryDate + "'");
-//
-//        // Add items
-//        String[] itemCodes = itemCodeStr.split(",\\s*");
-//        String[] quantities = quantityStr.split(",\\s*");
-//
-//        List<String> inventory = TextFile.readFile(ItemFile);
-//        for (int i = 0; i < itemCodes.length; i++) {
-//            String code = itemCodes[i];
-//            int qty = Integer.parseInt(quantities[i]);
-//            for (String inv : inventory) {
-//                String[] invData = inv.split(",\\s*");
-//                if (invData.length >= 5 && invData[1].equals(code)) {
-//                    prData.items.add(new PurchaseOrderItem(code, invData[0], invData[2], invData[3], qty));
-//                    break;
-//                }
-//            }
-//        }
-//        return prData;
-//    }
-
 
     public String generatePO_ID() {
         int maxID = 0;
