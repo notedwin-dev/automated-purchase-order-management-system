@@ -164,7 +164,7 @@ public class Dashboard extends javax.swing.JFrame {
      * This method is called from within the constructor to initialize the form.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         pnlMain = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
@@ -204,7 +204,7 @@ public class Dashboard extends javax.swing.JFrame {
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>
+    }// </editor-fold>//GEN-END:initComponents
 
     /**
      * @param args the command line arguments
@@ -236,11 +236,11 @@ public class Dashboard extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JPanel pnlFeatures;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JPanel pnlMain;
-    // End of variables declaration
+    // End of variables declaration//GEN-END:variables
 }
