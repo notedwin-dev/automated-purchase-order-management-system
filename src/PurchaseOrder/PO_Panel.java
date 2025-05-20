@@ -253,6 +253,8 @@ public class PO_Panel extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        prTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        prTable.getTableHeader().setReorderingAllowed(false);
         prTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 prTableMouseClicked(evt);
