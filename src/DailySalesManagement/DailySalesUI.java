@@ -8,8 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -27,7 +30,16 @@ public class DailySalesUI extends javax.swing.JFrame {
         dailySalesManagement = new DailySalesManagement();
         putItemCodeIntoComboBox();
         dailySalesManagement.getAllSalesFromFile();
-        displayAllSales();
+        Date today = new Date();
+        filterdate.setDate(today);
+        filterSalesWithDate();
+        
+        filterdate.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener(){
+            @Override
+            public void propertyChange(PropertyChangeEvent evt){
+                filterSalesWithDate();
+            }
+        });
     
         jTable1.addMouseListener(new MouseAdapter() {
             @Override
@@ -38,23 +50,43 @@ public class DailySalesUI extends javax.swing.JFrame {
   
 }
     
-    private void displayAllSales() {
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.setRowCount(0); // Clear table first
+    private void filterSalesWithDate() {
+        Date inputDate = filterdate.getDate();
+     
+        if(inputDate != null){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStr = sdf.format(inputDate);
+            String currentDateStr = sdf.format(new Date());
+            
+            if (dateStr.compareTo(currentDateStr) < 0) {
+                jButton2.setEnabled(false); // Add
+                jButton3.setEnabled(false); // Edit
+            } else {
+                jButton2.setEnabled(true);
+                jButton3.setEnabled(true);
+            }
+            
+            List<Sales> filteredSales = new ArrayList<>();
+            for(Sales sale : dailySalesManagement.getAllSales()){
+                if(sale.getSalesDate().equals(dateStr)){
+                    filteredSales.add(sale);
+                }
+            }
 
-        List<Sales> salesList = dailySalesManagement.getAllSales();
-
-        int no = 1; // start No. from 1
-        for (Sales sale : salesList) {
-            model.addRow(new Object[] {
-                no++, // auto increment No.
-                sale.getSalesDate(),
-                sale.getItemCode(),
-                sale.getItemName(),
-                sale.getQuantitySold(),
-                sale.getRetailPrice(),
-                sale.getTotalAmount()
-            });
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.setRowCount(0); 
+            int no = 1; 
+            for (Sales sale : filteredSales) {
+                model.addRow(new Object[] {
+                    no++, // auto increment No.
+                    sale.getSalesDate(),
+                    sale.getItemCode(),
+                    sale.getItemName(),
+                    sale.getQuantitySold(),
+                    sale.getRetailPrice(),
+                    sale.getTotalAmount()
+                });
+            }
         }
     }
     
@@ -83,7 +115,7 @@ public class DailySalesUI extends javax.swing.JFrame {
             try {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 Date date = sdf.parse(dateStr);
-                jCalendar1.setDate(date); // ← set to JCalendar1
+                filterdate.setDate(date); // ← set to JCalendar1
             } catch (ParseException ex) {
                 ex.printStackTrace();
             }
@@ -95,11 +127,14 @@ public class DailySalesUI extends javax.swing.JFrame {
     }
     
     private void clearFields() {
-        jCalendar1.setDate(new Date()); 
+        filterdate.setDate(new Date()); 
         jComboBox1.setSelectedIndex(0); 
         jTextField2.setText(""); 
         jTextField3.setText(""); 
+        jTable1.clearSelection();
     }   
+
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -113,7 +148,6 @@ public class DailySalesUI extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
@@ -127,7 +161,7 @@ public class DailySalesUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jButton6 = new javax.swing.JButton();
-        jCalendar1 = new com.toedter.calendar.JCalendar();
+        filterdate = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -159,9 +193,6 @@ public class DailySalesUI extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jLabel2.setText("Sales Date:");
-
         jLabel3.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
         jLabel3.setText("Item Code:");
 
@@ -192,7 +223,7 @@ public class DailySalesUI extends javax.swing.JFrame {
         });
 
         jButton4.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
-        jButton4.setText("Clean");
+        jButton4.setText("Clear");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -262,73 +293,67 @@ public class DailySalesUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(171, 171, 171)
+                        .addComponent(jButton2)
+                        .addGap(135, 135, 135)
+                        .addComponent(jButton3)
+                        .addGap(143, 143, 143)
+                        .addComponent(jButton4)
+                        .addGap(154, 154, 154)
+                        .addComponent(jButton5)
+                        .addContainerGap(223, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton6)
-                        .addGap(257, 257, 257))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(379, 379, 379))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(171, 171, 171)
-                                .addComponent(jButton2)
-                                .addGap(135, 135, 135)
-                                .addComponent(jButton3)
-                                .addGap(143, 143, 143)
-                                .addComponent(jButton4)
-                                .addGap(154, 154, 154)
-                                .addComponent(jButton5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(filterdate, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(120, 120, 120)
+                                .addGap(31, 31, 31)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4))
+                                .addGap(34, 34, 34)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel4)
-                                        .addComponent(jLabel3)
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel5)
-                                            .addGap(2, 2, 2)))
-                                    .addComponent(jLabel2))
-                                .addGap(42, 42, 42)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jCalendar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(55, 55, 55)
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(15, Short.MAX_VALUE))))
+                        .addGap(114, 114, 114))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addGap(119, 119, 119))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jCalendar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(40, 40, 40)))
+                        .addGap(260, 260, 260)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(47, 47, 47)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(54, 54, 54)
+                        .addGap(68, 68, 68)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addGap(183, 183, 183))
+                            .addComponent(jLabel5)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(102, 102, 102))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(76, 76, 76)
+                        .addGap(34, 34, 34)
+                        .addComponent(filterdate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)))
+                        .addGap(18, 18, 18)))
+                .addComponent(jButton6)
+                .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
@@ -341,19 +366,8 @@ public class DailySalesUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        if (jCalendar1.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Please select a date.");
-            return;
-        }
-        
-        Date selectedDate = jCalendar1.getDate();
-        Date currentDate = new Date();
-        if(selectedDate.after(currentDate)){
-            JOptionPane.showMessageDialog(this, "Sales date cannot be in future.", "ERROR MESSAGE", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
+        // TODO add your handling code here: 
+        Date selectedDate = filterdate.getDate();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String salesDate = sdf.format(selectedDate);
         String itemCode = (String)jComboBox1.getSelectedItem();
@@ -377,26 +391,18 @@ public class DailySalesUI extends javax.swing.JFrame {
             return;
         }
         
-        dailySalesManagement.addSales(salesDate, itemCode, itemName, quantitySold);
+        Sales newSale = dailySalesManagement.addSales(salesDate, itemCode, itemName, quantitySold);
+        if(!dailySalesManagement.updateStockWhenAdd(newSale)){
+            return;
+        }
         JOptionPane.showMessageDialog(this, "Daily Item Sales added successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
-        displayAllSales();
+        filterSalesWithDate();
         clearFields();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        if (jCalendar1.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Please select a date.");
-            return;
-        }
-        
-        Date selectedDate = jCalendar1.getDate();
-        Date currentDate = new Date();
-        if(selectedDate.after(currentDate)){
-            JOptionPane.showMessageDialog(this, "Sales date cannot be in future.", "ERROR MESSAGE", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
+        Date selectedDate = filterdate.getDate();   
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String salesDate = sdf.format(selectedDate);
         String itemCode = (String)jComboBox1.getSelectedItem();
@@ -420,19 +426,28 @@ public class DailySalesUI extends javax.swing.JFrame {
             return;
         }
         
-        dailySalesManagement.updateSales(salesDate, itemCode, itemName, quantitySold);
+        Sales oldSale = dailySalesManagement.updateSales(salesDate, itemCode, itemName, quantitySold);
+        if(oldSale == null){
+            JOptionPane.showMessageDialog(this, "Sale not found. Cannot update.");
+            return;
+        }
+        
+        double retailPrice = oldSale.getRetailPrice();
+        double totalAmount = oldSale.getTotalAmount();
+        Sales newSale = new Sales(salesDate, itemCode, itemName, quantitySold, retailPrice, totalAmount);
+        
+        boolean updated = dailySalesManagement.updateStockWhenUpdate(oldSale, newSale);
+        if (!updated) {
+            return;
+        }
+        
         JOptionPane.showMessageDialog(this, "Daily Item Sales updated successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
-        displayAllSales();
+        filterSalesWithDate();
         clearFields();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        if (jCalendar1.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Please select a date.");
-            return;
-        }
-       
         String itemCode = (String)jComboBox1.getSelectedItem();
         String itemName = jTextField2.getText().trim();
         String quantitySoldString = jTextField3.getText().trim();
@@ -443,17 +458,26 @@ public class DailySalesUI extends javax.swing.JFrame {
         }
         
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String salesDate = sdf.format(jCalendar1.getDate());
+        String salesDate = sdf.format(filterdate.getDate());
         
-        dailySalesManagement.deleteSales(salesDate, itemCode);
+        Sales deletedSale = dailySalesManagement.deleteSales(salesDate, itemCode);
+        if (deletedSale == null) {
+            JOptionPane.showMessageDialog(this, "Failed to delete sales record. Sale not found.");
+            return;
+        }
+        
+        boolean stockUpdated = dailySalesManagement.updateStockWhenDelete(deletedSale);
+        if (!stockUpdated) {
+            return;
+        }
         JOptionPane.showMessageDialog(this, "Daily Item Sales deleted successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
-        displayAllSales();
+        filterSalesWithDate();
         clearFields();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
-        displayAllSales();
+        filterSalesWithDate();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -497,16 +521,15 @@ public class DailySalesUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser filterdate;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
