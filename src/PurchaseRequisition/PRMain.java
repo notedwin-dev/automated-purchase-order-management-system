@@ -11,7 +11,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -41,6 +43,10 @@ public class PRMain extends javax.swing.JFrame {
     private String[] selectedItemCodes;
     private String[] selectedQuantities;
     private Map<String, String> itemQuantityMap = new HashMap<>();
+
+    // Add this to track if we're adding a new record
+    private boolean isAddingNewRecord = false;
+    private boolean itemsLoaded = false;
 
     /**
      * Creates new form PRMain
@@ -73,6 +79,12 @@ public class PRMain extends javax.swing.JFrame {
         Image scaled_clean = cleanIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon resizedClean = new ImageIcon(scaled_clean);
         clean_Button.setIcon(resizedClean);
+        
+        // Set isAddingNewRecord to true initially since we start with a blank form
+        isAddingNewRecord = true;
+        
+        // Load items for new record
+        loadItemsForNewRecord();
     }
 
     private void getData() {
@@ -94,31 +106,58 @@ public class PRMain extends javax.swing.JFrame {
         prop.setSMName(txtSMName.getText());
         prop.setSMID(txtSMID.getText());
         
-        // Collect all item codes and quantities from the map instead of just the selected one
+        // Modify the item code and quantity collection logic
         StringBuilder itemCodesBuilder = new StringBuilder("{");
         StringBuilder quantitiesBuilder = new StringBuilder("{");
         
         if (selectedItemCodes != null && selectedItemCodes.length > 0) {
-            for (int i = 0; i < selectedItemCodes.length; i++) {
-                if (i > 0) {
-                    itemCodesBuilder.append(", ");
-                    quantitiesBuilder.append(", ");
+            boolean isFirst = true;
+            
+            // When adding a new record, only include items with non-zero quantities
+            if (isAddingNewRecord) {
+                for (int i = 0; i < selectedItemCodes.length; i++) {
+                    String itemCode = selectedItemCodes[i];
+                    String quantity = itemQuantityMap.get(itemCode);
+                    
+                    // Only include items with non-zero quantities
+                    if (quantity != null && !quantity.equals("0")) {
+                        if (!isFirst) {
+                            itemCodesBuilder.append(", ");
+                            quantitiesBuilder.append(", ");
+                        } else {
+                            isFirst = false;
+                        }
+                        itemCodesBuilder.append(itemCode);
+                        quantitiesBuilder.append(quantity);
+                    }
                 }
-                itemCodesBuilder.append(selectedItemCodes[i]);
-                
-                // If the quantity was edited, use the edited value for the selected item
-                if (cbItemCode.getSelectedItem().toString().equals(selectedItemCodes[i])) {
-                    quantitiesBuilder.append(txtQuantity.getText());
-                    // Update the map with the new quantity
-                    itemQuantityMap.put(selectedItemCodes[i], txtQuantity.getText());
-                } else {
-                    quantitiesBuilder.append(itemQuantityMap.get(selectedItemCodes[i]));
+            } else {
+                // For updating existing records, include all items
+                for (int i = 0; i < selectedItemCodes.length; i++) {
+                    if (i > 0) {
+                        itemCodesBuilder.append(", ");
+                        quantitiesBuilder.append(", ");
+                    }
+                    String itemCode = selectedItemCodes[i];
+                    itemCodesBuilder.append(itemCode);
+                    
+                    // If the quantity was edited, use the edited value for the selected item
+                    if (cbItemCode.getSelectedItem().toString().equals(itemCode)) {
+                        quantitiesBuilder.append(txtQuantity.getText());
+                        // Update the map with the new quantity
+                        itemQuantityMap.put(itemCode, txtQuantity.getText());
+                    } else {
+                        quantitiesBuilder.append(itemQuantityMap.get(itemCode));
+                    }
                 }
             }
         } else {
             // Fallback to selected item only if no mapping exists
-            itemCodesBuilder.append(cbItemCode.getSelectedItem().toString());
-            quantitiesBuilder.append(txtQuantity.getText());
+            if (cbItemCode.getSelectedItem() != null) {
+                String selectedItem = cbItemCode.getSelectedItem().toString();
+                itemCodesBuilder.append(selectedItem);
+                quantitiesBuilder.append(txtQuantity.getText());
+            }
         }
         
         itemCodesBuilder.append("}");
@@ -135,18 +174,100 @@ public class PRMain extends javax.swing.JFrame {
         txtDate.setDate(null); // This line clears the JDateChooser for Date
         txtSMName.setText("");
         txtSMID.setText("SM");
-        cbItemCode.setModel(new DefaultComboBoxModel<>(new String[]{})); // Clear the item code combo box
         txtQuantity.setText("");
         txtExDate.setDate(null); // This line clears the JDateChooser for Expected Delivery Date
         cbStatus.setSelectedIndex(0);
-        itemQuantityMap.clear();
+        
+        // Set flag to indicate we're adding a new record
+        isAddingNewRecord = true;
+        
+        // Load items for a new record
+        loadItemsForNewRecord();
+    }
+    
+    // Add method to load items from items.txt for a new record
+    private void loadItemsForNewRecord() {
+        try {
+            File itemsFile = new File("src/itemmanagement/items.txt");
+            if (!itemsFile.exists()) {
+                JOptionPane.showMessageDialog(this, "Items file not found.");
+                return;
+            }
+            
+            BufferedReader br = new BufferedReader(new FileReader(itemsFile));
+            String headerLine = br.readLine(); // Skip header
+            
+            List<String> itemCodes = new ArrayList<>();
+            itemQuantityMap.clear();
+            
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 2) {
+                    String itemCode = parts[1].trim(); // code is in the second column
+                    itemCodes.add(itemCode);
+                    itemQuantityMap.put(itemCode, "0"); // Default quantity to 0
+                }
+            }
+            br.close();
+            
+            // Set the array of item codes
+            selectedItemCodes = itemCodes.toArray(new String[0]);
+            
+            // Populate the dropdown with item codes
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(selectedItemCodes);
+            cbItemCode.setModel(model);
+            
+            // Add item listener to update quantity when item is selected
+            cbItemCode.removeAllItems(); // Remove existing items
+            for (String code : selectedItemCodes) {
+                cbItemCode.addItem(code);
+            }
+            
+            // Add item listener to update quantity when item is selected
+            for (ItemListener listener : cbItemCode.getItemListeners()) {
+                cbItemCode.removeItemListener(listener);
+            }
+            
+            cbItemCode.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        String selectedItem = cbItemCode.getSelectedItem().toString();
+                        String qty = itemQuantityMap.get(selectedItem);
+                        if (qty != null) {
+                            txtQuantity.setText(qty);
+                        } else {
+                            txtQuantity.setText("0");
+                        }
+                    }
+                }
+            });
+            
+            // Select first item
+            if (itemCodes.size() > 0) {
+                cbItemCode.setSelectedIndex(0);
+                txtQuantity.setText("0");
+            }
+            
+            itemsLoaded = true;
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading item codes: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    // Add method to populate item code dropdown
+    // Modify populateItemCodeDropdown method to clear the isAddingNewRecord flag
     private void populateItemCodeDropdown() {
         if (selectedItemCodes != null && selectedItemCodes.length > 0) {
             DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(selectedItemCodes);
             cbItemCode.setModel(model);
+            
+            // Remove existing listeners before adding new one
+            for (ItemListener listener : cbItemCode.getItemListeners()) {
+                cbItemCode.removeItemListener(listener);
+            }
             
             // Add item listener to update quantity when item is selected
             cbItemCode.addItemListener(new ItemListener() {
@@ -161,6 +282,9 @@ public class PRMain extends javax.swing.JFrame {
                     }
                 }
             });
+            
+            // When populating from an existing record, we're not adding a new one
+            isAddingNewRecord = false;
         }
     }
 
@@ -471,6 +595,9 @@ public class PRMain extends javax.swing.JFrame {
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
         //Add Data Button
         try {
+            // Make sure we're in "adding new record" mode
+            isAddingNewRecord = true;
+            
             getData();
             prop.add();
             tableLoad();
@@ -493,6 +620,9 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_clean_ButtonActionPerformed
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
+        // Make sure we're in "updating record" mode
+        isAddingNewRecord = false;
+        
         getData();
         prop.update();
         tableLoad();
