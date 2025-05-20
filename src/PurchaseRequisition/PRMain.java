@@ -47,6 +47,11 @@ public class PRMain extends javax.swing.JFrame {
     // Add this to track if we're adding a new record
     private boolean isAddingNewRecord = false;
     private boolean itemsLoaded = false;
+    
+    // Add this to store temporary modifications for new records
+    private List<String> tempItemCodes = new ArrayList<>();
+    private List<String> tempQuantities = new ArrayList<>();
+    private boolean quantityModified = false;
 
     /**
      * Creates new form PRMain
@@ -110,29 +115,48 @@ public class PRMain extends javax.swing.JFrame {
         StringBuilder itemCodesBuilder = new StringBuilder("{");
         StringBuilder quantitiesBuilder = new StringBuilder("{");
         
-        if (selectedItemCodes != null && selectedItemCodes.length > 0) {
+        if (isAddingNewRecord) {
+            // For new records, use the temporary lists of modified items
             boolean isFirst = true;
             
-            // When adding a new record, only include items with non-zero quantities
-            if (isAddingNewRecord) {
-                for (int i = 0; i < selectedItemCodes.length; i++) {
-                    String itemCode = selectedItemCodes[i];
-                    String quantity = itemQuantityMap.get(itemCode);
-                    
-                    // Only include items with non-zero quantities
-                    if (quantity != null && !quantity.equals("0")) {
-                        if (!isFirst) {
-                            itemCodesBuilder.append(", ");
-                            quantitiesBuilder.append(", ");
-                        } else {
-                            isFirst = false;
-                        }
-                        itemCodesBuilder.append(itemCode);
-                        quantitiesBuilder.append(quantity);
-                    }
+            // If the current selection has been modified, make sure it's in the temp lists
+            if (quantityModified && cbItemCode.getSelectedItem() != null) {
+                String currentItem = cbItemCode.getSelectedItem().toString();
+                String currentQty = txtQuantity.getText();
+                
+                // Check if this item is already in our temp lists
+                int existingIndex = tempItemCodes.indexOf(currentItem);
+                if (existingIndex >= 0) {
+                    // Update existing entry
+                    tempQuantities.set(existingIndex, currentQty);
+                } else if (!currentQty.equals("0")) {
+                    // Add as new entry if quantity is not zero
+                    tempItemCodes.add(currentItem);
+                    tempQuantities.add(currentQty);
                 }
-            } else {
-                // For updating existing records, include all items
+                
+                // Reset the modified flag
+                quantityModified = false;
+            }
+            
+            // Build the formatted strings from our temporary lists
+            for (int i = 0; i < tempItemCodes.size(); i++) {
+                // Only include items with non-zero quantities
+                String qty = tempQuantities.get(i);
+                if (!qty.equals("0")) {
+                    if (!isFirst) {
+                        itemCodesBuilder.append(", ");
+                        quantitiesBuilder.append(", ");
+                    } else {
+                        isFirst = false;
+                    }
+                    itemCodesBuilder.append(tempItemCodes.get(i));
+                    quantitiesBuilder.append(qty);
+                }
+            }
+        } else {
+            // For updating existing records, use the previous logic
+            if (selectedItemCodes != null && selectedItemCodes.length > 0) {
                 for (int i = 0; i < selectedItemCodes.length; i++) {
                     if (i > 0) {
                         itemCodesBuilder.append(", ");
@@ -142,7 +166,8 @@ public class PRMain extends javax.swing.JFrame {
                     itemCodesBuilder.append(itemCode);
                     
                     // If the quantity was edited, use the edited value for the selected item
-                    if (cbItemCode.getSelectedItem().toString().equals(itemCode)) {
+                    if (cbItemCode.getSelectedItem() != null && 
+                        cbItemCode.getSelectedItem().toString().equals(itemCode)) {
                         quantitiesBuilder.append(txtQuantity.getText());
                         // Update the map with the new quantity
                         itemQuantityMap.put(itemCode, txtQuantity.getText());
@@ -150,13 +175,13 @@ public class PRMain extends javax.swing.JFrame {
                         quantitiesBuilder.append(itemQuantityMap.get(itemCode));
                     }
                 }
-            }
-        } else {
-            // Fallback to selected item only if no mapping exists
-            if (cbItemCode.getSelectedItem() != null) {
-                String selectedItem = cbItemCode.getSelectedItem().toString();
-                itemCodesBuilder.append(selectedItem);
-                quantitiesBuilder.append(txtQuantity.getText());
+            } else {
+                // Fallback to selected item only if no mapping exists
+                if (cbItemCode.getSelectedItem() != null) {
+                    String selectedItem = cbItemCode.getSelectedItem().toString();
+                    itemCodesBuilder.append(selectedItem);
+                    quantitiesBuilder.append(txtQuantity.getText());
+                }
             }
         }
         
@@ -181,6 +206,10 @@ public class PRMain extends javax.swing.JFrame {
         // Set flag to indicate we're adding a new record
         isAddingNewRecord = true;
         
+        // Clear temporary lists
+        tempItemCodes.clear();
+        tempQuantities.clear();
+        
         // Load items for a new record
         loadItemsForNewRecord();
     }
@@ -195,7 +224,6 @@ public class PRMain extends javax.swing.JFrame {
             }
             
             BufferedReader br = new BufferedReader(new FileReader(itemsFile));
-            String headerLine = br.readLine(); // Skip header
             
             List<String> itemCodes = new ArrayList<>();
             itemQuantityMap.clear();
@@ -234,13 +262,56 @@ public class PRMain extends javax.swing.JFrame {
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
                         String selectedItem = cbItemCode.getSelectedItem().toString();
-                        String qty = itemQuantityMap.get(selectedItem);
-                        if (qty != null) {
-                            txtQuantity.setText(qty);
+                        
+                        // Check if this item is in our temp lists first
+                        int tempIndex = tempItemCodes.indexOf(selectedItem);
+                        if (tempIndex >= 0) {
+                            // Use the temp value
+                            txtQuantity.setText(tempQuantities.get(tempIndex));
                         } else {
-                            txtQuantity.setText("0");
+                            // Fall back to the default map
+                            String qty = itemQuantityMap.get(selectedItem);
+                            if (qty != null) {
+                                txtQuantity.setText(qty);
+                            } else {
+                                txtQuantity.setText("0");
+                            }
                         }
                     }
+                }
+            });
+            
+            // Add document listener to the quantity text field to track changes
+            txtQuantity.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                @Override
+                public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                    quantityModified = true;
+                    
+                    // If we're adding a new record, update the temporary lists
+                    if (isAddingNewRecord && cbItemCode.getSelectedItem() != null) {
+                        String currentItem = cbItemCode.getSelectedItem().toString();
+                        String currentQty = txtQuantity.getText();
+                        
+                        int existingIndex = tempItemCodes.indexOf(currentItem);
+                        if (existingIndex >= 0) {
+                            // Update existing entry
+                            tempQuantities.set(existingIndex, currentQty);
+                        } else if (!currentQty.equals("0")) {
+                            // Add new entry if not zero
+                            tempItemCodes.add(currentItem);
+                            tempQuantities.add(currentQty);
+                        }
+                    }
+                }
+                
+                @Override
+                public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                    insertUpdate(e);
+                }
+                
+                @Override
+                public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                    insertUpdate(e);
                 }
             });
             
@@ -285,6 +356,10 @@ public class PRMain extends javax.swing.JFrame {
             
             // When populating from an existing record, we're not adding a new one
             isAddingNewRecord = false;
+            
+            // Clear temporary lists since we're working with an existing record now
+            tempItemCodes.clear();
+            tempQuantities.clear();
         }
     }
 
