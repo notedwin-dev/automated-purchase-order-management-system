@@ -332,7 +332,6 @@ public class UI extends javax.swing.JFrame {
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
         //ADD
-        System.out.println("Add button clicked!");
         sm.add();
     }//GEN-LAST:event_AddActionPerformed
 
