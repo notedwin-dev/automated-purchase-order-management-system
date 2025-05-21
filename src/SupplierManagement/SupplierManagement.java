@@ -48,6 +48,12 @@ public class SupplierManagement implements SupplierOperations{
         refresh();
     }
     
+    public SupplierManagement(JTable SupplierTable) {
+    this.SupplierTable = SupplierTable;
+    this.SupplierTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    refresh(); // Call this only if it doesn't depend on the text fields
+}
+    
     // Generate Next Supplier ID Function
     private String generateNextSupplierID(){
         List<String> lines = TextFile.readFile(filePath);

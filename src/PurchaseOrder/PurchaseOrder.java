@@ -9,10 +9,10 @@ package PurchaseOrder;
  * @author user
  */
 public class PurchaseOrder {
-    private String PO_ID, PR_ID, date, PM_Name, PM_ID, SM_Name, SM_ID, expectedDeliveryDate, SP_ID, SP_Name, itemCode, itemName, status = "PENDING";
+    private String PO_ID, PR_ID, date, PM_Name, PM_ID, SM_Name, SM_ID, expectedDeliveryDate, SP_ID, SP_Name, itemCode, itemName, status = "PENDING", FM_Name, FM_ID, paymentStatus;
     private int quantity;
     
-    public PurchaseOrder(String PO_ID, String PR_ID, String date, String PM_Name, String PM_ID, String SM_Name, String SM_ID, String expectedDeliveryDate, String SP_ID, String SP_Name, String itemCode, String itemName, String status, int quantity){
+    public PurchaseOrder(String PO_ID, String PR_ID, String date, String PM_Name, String PM_ID, String SM_Name, String SM_ID, String expectedDeliveryDate, String SP_ID, String SP_Name, String itemCode, String itemName, String status, int quantity, String FM_Name, String FM_ID, String paymentStatus){
         this.PO_ID = PO_ID;
         this.PR_ID = PR_ID;
         this.date = date;
@@ -27,6 +27,9 @@ public class PurchaseOrder {
         this.itemName = itemName;
         this.status = status;
         this.quantity = quantity;
+        this.FM_Name = FM_Name;
+        this.FM_ID = FM_ID;
+        this.paymentStatus = paymentStatus;
     }
 
     /**
@@ -223,6 +226,48 @@ public class PurchaseOrder {
      */
     public void setExpectedDeliveryDate(String expectedDeliveryDate) {
         this.expectedDeliveryDate = expectedDeliveryDate;
+    }
+
+    /**
+     * @return the FM_Name
+     */
+    public String getFM_Name() {
+        return FM_Name;
+    }
+
+    /**
+     * @param FM_Name the FM_Name to set
+     */
+    public void setFM_Name(String FM_Name) {
+        this.FM_Name = FM_Name;
+    }
+
+    /**
+     * @return the FM_ID
+     */
+    public String getFM_ID() {
+        return FM_ID;
+    }
+
+    /**
+     * @param FM_ID the FM_ID to set
+     */
+    public void setFM_ID(String FM_ID) {
+        this.FM_ID = FM_ID;
+    }
+
+    /**
+     * @return the paymentStatus
+     */
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    /**
+     * @param paymentStatus the paymentStatus to set
+     */
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
     
 }
