@@ -85,6 +85,13 @@ public class MainPanel extends javax.swing.JFrame {
             }
         });
         
+        // - - - - - FULL DISABLES INTERACTIONS - - - - - //
+        viewItemTable.setRowSelectionAllowed(false);
+        viewItemTable.setCellSelectionEnabled(false);
+        viewItemTable.setFocusable(false);
+        viewItemTable.setEnabled(false); 
+
+        
          // - - - - - DISABLE CLICKING TABS - - - - - //
         JTabbedPane.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -93,7 +100,9 @@ public class MainPanel extends javax.swing.JFrame {
             }
         });
         
-        itemTable.setModel(model); 
+        itemTable.setModel(ItemManagement.sharedModel);
+        viewItemTable.setModel(ItemManagement.sharedModel);
+ 
 
         //----- Initialize ItemManagement with necessary components -----//
         itemOps = new ItemManagement(
@@ -109,7 +118,7 @@ public class MainPanel extends javax.swing.JFrame {
         //----- Double click the row to edit then put to textbox / comboBox -----//
         itemOps.doubleClickRow();       
         
-        // - - - - - LOAD DATA INTO TABLE - - - - - //
+        // - - - - - LOAD DATA INTO TABLE (for itemTable)- - - - - //
         itemOps.refresh();     
         
         // - - - - - DISABLE ROW SORTING - - - - - //
@@ -171,6 +180,7 @@ public class MainPanel extends javax.swing.JFrame {
         Logo_lbl = new javax.swing.JLabel();
         Home_Button = new javax.swing.JButton();
         itemEntry_Button = new javax.swing.JButton();
+        viewItemList_Button = new javax.swing.JButton();
         JTabbedPane = new javax.swing.JTabbedPane();
         Home = new javax.swing.JPanel();
         Welcome_panel = new javax.swing.JPanel();
@@ -201,6 +211,10 @@ public class MainPanel extends javax.swing.JFrame {
         itemName_textbox = new javax.swing.JTextField();
         itemCode_lbl = new javax.swing.JLabel();
         supplierName_textbox = new javax.swing.JTextField();
+        jPanel2 = new javax.swing.JPanel();
+        itemTableScrollPane1 = new javax.swing.JScrollPane();
+        viewItemTable = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -228,13 +242,28 @@ public class MainPanel extends javax.swing.JFrame {
             }
         });
 
+        viewItemList_Button.setBackground(new java.awt.Color(255, 255, 204));
+        viewItemList_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        viewItemList_Button.setForeground(new java.awt.Color(0, 0, 0));
+        viewItemList_Button.setText("View Item List");
+        viewItemList_Button.setBorder(null);
+        viewItemList_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewItemList_ButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Logo_lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(Home_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(itemEntry_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+            .addComponent(itemEntry_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(viewItemList_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,8 +271,10 @@ public class MainPanel extends javax.swing.JFrame {
                 .addComponent(Logo_lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(97, 97, 97)
                 .addComponent(Home_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
+                .addGap(18, 18, 18)
                 .addComponent(itemEntry_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(viewItemList_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -375,7 +406,7 @@ public class MainPanel extends javax.swing.JFrame {
                     .addComponent(Calendar_Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         JTabbedPane.addTab("Home", Home);
@@ -543,7 +574,7 @@ public class MainPanel extends javax.swing.JFrame {
         ItemEntryLayout.setVerticalGroup(
             ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ItemEntryLayout.createSequentialGroup()
-                .addContainerGap(182, Short.MAX_VALUE)
+                .addContainerGap(202, Short.MAX_VALUE)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(itemName_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(itemName_lbl))
@@ -580,10 +611,81 @@ public class MainPanel extends javax.swing.JFrame {
                 .addGroup(ItemEntryLayout.createSequentialGroup()
                     .addGap(39, 39, 39)
                     .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(40, Short.MAX_VALUE)))
+                    .addContainerGap(60, Short.MAX_VALUE)))
         );
 
         JTabbedPane.addTab("Item Entry", ItemEntry);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        itemTableScrollPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                itemTableScrollPane1MouseClicked(evt);
+            }
+        });
+        viewItemTable = new javax.swing.JTable() {
+            public boolean isCellEditable(int row, int column) {
+                return false; // makes it uneditable even if model allows it
+            }
+        };
+
+        viewItemTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Retail Price", "Delivery Status"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false, false, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        viewItemTable.getTableHeader().setReorderingAllowed(false);
+        itemTableScrollPane1.setViewportView(viewItemTable);
+        if (viewItemTable.getColumnModel().getColumnCount() > 0) {
+            viewItemTable.getColumnModel().getColumn(0).setMaxWidth(35);
+        }
+
+        jLabel2.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel2.setText("Item List");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(69, Short.MAX_VALUE)
+                .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 934, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(73, 73, 73))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(431, 431, 431)
+                .addComponent(jLabel2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(71, 71, 71))
+        );
+
+        JTabbedPane.addTab("View Item List", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -649,6 +751,14 @@ public class MainPanel extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_supplierID_comboBoxActionPerformed
 
+    private void viewItemList_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_ButtonActionPerformed
+       JTabbedPane.setSelectedIndex(2);
+    }//GEN-LAST:event_viewItemList_ButtonActionPerformed
+
+    private void itemTableScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPane1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemTableScrollPane1MouseClicked
+
 
 
 
@@ -708,9 +818,12 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JTextField itemName_textbox;
     private javax.swing.JTable itemTable;
     private javax.swing.JScrollPane itemTableScrollPane;
+    private javax.swing.JScrollPane itemTableScrollPane1;
     private com.toedter.calendar.JCalendar jCalendar1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
@@ -724,5 +837,7 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JLabel unitPrice_lbl;
     private javax.swing.JTextField unitPrice_textbox;
     private javax.swing.JButton update_Button;
+    private javax.swing.JButton viewItemList_Button;
+    private javax.swing.JTable viewItemTable;
     // End of variables declaration//GEN-END:variables
 }
