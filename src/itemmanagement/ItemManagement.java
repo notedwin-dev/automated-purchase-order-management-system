@@ -40,6 +40,23 @@ public class ItemManagement implements ItemOperations {
         this.retailPrice_textbox = rprice;
     }
     
+    //---------- Creates a shared model ----------//
+    public static DefaultTableModel sharedModel = new DefaultTableModel(
+    new Object[][]{},
+    new String[]{
+        "No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Expected Delivery Date", "Status"
+    }
+) {
+    boolean[] canEdit = new boolean[]{
+        false, false, false, false, false, false, false, false, false
+    };
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return canEdit[columnIndex];
+    }
+};
+
 
     // - - - - - - - - - - ADD FUNCTION - - - - - - - - - - //
     @Override //Acts like a "kastam" where it checks whether the method name, return type, and parameters are correctly used.
