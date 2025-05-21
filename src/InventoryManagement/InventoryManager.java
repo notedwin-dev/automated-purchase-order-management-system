@@ -12,7 +12,7 @@ import java.util.List;
  * @author user
  */
 public class InventoryManager {
-    private static final String ItemFile = "C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\InventoryManagement\\Items.txt"; //<-Please tukar
+    private static final String ItemFile = "src/InventoryManagement/Items.txt"; //<-Please tukar
     
     public static List<Inventory> getAllInventory(){
         List<Inventory> inventoryList = new ArrayList<>();

@@ -21,7 +21,7 @@ public class PR_Management {
     }
     
     public void getPRfromtxtfile() {
-        List<String> lines = TextFile.readFile("C:\\Users\\user\\OneDrive\\Documents\\NetBeansProjects\\automated-purchase-order-management-system\\src\\PurchaseRequisition\\PR.txt");
+        List<String> lines = TextFile.readFile("src/PurchaseRequisition/PR.txt");
         for (String line : lines) {
             String[] parts = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)"); // handle {a,b} fields correctly
 
