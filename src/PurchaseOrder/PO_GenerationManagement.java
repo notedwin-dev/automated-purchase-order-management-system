@@ -165,7 +165,12 @@ public class PO_GenerationManagement {
                 quantity.append(", ");
             }
         }
-        String line = String.format("%s, %s, %s, %s, %s, %s, %s, %s, {%s}, {%s}, {%s}, {%s}, {%s}, Pending",
+        
+        String fmName = "FmName";
+        String fmID = "FmID";
+        String paymentStatus = "Unpaid";
+        
+        String line = String.format("%s, %s, %s, %s, %s, %s, %s, %s, {%s}, {%s}, {%s}, {%s}, {%s}, Pending, %s, %s, %s",
                 PO_ID, PR_ID, date,
                 PM_Name, PM_ID,
                 SM_Name, SM_ID,
@@ -174,7 +179,8 @@ public class PO_GenerationManagement {
                 supplierID.toString(),
                 itemName.toString(),
                 itemCode.toString(),
-                quantity.toString());
+                quantity.toString(),
+                fmName, fmID, paymentStatus);
         
         TextFile.appendTo(POfile, line);
     }
