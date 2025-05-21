@@ -28,7 +28,7 @@ public class Dashboard extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     
-    /**
+      /**
      * Creates new Dashboard with a specified user
      * 
      * @param user The logged-in user
@@ -44,7 +44,7 @@ public class Dashboard extends javax.swing.JFrame {
         // Set up available features based on user role
         setupFeatureButtons();
     }
-    
+
     /**
      * Sets up the feature buttons based on the user's role permissions
      */
@@ -66,7 +66,7 @@ public class Dashboard extends javax.swing.JFrame {
         addFeatureButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
         addFeatureButtonIfPermitted(Feature.SALES_ENTRY, "Daily Sales", "DailySalesManagement.DailySalesUI");
         addFeatureButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Purchase Requisition", "PurchaseRequisition.PRMain");
-        addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, "View Requisitions", "PurchaseRequisition.PRMain");
+        addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, "View Requisitions", "PurchaseOrder.Main_PO");
         addFeatureButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, "Purchase Orders", "PurchaseOrder.PO_Panel");
         addFeatureButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, "Generate Purchase Order", "PurchaseOrder.PO_Panel");
         addFeatureButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, "Inventory Management", "InventoryManagement.InventoryUI");
@@ -125,9 +125,39 @@ public class Dashboard extends javax.swing.JFrame {
      */   
     private void openFeature(String className) {
         try {
+            // Special handling for "dashboard.Dashboard" to prevent reopening
+            if (className.equals("dashboard.Dashboard")) {
+                return; // Already in dashboard, do nothing
+            }
+            
+            // Handle logout separately
+            if (className.equals("auth.Login")) {
+                logout();
+                return;
+            }
+
+            if (className.equals("PurchaseOrder.Main_PO")) {
+                // Pass the PR_Management instance to the PO_Panel
+                Class<?> prClass = Class.forName("PurchaseRequisition.PR_Management");
+                Object prInstance = prClass.getDeclaredConstructor().newInstance();
+                Class<?> poClass = Class.forName(className);
+                Object poInstance = poClass.getDeclaredConstructor(prClass).newInstance(prInstance);
+                ((JFrame) poInstance).setVisible(true);
+                return;
+            }
+            
             // Use reflection to create an instance of the class
             Class<?> featureClass = Class.forName(className);
-            Object instance = featureClass.getDeclaredConstructor().newInstance();
+            Object instance;
+            
+            // Check if we need to pass the current user
+            try {
+                // Try to find a constructor that takes a User parameter
+                instance = featureClass.getDeclaredConstructor(User.class).newInstance(currentUser);
+            } catch (NoSuchMethodException nsme) {
+                // Fall back to default constructor
+                instance = featureClass.getDeclaredConstructor().newInstance();
+            }
             
             // If it's a JFrame, make it visible
             if (instance instanceof JFrame) {
@@ -194,11 +224,19 @@ public class Dashboard extends javax.swing.JFrame {
         lblWelcome.setText("Welcome, User");
         pnlHeader.add(lblWelcome, java.awt.BorderLayout.EAST);
 
-        pnlMain.add(pnlHeader, java.awt.BorderLayout.NORTH);
-
+        pnlMain.add(pnlHeader, java.awt.BorderLayout.NORTH);        // Create a content panel to hold the feature buttons (in the center)
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        
+        // Configure the features panel
         pnlFeatures.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
         pnlFeatures.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 20));
-        pnlMain.add(pnlFeatures, java.awt.BorderLayout.CENTER);
+        
+        // Add the features panel to the content panel
+        contentPanel.add(pnlFeatures, BorderLayout.CENTER);
+        
+        // Add the content panel to the main panel's center
+        pnlMain.add(contentPanel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
 
