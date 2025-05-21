@@ -5,10 +5,17 @@
 package PurchaseRequisition;
 
 import java.awt.Image;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -19,7 +26,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PRMain extends javax.swing.JFrame {
 
-    public PROperation prop = new PROperation();
+    public PROperation prop;
 
     int did;
     String prid = "PR";
@@ -30,13 +37,28 @@ public class PRMain extends javax.swing.JFrame {
     String quantity = "";
     String exdate = "";
     String status = "";
-    private DecimalFormat df = new DecimalFormat("00"); // Added DecimalFormat
+    private DecimalFormat df = new DecimalFormat("00");
+    
+    // Add this to store items and quantities for mapping
+    private String[] selectedItemCodes;
+    private String[] selectedQuantities;
+    private Map<String, String> itemQuantityMap = new HashMap<>();
+
+    // Add this to track if we're adding a new record
+    private boolean isAddingNewRecord = false;
+    private boolean itemsLoaded = false;
+    
+    // Add this to store temporary modifications for new records
+    private List<String> tempItemCodes = new ArrayList<>();
+    private List<String> tempQuantities = new ArrayList<>();
+    private boolean quantityModified = false;
 
     /**
      * Creates new form PRMain
      */
     public PRMain() {
         initComponents();
+        prop = new PROperation(prid, date, smname, smid, itemcode, quantity, exdate, status);
         tableLoad();
         ImageIcon addIcon = new ImageIcon(getClass().getResource("/resources/icons/Add.png"));
         Image scaled_add = addIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
@@ -62,18 +84,113 @@ public class PRMain extends javax.swing.JFrame {
         Image scaled_clean = cleanIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon resizedClean = new ImageIcon(scaled_clean);
         clean_Button.setIcon(resizedClean);
+        
+        // Set isAddingNewRecord to true initially since we start with a blank form
+        isAddingNewRecord = true;
+        
+        // Load items for new record
+        loadItemsForNewRecord();
     }
 
     private void getData() {
+        String rawDate = ((com.toedter.calendar.JTextFieldDateEditor) txtDate.getDateEditor().getUiComponent()).getText();
+        String rawExDate = ((com.toedter.calendar.JTextFieldDateEditor) txtExDate.getDateEditor().getUiComponent()).getText();
+        try {
+            java.util.Date date = new java.text.SimpleDateFormat("dd MMM yyyy").parse(rawDate);
+            String formattedDate = new java.text.SimpleDateFormat("dd-MM-yyyy").format(date);
+            prop.setDate(formattedDate);
+
+            java.util.Date exDate = new java.text.SimpleDateFormat("dd MMM yyyy").parse(rawExDate);
+            String formattedExDate = new java.text.SimpleDateFormat("dd-MM-yyyy").format(exDate);
+            prop.setExDate(formattedExDate);
+        } catch (java.text.ParseException e) {
+            JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
+        }
+        
         prop.setPRID(txtPRID.getText());
-        prop.setDate(((com.toedter.calendar.JTextFieldDateEditor) txtDate.getDateEditor().getUiComponent()).getText());
         prop.setSMName(txtSMName.getText());
         prop.setSMID(txtSMID.getText());
-        prop.setItemCode(txtItemCode.getText());
-        prop.setQuantity(txtQuantity.getText());
-        prop.setExDate(((com.toedter.calendar.JTextFieldDateEditor) txtDate.getDateEditor().getUiComponent()).getText());
+        
+        // Modify the item code and quantity collection logic
+        StringBuilder itemCodesBuilder = new StringBuilder("{");
+        StringBuilder quantitiesBuilder = new StringBuilder("{");
+        
+        if (isAddingNewRecord) {
+            // For new records, use the temporary lists of modified items
+            boolean isFirst = true;
+            
+            // If the current selection has been modified, make sure it's in the temp lists
+            if (quantityModified && cbItemCode.getSelectedItem() != null) {
+                String currentItem = cbItemCode.getSelectedItem().toString();
+                String currentQty = txtQuantity.getText();
+                
+                // Check if this item is already in our temp lists
+                int existingIndex = tempItemCodes.indexOf(currentItem);
+                if (existingIndex >= 0) {
+                    // Update existing entry
+                    tempQuantities.set(existingIndex, currentQty);
+                } else if (!currentQty.equals("0")) {
+                    // Add as new entry if quantity is not zero
+                    tempItemCodes.add(currentItem);
+                    tempQuantities.add(currentQty);
+                }
+                
+                // Reset the modified flag
+                quantityModified = false;
+            }
+            
+            // Build the formatted strings from our temporary lists
+            for (int i = 0; i < tempItemCodes.size(); i++) {
+                // Only include items with non-zero quantities
+                String qty = tempQuantities.get(i);
+                if (!qty.equals("0")) {
+                    if (!isFirst) {
+                        itemCodesBuilder.append(", ");
+                        quantitiesBuilder.append(", ");
+                    } else {
+                        isFirst = false;
+                    }
+                    itemCodesBuilder.append(tempItemCodes.get(i));
+                    quantitiesBuilder.append(qty);
+                }
+            }
+        } else {
+            // For updating existing records, use the previous logic
+            if (selectedItemCodes != null && selectedItemCodes.length > 0) {
+                for (int i = 0; i < selectedItemCodes.length; i++) {
+                    if (i > 0) {
+                        itemCodesBuilder.append(", ");
+                        quantitiesBuilder.append(", ");
+                    }
+                    String itemCode = selectedItemCodes[i];
+                    itemCodesBuilder.append(itemCode);
+                    
+                    // If the quantity was edited, use the edited value for the selected item
+                    if (cbItemCode.getSelectedItem() != null && 
+                        cbItemCode.getSelectedItem().toString().equals(itemCode)) {
+                        quantitiesBuilder.append(txtQuantity.getText());
+                        // Update the map with the new quantity
+                        itemQuantityMap.put(itemCode, txtQuantity.getText());
+                    } else {
+                        quantitiesBuilder.append(itemQuantityMap.get(itemCode));
+                    }
+                }
+            } else {
+                // Fallback to selected item only if no mapping exists
+                if (cbItemCode.getSelectedItem() != null) {
+                    String selectedItem = cbItemCode.getSelectedItem().toString();
+                    itemCodesBuilder.append(selectedItem);
+                    quantitiesBuilder.append(txtQuantity.getText());
+                }
+            }
+        }
+        
+        itemCodesBuilder.append("}");
+        quantitiesBuilder.append("}");
+        
+        prop.setItemCode(itemCodesBuilder.toString());
+        prop.setQuantity(quantitiesBuilder.toString());
         prop.setStatus(cbStatus.getSelectedItem().toString());
-
     }
 
     private void clear() {
@@ -82,10 +199,168 @@ public class PRMain extends javax.swing.JFrame {
         txtDate.setDate(null); // This line clears the JDateChooser for Date
         txtSMName.setText("");
         txtSMID.setText("SM");
-        txtItemCode.setText("");
         txtQuantity.setText("");
         txtExDate.setDate(null); // This line clears the JDateChooser for Expected Delivery Date
         cbStatus.setSelectedIndex(0);
+        
+        // Set flag to indicate we're adding a new record
+        isAddingNewRecord = true;
+        
+        // Clear temporary lists
+        tempItemCodes.clear();
+        tempQuantities.clear();
+        
+        // Load items for a new record
+        loadItemsForNewRecord();
+    }
+    
+    // Add method to load items from items.txt for a new record
+    private void loadItemsForNewRecord() {
+        try {
+            File itemsFile = new File("src/itemmanagement/items.txt");
+            if (!itemsFile.exists()) {
+                JOptionPane.showMessageDialog(this, "Items file not found.");
+                return;
+            }
+            
+            BufferedReader br = new BufferedReader(new FileReader(itemsFile));
+            
+            List<String> itemCodes = new ArrayList<>();
+            itemQuantityMap.clear();
+            
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 2) {
+                    String itemCode = parts[1].trim(); // code is in the second column
+                    itemCodes.add(itemCode);
+                    itemQuantityMap.put(itemCode, "0"); // Default quantity to 0
+                }
+            }
+            br.close();
+            
+            // Set the array of item codes
+            selectedItemCodes = itemCodes.toArray(new String[0]);
+            
+            // Populate the dropdown with item codes
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(selectedItemCodes);
+            cbItemCode.setModel(model);
+            
+            // Add item listener to update quantity when item is selected
+            cbItemCode.removeAllItems(); // Remove existing items
+            for (String code : selectedItemCodes) {
+                cbItemCode.addItem(code);
+            }
+            
+            // Add item listener to update quantity when item is selected
+            for (ItemListener listener : cbItemCode.getItemListeners()) {
+                cbItemCode.removeItemListener(listener);
+            }
+            
+            cbItemCode.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        String selectedItem = cbItemCode.getSelectedItem().toString();
+                        
+                        // Check if this item is in our temp lists first
+                        int tempIndex = tempItemCodes.indexOf(selectedItem);
+                        if (tempIndex >= 0) {
+                            // Use the temp value
+                            txtQuantity.setText(tempQuantities.get(tempIndex));
+                        } else {
+                            // Fall back to the default map
+                            String qty = itemQuantityMap.get(selectedItem);
+                            if (qty != null) {
+                                txtQuantity.setText(qty);
+                            } else {
+                                txtQuantity.setText("0");
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Add document listener to the quantity text field to track changes
+            txtQuantity.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                @Override
+                public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                    quantityModified = true;
+                    
+                    // If we're adding a new record, update the temporary lists
+                    if (isAddingNewRecord && cbItemCode.getSelectedItem() != null) {
+                        String currentItem = cbItemCode.getSelectedItem().toString();
+                        String currentQty = txtQuantity.getText();
+                        
+                        int existingIndex = tempItemCodes.indexOf(currentItem);
+                        if (existingIndex >= 0) {
+                            // Update existing entry
+                            tempQuantities.set(existingIndex, currentQty);
+                        } else if (!currentQty.equals("0")) {
+                            // Add new entry if not zero
+                            tempItemCodes.add(currentItem);
+                            tempQuantities.add(currentQty);
+                        }
+                    }
+                }
+                
+                @Override
+                public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                    insertUpdate(e);
+                }
+                
+                @Override
+                public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                    insertUpdate(e);
+                }
+            });
+            
+            // Select first item
+            if (itemCodes.size() > 0) {
+                cbItemCode.setSelectedIndex(0);
+                txtQuantity.setText("0");
+            }
+            
+            itemsLoaded = true;
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error loading item codes: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // Modify populateItemCodeDropdown method to clear the isAddingNewRecord flag
+    private void populateItemCodeDropdown() {
+        if (selectedItemCodes != null && selectedItemCodes.length > 0) {
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(selectedItemCodes);
+            cbItemCode.setModel(model);
+            
+            // Remove existing listeners before adding new one
+            for (ItemListener listener : cbItemCode.getItemListeners()) {
+                cbItemCode.removeItemListener(listener);
+            }
+            
+            // Add item listener to update quantity when item is selected
+            cbItemCode.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        String selectedItem = cbItemCode.getSelectedItem().toString();
+                        String qty = itemQuantityMap.get(selectedItem);
+                        if (qty != null) {
+                            txtQuantity.setText(qty);
+                        }
+                    }
+                }
+            });
+            
+            // When populating from an existing record, we're not adding a new one
+            isAddingNewRecord = false;
+            
+            // Clear temporary lists since we're working with an existing record now
+            tempItemCodes.clear();
+            tempQuantities.clear();
+        }
     }
 
     /**
@@ -111,7 +386,6 @@ public class PRMain extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         txtSMID = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtItemCode = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         txtQuantity = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
@@ -124,6 +398,7 @@ public class PRMain extends javax.swing.JFrame {
         txtDate = new com.toedter.calendar.JDateChooser();
         jLabel6 = new javax.swing.JLabel();
         txtExDate = new com.toedter.calendar.JDateChooser();
+        cbItemCode = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -184,8 +459,6 @@ public class PRMain extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel7.setText("Item Code");
 
-        txtItemCode.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-
         jLabel9.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel9.setText("Quantity");
 
@@ -195,7 +468,7 @@ public class PRMain extends javax.swing.JFrame {
         jLabel10.setText("Status");
 
         cbStatus.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pending", "Complete" }));
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PENDING", "APPROVED", "COMPLETED" }));
         cbStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbStatusActionPerformed(evt);
@@ -252,6 +525,9 @@ public class PRMain extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel6.setText("Expected Delivery");
 
+        cbItemCode.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        cbItemCode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -259,47 +535,49 @@ public class PRMain extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel4)
-                                .addComponent(txtSMName, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel5)
-                                .addComponent(txtSMID, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jLabel3)
-                        .addComponent(jLabel9)
-                        .addComponent(jLabel7)
-                        .addComponent(txtItemCode)
-                        .addComponent(txtQuantity)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel1)
-                                .addComponent(txtNo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(10, 10, 10)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel2)
-                                .addComponent(txtPRID, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addComponent(jLabel10)
-                        .addComponent(cbStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                            .addGap(27, 27, 27)
-                            .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(txtDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel6))
-                    .addComponent(txtExDate, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtQuantity)
+                    .addComponent(cbStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtDate, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+                    .addComponent(cbItemCode, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel7)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(txtNo, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jLabel2)
+                                    .addComponent(txtPRID, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jLabel10)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel6)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4)
+                                    .addComponent(txtSMName, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(txtSMID, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtExDate, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 814, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -333,7 +611,7 @@ public class PRMain extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cbItemCode)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -363,13 +641,13 @@ public class PRMain extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(64, 64, 64)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -392,6 +670,9 @@ public class PRMain extends javax.swing.JFrame {
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
         //Add Data Button
         try {
+            // Make sure we're in "adding new record" mode
+            isAddingNewRecord = true;
+            
             getData();
             prop.add();
             tableLoad();
@@ -414,124 +695,151 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_clean_ButtonActionPerformed
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
+        // Make sure we're in "updating record" mode
+        isAddingNewRecord = false;
+        
         getData();
         prop.update();
         tableLoad();
         clear();
     }//GEN-LAST:event_update_ButtonActionPerformed
 
-    private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PRTableMouseClicked
-        // TODO add your handling code here:
+    private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
         DefaultTableModel tmodel = (DefaultTableModel) PRTable.getModel();
         int selectrowindex = PRTable.getSelectedRow();
 
         if (selectrowindex >= 0) { // Check if a valid row is selected
-            prid = tmodel.getValueAt(selectrowindex, 0).toString();
-            date = tmodel.getValueAt(selectrowindex, 1).toString();
-            smname = tmodel.getValueAt(selectrowindex, 2).toString();
-            smid = tmodel.getValueAt(selectrowindex, 3).toString();
-            itemcode = tmodel.getValueAt(selectrowindex, 4).toString();
-            quantity = tmodel.getValueAt(selectrowindex, 5).toString();
+            txtNo.setText(tmodel.getValueAt(selectrowindex, 0).toString());
+            prid = tmodel.getValueAt(selectrowindex, 1).toString();
+            date = tmodel.getValueAt(selectrowindex, 2).toString();
+            smname = tmodel.getValueAt(selectrowindex, 3).toString();
+            smid = tmodel.getValueAt(selectrowindex, 4).toString();
+            itemcode = tmodel.getValueAt(selectrowindex, 5).toString();
             exdate = tmodel.getValueAt(selectrowindex, 6).toString();
             status = tmodel.getValueAt(selectrowindex, 7).toString();
             did = selectrowindex + 2;
 
+            // Extract and store item codes and quantities for dropdown
+            String itemsStr = tmodel.getValueAt(selectrowindex, 5).toString();
+            itemQuantityMap.clear();
+            
+            // Parse multiple items like "SP2AP(10), SP2BN(5)"
+            String[] itemParts = itemsStr.split(", ");
+            selectedItemCodes = new String[itemParts.length];
+            selectedQuantities = new String[itemParts.length];
+            
+            for (int i = 0; i < itemParts.length; i++) {
+                String part = itemParts[i].trim();
+                if (part.contains("(") && part.contains(")")) {
+                    int startPos = part.indexOf("(") + 1;
+                    int endPos = part.indexOf(")");
+                    if (startPos < endPos) {
+                        String code = part.substring(0, part.indexOf("(")).trim();
+                        String qty = part.substring(startPos, endPos).trim();
+                        
+                        selectedItemCodes[i] = code;
+                        selectedQuantities[i] = qty;
+                        itemQuantityMap.put(code, qty);
+                    }
+                }
+            }
+
+            // Populate the dropdown
+            populateItemCodeDropdown();
+            
+            // Select the first item by default
+            if (selectedItemCodes != null && selectedItemCodes.length > 0) {
+                cbItemCode.setSelectedItem(selectedItemCodes[0]);
+                txtQuantity.setText(itemQuantityMap.get(selectedItemCodes[0]));
+            }
+
             txtPRID.setText(prid);
             // Date
             try {
-                java.util.Date parsedDate = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(date);
+                java.util.Date parsedDate = new java.text.SimpleDateFormat("dd-MM-yyyy").parse(date);
                 txtDate.setDate(parsedDate); // Use the parsed Date object
             } catch (java.text.ParseException e) {
                 JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
-                // It's good practice to print the stack trace for debugging
             }
+
             txtSMName.setText(smname);
             txtSMID.setText(smid);
-            txtItemCode.setText(itemcode);
-            txtQuantity.setText(quantity);
-            // Expexted Delivery Date
+
+            // Expected Delivery Date
             try {
-                java.util.Date parsedDate = new java.text.SimpleDateFormat("yyyy-MM-dd").parse(exdate);
-                txtExDate.setDate(parsedDate); // Use the parsed Date object2
+                java.util.Date parsedExDate = new java.text.SimpleDateFormat("dd-MM-yyyy").parse(exdate);
+                txtExDate.setDate(parsedExDate);
             } catch (java.text.ParseException e) {
                 JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
             }
+
             // Set the selected item in the combo box
             cbStatus.setSelectedItem(status);
 
+            // Set properties for the PROperation
             prop.setDataID(did);
             prop.setPRID(prid);
-            prop.setDate(date); // Keep the String for your `prop` object if that's what it expects
+            prop.setDate(date);
             prop.setSMName(smname);
             prop.setSMID(smid);
             prop.setItemCode(itemcode);
             prop.setQuantity(quantity);
-            prop.setDate(exdate);
+            prop.setExDate(exdate);
             prop.setStatus(status);
         }
-    }//GEN-LAST:event_PRTableMouseClicked
+    }
 
     private void tableLoad() {
         DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
         model.setRowCount(0);
-        model.setColumnIdentifiers(new String[]{"No.", "PR ID", "Date", "SM Name", "SM ID", "Items", "Expected Delivery", "Status"}); // Update column names
+        model.setColumnIdentifiers(new String[]{"No.", "PR ID", "Date", "SM Name", "SM ID", "Items", "Expected Delivery", "Status"});
 
         String filePath = "src/PurchaseRequisition/PR.txt";
         File file = new File(filePath);
-        java.util.Map<String, java.util.List<String[]>> smItems = new java.util.HashMap<>(); // Map to group items by SM ID
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String headerLine = br.readLine().trim(); // Read and ignore the header line
+            String headerLine = br.readLine(); // Read and ignore the header line
 
             String line;
+            int rowNum = 1;
+
             while ((line = br.readLine()) != null) {
-                String[] dataRow = line.split(",");
-                if (dataRow.length >= 9) { // Ensure all columns exist
+                // Use regex to properly split by commas outside of curly braces
+                String[] dataRow = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)");
+
+                if (dataRow.length >= 8) { // Check for required columns
+                    String prID = dataRow[0].trim();
+                    String date = dataRow[1].trim();
+                    String smName = dataRow[2].trim();
                     String smID = dataRow[3].trim();
-                    String itemCode = dataRow[4].trim();
-                    String quantity = dataRow[5].trim();
 
-                    if (!smItems.containsKey(smID)) {
-                        smItems.put(smID, new java.util.ArrayList<>());
-                    }
-                    smItems.get(smID).add(new String[]{itemCode, quantity});
-                }
-            }
+                    // Extract item codes and quantities - handle the curly braces
+                    String itemCodesRaw = dataRow[4].trim().replace("{", "").replace("}", "");
+                    String quantitiesRaw = dataRow[5].trim().replace("{", "").replace("}", "");
 
-            // Now, iterate through the grouped items and populate the table
-            try (BufferedReader br2 = new BufferedReader(new FileReader(file))) {
-                String headerLine2 = br2.readLine().trim(); // Read and ignore header again
-                String line2;
-                java.util.Map<String, Boolean> smProcessed = new java.util.HashMap<>(); // To avoid adding the same SM multiple times
+                    String[] itemCodes = itemCodesRaw.split(",");
+                    String[] quantities = quantitiesRaw.split(",");
 
-                while ((line2 = br2.readLine()) != null) {
-                    String[] dataRow2 = line2.split(",");
-                    if (dataRow2.length >= 9) {
-                        String prID = dataRow2[0].trim();
-                        String date = dataRow2[1].trim();
-                        String smName = dataRow2[2].trim();
-                        String smID = dataRow2[3].trim();
-                        String exDate = dataRow2[6].trim();
-                        String status = dataRow2[7].trim();
-
-                        if (!smProcessed.containsKey(smID)) {
-                            StringBuilder itemsBuilder = new StringBuilder();
-                            if (smItems.containsKey(smID)) {
-                                for (String[] itemQty : smItems.get(smID)) {
-                                    itemsBuilder.append(itemQty[0]).append("(").append(itemQty[1]).append(") ");
-                                }
-                            }
-                            model.addRow(new Object[]{prID, date, smName, smID, itemsBuilder.toString().trim(), exDate, status});
-                            smProcessed.put(smID, true);
+                    // Build formatted items string
+                    StringBuilder itemsBuilder = new StringBuilder();
+                    for (int i = 0; i < itemCodes.length && i < quantities.length; i++) {
+                        if (i > 0) {
+                            itemsBuilder.append(", ");
                         }
+                        itemsBuilder.append(itemCodes[i].trim()).append("(").append(quantities[i].trim()).append(")");
                     }
+
+                    String exDate = dataRow[6].trim();
+                    String status = dataRow[7].trim();
+
+                    // Add row with row number 
+                    model.addRow(new Object[]{rowNum++, prID, date, smName, smID, itemsBuilder.toString(), exDate, status});
                 }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error reading file for table population: " + e);
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error reading file for grouping: " + e);
+            JOptionPane.showMessageDialog(null, "Error reading file for table population: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -573,6 +881,7 @@ public class PRMain extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable PRTable;
     private javax.swing.JButton add_Button;
+    private javax.swing.JComboBox<String> cbItemCode;
     private javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JButton clean_Button;
     private javax.swing.JButton delete_Button;
@@ -591,7 +900,6 @@ public class PRMain extends javax.swing.JFrame {
     private javax.swing.JButton refresh_Button;
     private com.toedter.calendar.JDateChooser txtDate;
     private com.toedter.calendar.JDateChooser txtExDate;
-    private javax.swing.JTextField txtItemCode;
     private javax.swing.JTextField txtNo;
     private javax.swing.JTextField txtPRID;
     private javax.swing.JTextField txtQuantity;

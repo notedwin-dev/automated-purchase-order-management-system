@@ -5,6 +5,7 @@
 package PurchaseOrder;
 
 import InventoryManagement.Inventory;
+import PurchaseRequisition.PROperation;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.ParseException;
@@ -30,23 +31,21 @@ public class PO_GenerationUI extends javax.swing.JFrame {
      */
     private PO_GenerationManagement management;
     private DefaultTableModel tableModel;
+    private PROperation existingPR;
     
-    public PO_GenerationUI() {
+    public PO_GenerationUI(PROperation existingPR) {
         initComponents();
-        
+        this.existingPR = existingPR;
         management = new PO_GenerationManagement();
-        tableModel = (DefaultTableModel) jTable1.getModel();
-        
         tableModel = new DefaultTableModel(
-                new Object[]{"No.", "Item Name", "Item Code", "Supplier Name", "Supplier ID", "Quantity"}, 0) {
-                    @Override
-                    public boolean isCellEditable(int row, int column) {
-                        return false; //----- All column is non-editable -----//
-                        }
-                };
+            new Object[]{"No.", "Item Name", "Item Code", "Supplier Name", "Supplier ID", "Quantity"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         jTable1.setModel(tableModel);
 
-        
         displayPRDetails();
         loadSupplierIDinComboBox();
         itemsFromSupplier();
@@ -56,32 +55,33 @@ public class PO_GenerationUI extends javax.swing.JFrame {
         SupplierIDComboBox.addActionListener(e -> itemsFromSupplier());
         ItemCodeComboBox.addActionListener(e -> displayItemDetailsTxt());
         
+        if (SupplierIDComboBox.getItemCount() > 0)
         SupplierIDComboBox.setSelectedIndex(0);
+
+        if (ItemCodeComboBox.getItemCount() > 0)
         ItemCodeComboBox.setSelectedIndex(0);
+
         ItemNametxt.setText(""); 
         SupplierNametxt.setText("");
         quantitytxt.setText("");
     }
     
+    
+ 
+    
     private void displayPRDetails(){
-        PO_GenerationManagement.PRData prData = management.getFirstPR();
-        if(prData == null){
-            JOptionPane.showMessageDialog(this, "No PR found.");
-            return; 
-        }
-        
         POIDtxt.setText(management.generatePO_ID());
-        PRIDtxt.setText(prData.PR_ID);
+        PRIDtxt.setText(existingPR.getPRID());
         Datetxt.setText(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
-        SMNAMEtxt.setText(prData.SM_Name);
-        SMIDtxt.setText(prData.SM_ID);
+        SMNAMEtxt.setText(existingPR.getSMName());
+        SMIDtxt.setText(existingPR.getSMID());
         PMNAMEtxt.setText("Michael");
         PMIDtxt.setText("PM001");
         
         try {
-            if (prData.expectedDeliveryDate != null && !prData.expectedDeliveryDate.isEmpty()) {
+            if (existingPR.getExDate() != null && !existingPR.getExDate().isEmpty()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                Date expectedDate = sdf.parse(prData.expectedDeliveryDate);
+                Date expectedDate = sdf.parse(existingPR.getExDate());
                 expectedDatetxt.setDate(expectedDate);
             } else {
                 System.out.println("Expected delivery date is empty!");
@@ -90,17 +90,30 @@ public class PO_GenerationUI extends javax.swing.JFrame {
             e.printStackTrace();
         }
         
-        tableModel.setRowCount(0);
+
+        String[] itemCodes = existingPR.getItemCode().split("\\r?\\n");
+        String[] quantities = existingPR.getQuantity().split("\\r?\\n");
+
         int no = 1;
-        for(PurchaseOrderItem item : prData.items){
-            tableModel.addRow(new Object[]{
-                no++,
-                item.getItemName(),
-                item.getItemCode(),
-                item.getSupplierName(),
-                item.getSupplierID(),
-                item.getQuantity()
-            });
+        for (int i = 0; i < itemCodes.length; i++) {
+            String code = itemCodes[i].trim();
+            String qty = (i < quantities.length) ? quantities[i].trim() : "";
+            
+            System.out.println("Looking up item: [" + code + "]");
+
+            Inventory item = management.getItemDetailsByCode(code);
+            if (item != null) {
+                tableModel.addRow(new Object[]{
+                    no++,
+                    item.getItemName(),
+                    item.getItemCode(),
+                    item.getSupplierName(),
+                    item.getSupplierID(),
+                    qty
+                });
+            } else {
+                System.out.println("Item not found: " + code);
+            }
         }
     }
     
@@ -308,7 +321,6 @@ public class PO_GenerationUI extends javax.swing.JFrame {
         management.updatePR(PR_ID, items, expectedDeliveryDate);
         JOptionPane.showMessageDialog(this, "Purchase Order: " + PO_ID + " generated and PR updated successfully!", "SUCCESS INFORMATION", JOptionPane.INFORMATION_MESSAGE);
         this.dispose();
-        new PO_Panel().setVisible(true);
     }
     
      //----- Double click the table row to add the data to the textBox / comboBox -----//
@@ -811,37 +823,37 @@ public class PO_GenerationUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PO_GenerationUI().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(PO_GenerationUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new PO_GenerationUI().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField Datetxt;
