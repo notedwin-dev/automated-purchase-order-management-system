@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class DailySalesUI extends javax.swing.JFrame {
         Date today = new Date();
         filterdate.setDate(today);
         filterSalesWithDate();
+        displayTotalSales();
         
         filterdate.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener(){
             @Override
@@ -60,10 +62,12 @@ public class DailySalesUI extends javax.swing.JFrame {
             
             if (dateStr.compareTo(currentDateStr) < 0) {
                 jButton2.setEnabled(false); // Add
-                jButton3.setEnabled(false); // Edit
+                jButton3.setEnabled(false);
+                jButton5.setEnabled(false);// Edit
             } else {
                 jButton2.setEnabled(true);
                 jButton3.setEnabled(true);
+                jButton5.setEnabled(true);
             }
             
             List<Sales> filteredSales = new ArrayList<>();
@@ -133,6 +137,19 @@ public class DailySalesUI extends javax.swing.JFrame {
         jTextField3.setText(""); 
         jTable1.clearSelection();
     }   
+    
+    private void displayTotalSales(){
+        Date selectedDate = filterdate.getDate();
+        if(selectedDate == null){
+            return;
+        }
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String salesDate = sdf.format(selectedDate);
+        DecimalFormat df = new DecimalFormat("RM 0.00");
+        double totalSales = dailySalesManagement.calculateTotalSalesOfDay(salesDate);
+        totalsalestxt.setText(df.format(totalSales));
+    }
 
     
 
@@ -162,6 +179,8 @@ public class DailySalesUI extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jButton6 = new javax.swing.JButton();
         filterdate = new com.toedter.calendar.JDateChooser();
+        jLabel2 = new javax.swing.JLabel();
+        totalsalestxt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -286,6 +305,12 @@ public class DailySalesUI extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel2.setText("Total Sales of Day:");
+
+        totalsalestxt.setEditable(false);
+        totalsalestxt.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -294,24 +319,19 @@ public class DailySalesUI extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(171, 171, 171)
+                        .addGap(50, 50, 50)
                         .addComponent(jButton2)
-                        .addGap(135, 135, 135)
+                        .addGap(28, 28, 28)
                         .addComponent(jButton3)
-                        .addGap(143, 143, 143)
+                        .addGap(33, 33, 33)
                         .addComponent(jButton4)
-                        .addGap(154, 154, 154)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton5)
-                        .addContainerGap(223, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(jButton6)
-                        .addGap(379, 379, 379))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(filterdate, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(31, 31, 31)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -323,8 +343,16 @@ public class DailySalesUI extends javax.swing.JFrame {
                                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(totalsalestxt, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(filterdate, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(114, 114, 114))))
         );
         layout.setVerticalGroup(
@@ -345,20 +373,23 @@ public class DailySalesUI extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel5)
                             .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(102, 102, 102))
+                        .addGap(169, 169, 169))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
                         .addComponent(filterdate, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)))
-                .addComponent(jButton6)
-                .addGap(46, 46, 46)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(totalsalestxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jButton4)
-                    .addComponent(jButton5))
+                    .addComponent(jButton5)
+                    .addComponent(jButton6))
                 .addGap(73, 73, 73))
         );
 
@@ -396,6 +427,7 @@ public class DailySalesUI extends javax.swing.JFrame {
             return;
         }
         JOptionPane.showMessageDialog(this, "Daily Item Sales added successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
+        displayTotalSales();
         filterSalesWithDate();
         clearFields();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -442,6 +474,7 @@ public class DailySalesUI extends javax.swing.JFrame {
         }
         
         JOptionPane.showMessageDialog(this, "Daily Item Sales updated successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
+        displayTotalSales();
         filterSalesWithDate();
         clearFields();
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -471,18 +504,21 @@ public class DailySalesUI extends javax.swing.JFrame {
             return;
         }
         JOptionPane.showMessageDialog(this, "Daily Item Sales deleted successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
+        displayTotalSales();
         filterSalesWithDate();
         clearFields();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         // TODO add your handling code here:
+        displayTotalSales();
         filterSalesWithDate();
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-     clearFields();
+        displayTotalSales();
+        clearFields();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -530,6 +566,7 @@ public class DailySalesUI extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -538,5 +575,6 @@ public class DailySalesUI extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField totalsalestxt;
     // End of variables declaration//GEN-END:variables
 }

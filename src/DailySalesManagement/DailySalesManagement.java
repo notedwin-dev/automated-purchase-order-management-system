@@ -117,18 +117,6 @@ public class DailySalesManagement {
         return null;
     }
     
-    //delete function
-//    public boolean deleteSales(String salesDate, String itemCode){
-//        for(Sales sale : salesData){
-//            if(sale.getSalesDate().equals(salesDate) && sale.getItemCode().equals(itemCode)){
-//                salesData.remove(sale);
-//                saveSalesToTxtFile();
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-    
     public Sales deleteSales(String salesDate, String itemCode) {
         Iterator<Sales> iterator = salesData.iterator();
 
@@ -142,6 +130,16 @@ public class DailySalesManagement {
             }
         }
         return null;
+    }
+    
+    public double calculateTotalSalesOfDay(String salesDate){
+        double totalSales = 0.0;
+        for(Sales sale : salesData){
+            if(sale.getSalesDate().equals(salesDate)){
+                totalSales += sale.getTotalAmount();
+            }
+        }
+        return totalSales;
     }
 
     
