@@ -158,11 +158,11 @@ public class PO_GenerationManagement {
             quantity.append(item.getQuantity());
             
             if(i < items.size() -1 ){
-                supplierName.append(", ");
-                supplierID.append(", ");
-                itemName.append(", ");
-                itemCode.append(", ");
-                quantity.append(", ");
+                supplierName.append(",");
+                supplierID.append(",");
+                itemName.append(",");
+                itemCode.append(",");
+                quantity.append(",");
             }
         }
         
@@ -170,17 +170,17 @@ public class PO_GenerationManagement {
         String fmID = "FmID";
         String paymentStatus = "Unpaid";
         
-        String line = String.format("%s, %s, %s, %s, %s, %s, %s, %s, {%s}, {%s}, {%s}, {%s}, {%s}, Pending, %s, %s, %s",
-                PO_ID, PR_ID, date,
-                PM_Name, PM_ID,
-                SM_Name, SM_ID,
+        String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,{%s},{%s},{%s},{%s},{%s},Pending,%s,%s,%s",
+                PO_ID,PR_ID,date,
+                PM_Name,PM_ID,
+                SM_Name,SM_ID,
                 expectedDeliveryDate,
                 supplierName.toString(),
                 supplierID.toString(),
                 itemName.toString(),
                 itemCode.toString(),
                 quantity.toString(),
-                fmName, fmID, paymentStatus);
+                fmName,fmID,paymentStatus);
         
         TextFile.appendTo(POfile, line);
     }
