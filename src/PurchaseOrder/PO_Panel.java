@@ -4,17 +4,25 @@
  */
 package PurchaseOrder;
 
+import PurchaseRequisition.PROperation;
+import PurchaseRequisition.PR_Management;
 import java.awt.*;
+import java.util.Arrays;
 import javax.swing.table.*;
 import javax.swing.*;
+import java.util.List;
+
 
 public class PO_Panel extends javax.swing.JFrame {
 
     private DefaultTableModel tmodel;
-
+    private PO_GenerationManagement manage;
+    private PR_Management prmanagement;
     
-    public PO_Panel() {
+    public PO_Panel(PR_Management prmanagement) {
         initComponents();
+        this.prmanagement = prmanagement;
+        this.prmanagement.getPRfromtxtfile();
         // - - - - - RESIZE ICON LOGO - - - - - //
         ImageIcon logoIcon = new ImageIcon(getClass().getResource("/resources/icons/Logo.png"));
         Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
@@ -30,6 +38,8 @@ public class PO_Panel extends javax.swing.JFrame {
             }
         
         };
+        
+        prTable.setModel(tmodel);
         
         // - - - - - HIDES THE TABS - - - - - //
         PO_TabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
@@ -56,9 +66,12 @@ public class PO_Panel extends javax.swing.JFrame {
         });
         
         //----- Link model to table -----//
-        prTable.setModel(tmodel); 
+//        prTable.setModel(tmodel); 
 
-//        refreshTable();
+        //----- Initialize manage -----//
+        manage = new PO_GenerationManagement();
+
+        refreshTable();
         setColumnWidth();
 
     }
@@ -100,16 +113,23 @@ public class PO_Panel extends javax.swing.JFrame {
     
             
     // ========== LOAD DATA INTO TABLE ========== //   
-//    public void refreshTable() {
+    public void refreshTable() {
 //        DefaultTableModel tmodel = (DefaultTableModel) prTable.getModel();
-//        tmodel.setRowCount(0); // Clear table
-//
-//        for (Object[] row : poManage.getTableData()) {
-//            tmodel.addRow(row);
-//        }
-//
-//        applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
-//    }
+        tmodel.setRowCount(0); // Clear table
+
+        List<Object[]> data = manage.getTableData();
+        System.out.println("Data rows count: " + data.size());
+    
+        for (Object[] row : manage.getTableData()) {
+            System.out.println(Arrays.toString(row));
+            tmodel.addRow(row);
+        }
+
+        applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
+    }
+    
+  
+
     
     
     // ========== ADJUST TABLE COLUMN SIZE ========== //   
@@ -123,6 +143,16 @@ public class PO_Panel extends javax.swing.JFrame {
         prTable.getColumnModel().getColumn(6).setPreferredWidth(90);   //-- "Quantity"
         prTable.getColumnModel().getColumn(7).setPreferredWidth(130); //-- "Expected Delivery Date"
         prTable.getColumnModel().getColumn(8).setPreferredWidth(90);   //-- "Status"
+    }
+    
+    private PROperation getSelectedPR(){
+        int selectedRow = prTable.getSelectedRow();
+        if(selectedRow == -1){
+            JOptionPane.showMessageDialog(null, "Please select a row" , "Selection Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        String prid = prTable.getValueAt(selectedRow, 1).toString(); // PR ID is at col 1
+        return prmanagement.findprid(prid);
     }
     
     /**
@@ -152,7 +182,6 @@ public class PO_Panel extends javax.swing.JFrame {
 
         Home_Button.setBackground(new java.awt.Color(255, 255, 204));
         Home_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        Home_Button.setForeground(new java.awt.Color(0, 0, 0));
         Home_Button.setText("Home");
         Home_Button.setBorder(null);
         Home_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -163,7 +192,6 @@ public class PO_Panel extends javax.swing.JFrame {
 
         PRList_Button.setBackground(new java.awt.Color(255, 255, 204));
         PRList_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        PRList_Button.setForeground(new java.awt.Color(0, 0, 0));
         PRList_Button.setText("PR List");
         PRList_Button.setBorder(null);
         PRList_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -207,7 +235,6 @@ public class PO_Panel extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         Title_lbl.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
-        Title_lbl.setForeground(new java.awt.Color(0, 0, 0));
         Title_lbl.setText("Generate Purchase Order");
 
         prTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -226,6 +253,8 @@ public class PO_Panel extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        prTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        prTable.getTableHeader().setReorderingAllowed(false);
         prTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 prTableMouseClicked(evt);
@@ -235,8 +264,12 @@ public class PO_Panel extends javax.swing.JFrame {
 
         generatePO_button.setBackground(new java.awt.Color(255, 255, 204));
         generatePO_button.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
-        generatePO_button.setForeground(new java.awt.Color(0, 0, 0));
         generatePO_button.setText("Generate");
+        generatePO_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                generatePO_buttonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -304,6 +337,15 @@ public class PO_Panel extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_prTableMouseClicked
 
+    private void generatePO_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePO_buttonActionPerformed
+        // TODO add your handling code here:
+        PROperation selectedPR = getSelectedPR();
+        if(selectedPR != null){
+            new PO_GenerationUI(selectedPR).setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_generatePO_buttonActionPerformed
+
     
  
     
@@ -312,37 +354,37 @@ public class PO_Panel extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PO_Panel().setVisible(true);
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(PO_Panel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                new PO_Panel().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Home_Button;
