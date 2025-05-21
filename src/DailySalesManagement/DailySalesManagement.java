@@ -4,8 +4,12 @@
  */
 package DailySalesManagement;
 
+import InventoryManagement.Inventory;
+import InventoryManagement.InventoryManager;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -63,7 +67,7 @@ public class DailySalesManagement {
         List<String> lines = TextFile.readFile(ItemFile);
         for(String line : lines){
             String[] data = line.split(",");
-            if(data.length >= 6 && data[1].equals(itemCode)){
+            if(data.length >= 7 && data[1].equals(itemCode)){
                 try{
                     return Double.parseDouble(data[6].trim());
                 }catch(NumberFormatException e){
@@ -75,43 +79,71 @@ public class DailySalesManagement {
     }
     
     //Add function
-    public void addSales(String salesDate, String itemCode, String itemName, int quantitySold){
+    public Sales addSales(String salesDate, String itemCode, String itemName, int quantitySold){
         double retailPrice = getRetailPriceFromItemCode(itemCode);
         double totalAmount = retailPrice * quantitySold;
         Sales newSales = new Sales(salesDate, itemCode, itemName, quantitySold, retailPrice, totalAmount);
         salesData.add(newSales);
         String appendSale = salesDate + "," + itemCode + "," + itemName + "," + quantitySold + "," + retailPrice + "," + totalAmount;
         TextFile.appendTo(SalesFile, appendSale);
+        return newSales;
     }
     
     //update function
-    public boolean updateSales(String salesDate, String itemCode, String itemName, int quantitySold){
+    public Sales updateSales(String salesDate, String itemCode, String itemName, int quantitySold){
         double retailPrice = getRetailPriceFromItemCode(itemCode);
         double totalAmount = retailPrice * quantitySold;
+        
         for(Sales sale : salesData){
             if(sale.getSalesDate().equals(salesDate) && sale.getItemCode().equals(itemCode)){
+                Sales oldSale = new Sales(
+                    sale.getSalesDate(),
+                    sale.getItemCode(),
+                    sale.getItemName(),
+                    sale.getQuantitySold(),
+                    sale.getRetailPrice(),
+                    sale.getTotalAmount()
+                );
+                
                 sale.setItemName(itemName);
                 sale.setQuantitySold(quantitySold);
                 sale.setRetailPrice(retailPrice);
                 sale.setTotalAmount(totalAmount);
+
                 saveSalesToTxtFile();
-                return true;
+                return oldSale;
             }
         }
-        return false;
+        return null;
     }
     
     //delete function
-    public boolean deleteSales(String salesDate, String itemCode){
-        for(Sales sale : salesData){
-            if(sale.getSalesDate().equals(salesDate) && sale.getItemCode().equals(itemCode)){
-                salesData.remove(sale);
+//    public boolean deleteSales(String salesDate, String itemCode){
+//        for(Sales sale : salesData){
+//            if(sale.getSalesDate().equals(salesDate) && sale.getItemCode().equals(itemCode)){
+//                salesData.remove(sale);
+//                saveSalesToTxtFile();
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+    
+    public Sales deleteSales(String salesDate, String itemCode) {
+        Iterator<Sales> iterator = salesData.iterator();
+
+        while (iterator.hasNext()) {
+            Sales sale = iterator.next();
+
+            if (sale.getSalesDate().equals(salesDate) && sale.getItemCode().equals(itemCode)) {
+                iterator.remove();
                 saveSalesToTxtFile();
-                return true;
+                return sale; // return the deleted sale
             }
         }
-        return false;
+        return null;
     }
+
     
     private void saveSalesToTxtFile(){
         List<String> lines = new ArrayList<>();
@@ -119,5 +151,62 @@ public class DailySalesManagement {
             lines.add(sale.getSalesDate() + "," + sale.getItemCode() + "," + sale.getItemName() + "," + sale.getQuantitySold() + "," + sale.getRetailPrice() + "," + sale.getTotalAmount());
         }
         TextFile.overwriteFile(SalesFile, lines);
+    }
+    
+    public boolean updateStockWhenAdd(Sales newSale){
+        Inventory inv = InventoryManager.getAllInventory().stream()
+                .filter(i -> i.getItemCode().equals(newSale.getItemCode()))
+                .findFirst().orElse(null);
+
+        if(inv != null){
+            int newStock = inv.getQuantity() - newSale.getQuantitySold();
+            
+            if(newStock < 0){
+                JOptionPane.showMessageDialog(null, "Insufficient stock for item: " + newSale.getItemName());
+                return false;
+            }
+            
+            inv.setQuantity(newStock);
+            InventoryManager.UpdateInventory(inv);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean updateStockWhenUpdate(Sales oldSale, Sales newSale){
+        Inventory inv = InventoryManager.getAllInventory().stream()
+                .filter(i -> i.getItemCode().equals(newSale.getItemCode()))
+                .findFirst().orElse(null);
+        
+        if(inv != null){
+            int revertedStock = inv.getQuantity() + oldSale.getQuantitySold();
+            int newStock = revertedStock - newSale.getQuantitySold();
+            
+            if(newStock < 0){
+                JOptionPane.showMessageDialog(null, "Insufficient stock for item: " + newSale.getItemName());
+                return false;
+            }
+            
+            inv.setQuantity(newStock);
+            InventoryManager.UpdateInventory(inv);
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean updateStockWhenDelete(Sales deletedSale) {
+        Inventory inv = InventoryManager.getAllInventory().stream()
+                .filter(i -> i.getItemCode().equals(deletedSale.getItemCode()))
+                .findFirst().orElse(null);
+
+        if (inv != null) {
+            int newStock = inv.getQuantity() + deletedSale.getQuantitySold();
+            inv.setQuantity(newStock);
+            InventoryManager.UpdateInventory(inv);
+            return true;
+        }
+
+        JOptionPane.showMessageDialog(null, "Inventory record not found for item: " + deletedSale.getItemName());
+        return false;
     }
 }

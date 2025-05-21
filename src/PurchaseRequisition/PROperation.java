@@ -109,8 +109,8 @@ public class PROperation {
 
         try {
             FileWriter writer = new FileWriter("src/PurchaseRequisition/PR.txt", true);
-            writer.write(this.prid + "," + this.date + "," + this.smname + "," + this.smid + ","
-                    + this.itemcode + "," + this.quantity + "," + this.exdate + "," + this.status);
+            writer.write(this.prid + ", " + this.date + ", " + this.smname + ", " + this.smid + ", "
+                    + this.itemcode + ", " + this.quantity + ", " + this.exdate + ", " + this.status);
             writer.write(System.getProperty("line.separator"));
             writer.close();
             JOptionPane.showMessageDialog(null, "Data Added Successfully!");
@@ -156,15 +156,18 @@ public class PROperation {
             BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
 
             String currentLine;
+            String headerLine = reader.readLine(); // Read the header line
+            writer.write(headerLine); // Write the header line to the temp file
+            writer.newLine();
             boolean found = false;
 
             while ((currentLine = reader.readLine()) != null) {
-                String[] parts = currentLine.split(",");
-                // Assuming PRID is at index 0 now (since No. is removed)
-                if (parts.length >= 5 && parts[0].equals(this.prid)) {
+                // Use regex to properly split by commas outside of curly braces
+                String[] parts = currentLine.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)");
+                if (parts.length >= 1 && parts[0].trim().equals(this.prid)) {
                     // Write updated data
-                    writer.write(this.prid + "," + this.date + "," + this.smname + "," + this.smid + ","
-                            + this.itemcode + "," + this.quantity + "," + this.exdate + "," + this.status);
+                    writer.write(this.prid + ", " + this.date + ", " + this.smname + ", " + this.smid + ", "
+                            + this.itemcode + ", " + this.quantity + ", " + this.exdate + ", " + this.status);
                     found = true;
                 } else {
                     writer.write(currentLine);
