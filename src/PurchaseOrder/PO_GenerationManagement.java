@@ -13,11 +13,13 @@ import java.util.stream.Collectors;
  * @author user
  */
 import InventoryManagement.Inventory;
-
+import java.util.HashMap;
+import java.util.Map;
 public class PO_GenerationManagement {
     private static final String ItemFile = "src/InventoryManagement/Items.txt"; 
     private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
-    private static final String POfile = "src/PurchaseOrder/PO.txt";
+    public static final String POfile = "src/PurchaseOrder/PO.txt";
+    private static Map<String, String> quantityMap = new HashMap<>();
 
     
     public class PRData{
@@ -221,5 +223,169 @@ public class PO_GenerationManagement {
         }
     }
     
+    
+    private static PurchaseOrder parseLineToPO(String line) {
+        List<String> parts = new ArrayList<>();
+        StringBuilder currentPart = new StringBuilder();
+        int braceCount = 0;
+
+        for (char c : line.toCharArray()) {
+            if (c == '{') braceCount++;
+            else if (c == '}') braceCount--;
+
+            if (c == ',' && braceCount == 0) {
+                parts.add(currentPart.toString().trim());
+                currentPart = new StringBuilder();
+            } else {
+                currentPart.append(c);
+            }
+        }
+
+        parts.add(currentPart.toString().trim());
+
+        if (parts.size() < 17) {
+            System.out.println("Invalid line (missing fields): " + line);
+            return null;
+        }
+
+        String PO_ID = parts.get(0);
+        String PR_ID = parts.get(1);
+        String date = parts.get(2);
+        String PM_Name = parts.get(3);
+        String PM_ID = parts.get(4);
+        String SM_Name = parts.get(5);
+        String SM_ID = parts.get(6);
+        String expectedDeliveryDate = parts.get(7);
+        String SP_Name = parts.get(8);
+        String SP_ID = parts.get(9);
+        String itemName = parts.get(10);
+        String itemCode = parts.get(11);
+        String quantityField = parts.get(12);
+        String status = parts.get(13);
+
+        // Save full quantity string (remove curly braces only for display)
+        String quantityStr = quantityField.replace("{", "").replace("}", "");
+        quantityMap.put(PO_ID, quantityStr);
+        
+        String FM_Name = parts.get(14);
+        String FM_ID = parts.get(15);
+        String paymentStatus = parts.get(16);
+        
+        // Parse only the first quantity as int
+        int quantity = 0;
+        try {
+            if (quantityStr.contains(",")) {
+                quantity = Integer.parseInt(quantityStr.split(",")[0].trim());
+            } else {
+                quantity = Integer.parseInt(quantityStr.trim());
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid quantity in line: " + line);
+        }
+
+        return new PurchaseOrder(PO_ID, PR_ID, date, PM_Name, PM_ID, SM_Name, SM_ID, expectedDeliveryDate,
+                                 SP_ID, SP_Name, itemCode, itemName, status, quantity, FM_Name, FM_ID, paymentStatus);
+    }
+    
+    public static List<PurchaseOrder> getAllPurchaseOrders() {
+        List<String> lines = TextFile.readFile(POfile);
+        List<PurchaseOrder> poList = new ArrayList<>();
+
+        for (String line : lines) {
+            PurchaseOrder po = parseLineToPO(line);
+            if (po != null) {
+                poList.add(po);
+            }
+        }
+        return poList;
+    }
+    
+    public static String getOriginalQuantity(String poId) {
+        return quantityMap.getOrDefault(poId, "");
+    }
+    
+    public boolean updatePO(PurchaseOrder updatedPO, String quantityList) {
+        List<String> lines = TextFile.readFile(POfile);
+        String oldLine = null;
+        String newLine = convertPOToLine(updatedPO, quantityList); // use string
+
+        for (String line : lines) {
+            if (line.startsWith(updatedPO.getPO_ID() + ",")) {
+                oldLine = line;
+                break;
+            }
+        }
+
+        if (oldLine == null) {
+            return false;
+        }
+
+        TextFile.replaceLine(POfile, oldLine, newLine);
+        return true;
+    }
+    
+    private String convertPOToLine(PurchaseOrder po, String quantityList) {
+        String spName = po.getSP_Name();
+        String spID = po.getSP_ID();
+        String itemName = po.getItemName();
+        String itemCode = po.getItemCode();
+
+        return String.join(",", 
+            po.getPO_ID(),
+            po.getPR_ID(),
+            po.getDate(),
+            po.getPM_Name(),
+            po.getPM_ID(),
+            po.getSM_Name(),
+            po.getSM_ID(),
+            po.getExpectedDeliveryDate(),
+            spName,
+            spID,
+            itemName,
+            itemCode,
+            quantityList, // use the full quantity list string here
+            po.getStatus(),
+            po.getFM_Name(),
+            po.getFM_ID(),
+            po.getPaymentStatus()
+        );
+    }
+    
+    public static boolean deletePurchaseOrder(String poID) {
+        List<String> lines = TextFile.readFile(POfile);
+        String lineToDelete = null;
+
+        for (String line : lines) {
+            if (line.startsWith(poID + ",")) {
+                lineToDelete = line;
+                break;
+            }
+        }
+
+        if (lineToDelete != null) {
+            TextFile.deleteLine(POfile, lineToDelete);
+            quantityMap.remove(poID); // Optional: clean up the cache if needed
+            return true;
+        }
+        return false;
+    }
+    
+    public void updatePOStatus(String poID, String newStatus) { 
+        List<String> allLines = TextFile.readFile(POfile);
+
+        for (String line : allLines) {
+            if (line.startsWith(poID + ",")) {
+                int lastCommaIndex = line.lastIndexOf(",");
+                if (lastCommaIndex != -1) {
+                    String updatedLine = line.substring(0, lastCommaIndex + 1) + newStatus;
+                    TextFile.replaceLine(POfile, line, updatedLine);
+                }
+                return;
+            }
+        }
+
+        // If not found, append new line
+        TextFile.appendTo(POfile, poID + "," + newStatus);
+    }
     
 }
