@@ -26,11 +26,13 @@ public class FinanceManagerRole extends Role {
         addPermission(Feature.ITEM_ENTRY, PermissionLevel.NO_ACCESS);
         addPermission(Feature.SUPPLIER_ENTRY, PermissionLevel.NO_ACCESS);
         
-        // Sales Management - No access
+        // Sales Management - View only for reports, no access to daily operations
+        addPermission(Feature.DAILY_SALES, PermissionLevel.VIEW_ONLY);
         addPermission(Feature.SALES_ENTRY, PermissionLevel.NO_ACCESS);
+        addPermission(Feature.SALES_REPORT, PermissionLevel.GENERATE_REPORTS);
         
         // Purchase Requisition - View only
-        addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.VIEW_ONLY);
+        addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.NO_ACCESS);
         addPermission(Feature.DISPLAY_REQUISITION, PermissionLevel.VIEW_ONLY);
         
         // Purchase Orders - Approve only for generate, view only for list
@@ -45,7 +47,6 @@ public class FinanceManagerRole extends Role {
         addPermission(Feature.STOCK_REPORTS, PermissionLevel.VIEW_ONLY);
         
         // Financial Management - Full access
-        addPermission(Feature.FINANCIAL_REPORTS, PermissionLevel.GENERATE_REPORTS);
         addPermission(Feature.SUPPLIER_PAYMENTS, PermissionLevel.PROCESS_PAYMENTS);
     }
 }

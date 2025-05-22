@@ -16,6 +16,7 @@ public class Feature {
     public static final String SUPPLIER_ENTRY = "Supplier Entry";
     
     // Sales Management
+    public static final String DAILY_SALES = "Daily Sales";
     public static final String SALES_ENTRY = "Sales Entry";
     public static final String SALES_REPORT = "Sales Report";
     
@@ -35,6 +36,5 @@ public class Feature {
     public static final String STOCK_REPORTS = "Stock Reports";
     
     // Financial Management
-    public static final String FINANCIAL_REPORTS = "Financial Reports";
     public static final String SUPPLIER_PAYMENTS = "Supplier Payments";
 }
