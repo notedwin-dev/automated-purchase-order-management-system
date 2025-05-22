@@ -20,8 +20,7 @@ import java.util.*;
  */
 public class MainPanel extends javax.swing.JFrame {
 
-    private DefaultTableModel model;
-    private ItemManagement itemOps;
+    private ItemManagement itemOps; // ----- This is a field ----- //
     private Map<String, String> supplierMap = new HashMap<>();
 
 
@@ -58,16 +57,6 @@ public class MainPanel extends javax.swing.JFrame {
         ImageIcon resizedLogo = new ImageIcon(scaled_logo);
         Logo_lbl.setIcon(resizedLogo);
         
-        
-        model = new DefaultTableModel(
-            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", "Unit Price", "Retail Price", "Delivery Status"}, 0  ) {
-            
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; //----- All column is non-editable -----//
-            }
-        };
-        
 
         // - - - - - HIDES THE TABS - - - - - //
         JTabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
@@ -100,6 +89,7 @@ public class MainPanel extends javax.swing.JFrame {
             }
         });
         
+        // - - - - -  SET MODEL - - - - - //
         itemTable.setModel(ItemManagement.sharedModel);
         viewItemTable.setModel(ItemManagement.sharedModel);
  
@@ -180,6 +170,7 @@ public class MainPanel extends javax.swing.JFrame {
         Logo_lbl = new javax.swing.JLabel();
         itemEntry_Button = new javax.swing.JButton();
         viewItemList_Button = new javax.swing.JButton();
+        viewItemList_Button1 = new javax.swing.JButton();
         JTabbedPane = new javax.swing.JTabbedPane();
         ItemEntry = new javax.swing.JPanel();
         itemName_lbl = new javax.swing.JLabel();
@@ -232,15 +223,28 @@ public class MainPanel extends javax.swing.JFrame {
             }
         });
 
+        viewItemList_Button1.setBackground(new java.awt.Color(255, 153, 153));
+        viewItemList_Button1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        viewItemList_Button1.setForeground(new java.awt.Color(0, 0, 0));
+        viewItemList_Button1.setText("Back");
+        viewItemList_Button1.setBorder(null);
+        viewItemList_Button1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                viewItemList_Button1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Logo_lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(itemEntry_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(viewItemList_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(viewItemList_Button, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                    .addComponent(viewItemList_Button1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -251,6 +255,8 @@ public class MainPanel extends javax.swing.JFrame {
                 .addComponent(itemEntry_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(viewItemList_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(viewItemList_Button1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -591,12 +597,22 @@ public class MainPanel extends javax.swing.JFrame {
     }//GEN-LAST:event_add_ButtonActionPerformed
 
     private void viewItemList_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_ButtonActionPerformed
-        JTabbedPane.setSelectedIndex(1);
+        // - - - - - I created this just to test whether it's working or not (can delete once linked) - - - - - //
+        JFrame frame = new JFrame("Item List Viewer");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(1080, 700);
+        frame.add(new ViewItemList());
+        frame.setVisible(true);
     }//GEN-LAST:event_viewItemList_ButtonActionPerformed
 
     private void itemEntry_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEntry_ButtonActionPerformed
         JTabbedPane.setSelectedIndex(0);
     }//GEN-LAST:event_itemEntry_ButtonActionPerformed
+
+    private void viewItemList_Button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_Button1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_viewItemList_Button1ActionPerformed
+
 
 
 
@@ -667,6 +683,7 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JTextField unitPrice_textbox;
     private javax.swing.JButton update_Button;
     private javax.swing.JButton viewItemList_Button;
+    private javax.swing.JButton viewItemList_Button1;
     private javax.swing.JTable viewItemTable;
     // End of variables declaration//GEN-END:variables
 }

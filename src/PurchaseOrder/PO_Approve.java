@@ -5,6 +5,8 @@
 package PurchaseOrder;
 
 import InventoryManagement.Inventory;
+import auth.Session;
+import auth.User;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -122,6 +124,11 @@ public class PO_Approve extends javax.swing.JFrame {
         PMID_TextField.setText(selectedRow.getPM_ID());
         SMName_TextField.setText(selectedRow.getSM_Name());
         SMID_TextField.setText(selectedRow.getSM_ID());
+        User currentUser = Session.getInstance().getCurrentUser();
+            if(currentUser != null){
+                FMName_TextField.setText(currentUser.getUsername());
+                FMID_TextField.setText(currentUser.getID());
+            }
         Date_TextField.setText(selectedRow.getDate());
         String dateStr = selectedRow.getExpectedDeliveryDate(); // e.g. "27-7-2025"
         SimpleDateFormat formatter = new SimpleDateFormat("d-M-yyyy");
@@ -298,6 +305,10 @@ public class PO_Approve extends javax.swing.JFrame {
         SaveButton = new javax.swing.JButton();
         ApproveButton = new javax.swing.JButton();
         RejectButton = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        FMName_TextField = new javax.swing.JTextField();
+        FMID_TextField = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -409,6 +420,18 @@ public class PO_Approve extends javax.swing.JFrame {
             }
         });
 
+        jLabel12.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel12.setText("Finance Manager Name:");
+
+        jLabel13.setForeground(new java.awt.Color(0, 0, 0));
+        jLabel13.setText("Finance Manager ID:");
+
+        FMName_TextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                FMName_TextFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -458,7 +481,15 @@ public class PO_Approve extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(ApproveButton)
                                 .addGap(65, 65, 65)
-                                .addComponent(RejectButton)))
+                                .addComponent(RejectButton))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel13))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(FMID_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(FMName_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(93, 93, 93)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
@@ -551,7 +582,15 @@ public class PO_Approve extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel15)
                             .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 132, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(FMName_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel13)
+                    .addComponent(FMID_TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CancelButton)
                     .addComponent(UpdateRowButton)
@@ -628,6 +667,10 @@ public class PO_Approve extends javax.swing.JFrame {
         poApprovalUi.setVisible(true);
     }//GEN-LAST:event_RejectButtonActionPerformed
 
+    private void FMName_TextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FMName_TextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_FMName_TextFieldActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -637,6 +680,8 @@ public class PO_Approve extends javax.swing.JFrame {
     private javax.swing.JButton ApproveButton;
     private javax.swing.JButton CancelButton;
     private javax.swing.JTextField Date_TextField;
+    private javax.swing.JTextField FMID_TextField;
+    private javax.swing.JTextField FMName_TextField;
     private javax.swing.JComboBox<String> ItemComcoBox;
     private javax.swing.JTextField ItemName_TextField;
     private javax.swing.JTextField PMID_TextField;
@@ -656,6 +701,8 @@ public class PO_Approve extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
