@@ -73,8 +73,6 @@ public class UI extends javax.swing.JFrame {
     private void initComponents() {
 
         Background = new javax.swing.JPanel();
-        NAVPanel = new javax.swing.JPanel();
-        NAVBAR = new javax.swing.JLabel();
         SupplierID = new javax.swing.JLabel();
         SupplierID_TextField = new javax.swing.JTextField();
         SupplierName = new javax.swing.JLabel();
@@ -99,30 +97,6 @@ public class UI extends javax.swing.JFrame {
 
         Background.setBackground(new java.awt.Color(255, 255, 255));
         Background.setPreferredSize(new java.awt.Dimension(1280, 720));
-
-        NAVPanel.setBackground(new java.awt.Color(204, 204, 204));
-        NAVPanel.setPreferredSize(new java.awt.Dimension(156, 720));
-
-        NAVBAR.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        NAVBAR.setForeground(new java.awt.Color(0, 0, 0));
-        NAVBAR.setText("NAV BAR");
-
-        javax.swing.GroupLayout NAVPanelLayout = new javax.swing.GroupLayout(NAVPanel);
-        NAVPanel.setLayout(NAVPanelLayout);
-        NAVPanelLayout.setHorizontalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NAVPanelLayout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(NAVBAR)
-                .addContainerGap(29, Short.MAX_VALUE))
-        );
-        NAVPanelLayout.setVerticalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NAVPanelLayout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(NAVBAR, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
 
         SupplierID.setForeground(new java.awt.Color(0, 0, 0));
         SupplierID.setText("Supplier ID :");
@@ -232,8 +206,7 @@ public class UI extends javax.swing.JFrame {
         BackgroundLayout.setHorizontalGroup(
             BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BackgroundLayout.createSequentialGroup()
-                .addComponent(NAVPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(174, 174, 174)
                 .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(BackgroundLayout.createSequentialGroup()
                         .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,7 +235,7 @@ public class UI extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(Refresh)
                                 .addGap(18, 18, 18)))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 770, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 768, Short.MAX_VALUE)
                         .addContainerGap(49, Short.MAX_VALUE))
                     .addGroup(BackgroundLayout.createSequentialGroup()
                         .addComponent(Add)
@@ -276,7 +249,6 @@ public class UI extends javax.swing.JFrame {
         );
         BackgroundLayout.setVerticalGroup(
             BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(NAVPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(BackgroundLayout.createSequentialGroup()
                 .addContainerGap(124, Short.MAX_VALUE)
                 .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -401,8 +373,6 @@ public class UI extends javax.swing.JFrame {
     private javax.swing.JPanel Background;
     private javax.swing.JButton Clear;
     private javax.swing.JButton Delete;
-    private javax.swing.JLabel NAVBAR;
-    private javax.swing.JPanel NAVPanel;
     private javax.swing.JButton Refresh;
     private javax.swing.JLabel SupplierAddress;
     private javax.swing.JTextField SupplierAddress_TextField;
