@@ -137,6 +137,7 @@ public class Navbar extends javax.swing.JPanel {
             // Add feature-specific navigation
             addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
             addNavButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
+            addNavButtonIfPermitted(Feature.DAILY_SALES, Feature.DAILY_SALES, "DailySalesManagement.View_DailySales_List");
             addNavButtonIfPermitted(Feature.SALES_ENTRY, "Daily Sales", "DailySalesManagement.DailySalesUI");
             addNavButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
             addNavButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.Main_PO");
@@ -147,8 +148,7 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.USER_MANAGEMENT, Feature.USER_MANAGEMENT, "auth.Register");
             // Fix the typo in the package name - ReportManagerment should be ReportManagement
             addNavButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "ReportManagement.InventoryReportMain");
-            addNavButtonIfPermitted(Feature.SALES_ENTRY, Feature.SALES_ENTRY, "ReportManagement.SalesReportMain");
-            addNavButtonIfPermitted(Feature.FINANCIAL_REPORTS, Feature.FINANCIAL_REPORTS, "FinancialManagement.ReportsUI");
+            addNavButtonIfPermitted(Feature.SALES_REPORT, Feature.SALES_REPORT, "ReportManagement.SalesReportMain");
             addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "FinancialManagement.PaymentsUI");
             
             // Add logout button at the bottom
