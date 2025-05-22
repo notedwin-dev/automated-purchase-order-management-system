@@ -24,9 +24,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="Logo_lbl1" pref="262" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace pref="152" max="32767" attributes="0"/>
               <Component id="PO_TabbedPane" min="-2" pref="1082" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -34,7 +32,6 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="PO_TabbedPane" max="32767" attributes="0"/>
-          <Component id="Logo_lbl1" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
@@ -231,7 +228,5 @@
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="Logo_lbl1">
-    </Component>
   </SubComponents>
 </Form>

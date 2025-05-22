@@ -139,14 +139,15 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
             addNavButtonIfPermitted(Feature.SALES_ENTRY, "Daily Sales", "DailySalesManagement.DailySalesUI");
             addNavButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
-            addNavButtonIfPermitted(Feature.DISPLAY_REQUISITION, "Purchase Requisition List", "PurchaseOrder.Main_PO");
-            addNavButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, "Purchase Order List", "PurchaseOrder.PO_Panel");
-            addNavButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, "Generate Purchase Order", "PurchaseOrder.PO_GenerationUI");
-            addNavButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, "Inventory Management", "InventoryManagement.InventoryUI");
-            addNavButtonIfPermitted(Feature.USER_MANAGEMENT, "User Management", "auth.Register");
-            addNavButtonIfPermitted(Feature.STOCK_REPORTS, "Stock Reports", "InventoryManagement.InventoryUI");
-            addNavButtonIfPermitted(Feature.FINANCIAL_REPORTS, "Financial Reports", "FinancialManagement.ReportsUI");
-            addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, "Supplier Payments", "FinancialManagement.PaymentsUI");
+            addNavButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.Main_PO");
+            addNavButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, Feature.PURCHASE_ORDERS_LIST, "PurchaseOrder.PO_Panel");
+            addNavButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, Feature.GENERATE_PURCHASE_ORDER, "PurchaseOrder.Main_PO");
+            addNavButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, Feature.INVENTORY_MANAGEMENT, "InventoryManagement.InventoryUI");
+            addNavButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, "Inventory List", "InventoryManagement.View_Inventory_List");
+            addNavButtonIfPermitted(Feature.USER_MANAGEMENT, Feature.USER_MANAGEMENT, "auth.Register");
+            addNavButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "InventoryManagement.View_Inventory_List");
+            addNavButtonIfPermitted(Feature.FINANCIAL_REPORTS, Feature.FINANCIAL_REPORTS, "FinancialManagement.ReportsUI");
+            addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "FinancialManagement.PaymentsUI");
             
             // Add logout button at the bottom
             addNavButton("Logout", "auth.Login", false);
@@ -208,7 +209,56 @@ public class Navbar extends javax.swing.JPanel {
                 public void mouseClicked(MouseEvent e) {
                     // Handle navigation
                     if (navigationListener != null) {
-                        navigationListener.onNavigate(className);
+                        // Handle role-based redirections for Purchase Order features
+                        if (className.equals("PurchaseOrder.Main_PO") || 
+                            buttonText.equals(Feature.DISPLAY_REQUISITION)) {
+                            String userRole = currentUser.getRole();
+                            // All roles view requisitions but with different views
+                            if ("Purchase Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.PM_View_PO");
+                            } else if ("Finance Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.FM_View_PO_Approval");
+                            } else if ("Administrator".equals(userRole) || 
+                                      "Sales Manager".equals(userRole) || 
+                                      "Inventory Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI");
+                            }
+                        } 
+                        // Handle Purchase Orders List with proper role-based redirections
+                        else if (className.equals("PurchaseOrder.PO_Panel") || 
+                                 buttonText.equals(Feature.PURCHASE_ORDERS_LIST)) {
+                            String userRole = currentUser.getRole();
+                            
+                            // For viewing Purchase Order lists (all roles have View Only except Admin)
+                            if ("Purchase Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.PM_View_PO");
+                            } else if ("Finance Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.FM_View_PO_Approval");
+                            } else if ("Administrator".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.PM_PO_List_UI"); // Admin gets full access
+                            } else if ("Sales Manager".equals(userRole) || 
+                                      "Inventory Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI");
+                            }
+                        }
+                        // Handle Purchase Order Generation
+                        else if (buttonText.equals(Feature.GENERATE_PURCHASE_ORDER)) {
+                            String userRole = currentUser.getRole();
+                            
+                            // Only Purchase Manager and Admin can generate POs
+                            if ("Purchase Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.PO_GenerationUI");
+                            } else if ("Administrator".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.PO_GenerationUI");
+                            } else if ("Finance Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.PO_Approval"); // FM approves only
+                            } else if ("Inventory Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI"); // IM views only for verification
+                            }
+                        } else {
+                            // Regular navigation for other screens
+                            navigationListener.onNavigate(className);
+                        }
                     }
                     
                     // Update selection

@@ -86,12 +86,29 @@ public class DashboardPanel extends javax.swing.JPanel {
         
         pnlMain.add(pnlHeader, BorderLayout.NORTH);
         
-        // Configure features panel
-        pnlFeatures.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlFeatures.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        pnlMain.add(pnlFeatures, BorderLayout.CENTER);
+        // Create a scroll pane to handle overflow of buttons
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove border
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Make scrolling smoother
         
+        // Configure features panel with proper layout and spacing
+        pnlFeatures.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        // We'll use GridLayout with 0 rows to allow flexible number of columns
+        // but with enough horizontal gap to space out buttons nicely
+        pnlFeatures.setLayout(new GridLayout(0, 3, 20, 20));
+        
+        // Add the features panel to the scroll pane
+        scrollPane.setViewportView(pnlFeatures);
+        
+        // Add scroll pane to main panel
+        pnlMain.add(scrollPane, BorderLayout.CENTER);
+        
+        // Add the main panel to this panel
         add(pnlMain, BorderLayout.CENTER);
+        
+        // Set minimum size to ensure proper display
+        setPreferredSize(new Dimension(900, 600));
     }
     
     /**
@@ -100,9 +117,6 @@ public class DashboardPanel extends javax.swing.JPanel {
     private void setupFeatureButtons() {
         // Clear existing buttons
         pnlFeatures.removeAll();
-        
-        // Use a GridLayout for the buttons
-        pnlFeatures.setLayout(new GridLayout(0, 3, 10, 10));
         
         Role userRole = currentUser.getUserRole();
         if (userRole == null) {
@@ -121,6 +135,17 @@ public class DashboardPanel extends javax.swing.JPanel {
         addFeatureButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, "Inventory Management", "InventoryManagement.InventoryUI");
         addFeatureButtonIfPermitted(Feature.USER_MANAGEMENT, "User Management", "auth.Register");
         
+        // Configure button sizes to be consistent
+        for (Component comp : pnlFeatures.getComponents()) {
+            if (comp instanceof JButton) {
+                JButton button = (JButton) comp;
+                // Set preferred size to make buttons more consistently sized
+                button.setPreferredSize(new Dimension(240, 100));
+                // Add some padding inside the button
+                button.setMargin(new Insets(10, 10, 10, 10));
+            }
+        }
+        
         pnlFeatures.revalidate();
         pnlFeatures.repaint();
     }
@@ -137,6 +162,10 @@ public class DashboardPanel extends javax.swing.JPanel {
             JButton button = new JButton(buttonText);
             button.setFont(new Font("Arial", Font.BOLD, 14));
             
+            // Set consistent size for all buttons
+            button.setPreferredSize(new Dimension(240, 100));
+            button.setMinimumSize(new Dimension(200, 80));
+            
             // Set different colors based on permission level
             if (currentUser.canModify(featureName)) {
                 button.setBackground(new Color(144, 238, 144)); // Light green for full access
@@ -151,7 +180,57 @@ public class DashboardPanel extends javax.swing.JPanel {
                     if (container != null) {
                         // Make sure the session has the current user
                         auth.Session.getInstance().setCurrentUser(currentUser);
-                        container.showFeature(className);
+                        
+                        // Role-based redirection
+                        String redirectClass = className;
+                        
+                        // Handle Display Requisitions based on role
+                        if (className.equals("PurchaseOrder.Main_PO") || 
+                            featureName.equals(Feature.DISPLAY_REQUISITION)) {
+                            String userRole = currentUser.getRole();
+                            
+                            if ("Purchase Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.PM_View_PO";
+                            } else if ("Finance Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.FM_View_PO_Approval";
+                            } else if ("Administrator".equals(userRole) || 
+                                      "Sales Manager".equals(userRole) || 
+                                      "Inventory Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.View_All_PO_UI";
+                            }
+                        } 
+                        // Handle Purchase Orders List
+                        else if (className.equals("PurchaseOrder.PO_Panel") || 
+                                 featureName.equals(Feature.PURCHASE_ORDERS_LIST)) {
+                            String userRole = currentUser.getRole();
+                            
+                            if ("Purchase Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.PM_View_PO";
+                            } else if ("Finance Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.FM_View_PO_Approval";
+                            } else if ("Administrator".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.PM_PO_List_UI";
+                            } else if ("Sales Manager".equals(userRole) || 
+                                      "Inventory Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.View_All_PO_UI";
+                            }
+                        }
+                        // Handle Purchase Order Generation
+                        else if (featureName.equals(Feature.GENERATE_PURCHASE_ORDER)) {
+                            String userRole = currentUser.getRole();
+                            
+                            if ("Purchase Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.PO_GenerationUI";
+                            } else if ("Administrator".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.PO_GenerationUI";
+                            } else if ("Finance Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.PO_Approval"; 
+                            } else if ("Inventory Manager".equals(userRole)) {
+                                redirectClass = "PurchaseOrder.View_All_PO_UI"; 
+                            }
+                        }
+                        
+                        container.showFeature(redirectClass);
                     } else {
                         JOptionPane.showMessageDialog(DashboardPanel.this, 
                                 "Error: Could not find MainContainer parent", 

@@ -271,7 +271,6 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        NAVPanel = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -308,19 +307,6 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1280, 720));
-
-        NAVPanel.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout NAVPanelLayout = new javax.swing.GroupLayout(NAVPanel);
-        NAVPanel.setLayout(NAVPanelLayout);
-        NAVPanelLayout.setHorizontalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 156, Short.MAX_VALUE)
-        );
-        NAVPanelLayout.setVerticalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("PO ID:");
@@ -446,8 +432,7 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(NAVPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
+                .addGap(197, 197, 197)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -522,11 +507,10 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
                                     .addComponent(jLabel13)
                                     .addGap(27, 27, 27)
                                     .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(NAVPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -648,7 +632,6 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
     private javax.swing.JTextField Date_TextField;
     private javax.swing.JComboBox<String> ItemComcoBox;
     private javax.swing.JTextField ItemName_TextField;
-    private javax.swing.JPanel NAVPanel;
     private javax.swing.JTextField PurchaseManagerID_TextField;
     private javax.swing.JTextField PurchaseManagerName_TextField;
     private javax.swing.JTextField PurchaseOrderID_TextField;

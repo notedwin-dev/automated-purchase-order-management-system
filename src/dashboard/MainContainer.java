@@ -144,8 +144,8 @@ public class MainContainer extends javax.swing.JFrame {
                 return;
             }
             
-            // Special handling for PurchaseOrder.Main_PO
-            if (className.equals("PurchaseOrder.Main_PO")) {
+            // Special handling for DailySalesManagement.DailySalesUI to fix layout issues
+            if (className.equals("DailySalesManagement.DailySalesUI")) {
                 try {
                     // Check if already in cache
                     if (activePanels.containsKey(className)) {
@@ -153,33 +153,149 @@ public class MainContainer extends javax.swing.JFrame {
                         return;
                     }
                     
-                    // Create PR_Management instance
-                    PR_Management prmanagement = new PR_Management();
+                    // Create a JFrame for DailySalesUI
+                    JFrame dailySalesFrame = (JFrame) Class.forName(className).getDeclaredConstructor().newInstance();
                     
-                    // Create the PO_Panel with the PR_Management instance
-                    JFrame poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                    // Set preferred size for the original frame to control component sizing
+                    dailySalesFrame.setPreferredSize(new Dimension(1000, 700));
+                    dailySalesFrame.pack();
+                    
+                    // We'll wrap the content in a scroll pane to handle potential size issues
+                    // but hide the scrollbars for a cleaner look
+                    JScrollPane scrollPane = new JScrollPane();
+                    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+                    scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove border
                     
                     // Extract content from the frame
-                    Container frameContent = poPanel.getContentPane();
-                    JPanel poContentPanel = new JPanel(new BorderLayout());
+                    Container frameContent = dailySalesFrame.getContentPane();
                     
-                    // Get all components from the frame content and add to our panel
+                    // Create a panel to hold the original content without modifying its layout
+                    JPanel contentWrapper = new JPanel();
+                    contentWrapper.setLayout(null); // Use null layout to preserve absolute positioning
+                    
+                    // Get the preferred size to ensure proper rendering
+                    Dimension frameSize = frameContent.getPreferredSize();
+                    contentWrapper.setPreferredSize(frameSize);
+                    
+                    // Copy all components with their original bounds
                     Component[] components = frameContent.getComponents();
                     for (Component component : components) {
-                        poContentPanel.add(component, BorderLayout.CENTER);
+                        // Get the component's current bounds
+                        Rectangle bounds = component.getBounds();
+                        
+                        // Special case: if this is a text field with "total" in its name
+                        if (component instanceof JTextField && 
+                            component.getName() != null && 
+                            component.getName().toLowerCase().contains("total")) {
+                            // Limit the width to prevent excessive expansion
+                            bounds.width = Math.min(bounds.width, 200);
+                        }
+                        
+                        // Add to content wrapper with original bounds
+                        contentWrapper.add(component);
+                        component.setBounds(bounds);
                     }
                     
-                    // Add to content panel
-                    this.contentPanel.add(poContentPanel, className);
-                    activePanels.put(className, poContentPanel);
-                    cardLayout.show(this.contentPanel, className);
+                    // Add the content wrapper to the scroll pane
+                    scrollPane.setViewportView(contentWrapper);
+                    
+                    // Add scroll pane to the content panel
+                    contentPanel.add(scrollPane, className);
+                    activePanels.put(className, scrollPane);
+                    cardLayout.show(contentPanel, className);
                     
                     // Dispose of the temporary frame
-                    poPanel.dispose();
+                    dailySalesFrame.dispose();
                     
                     return;
                 } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error showing Daily Sales UI: " + e.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                    return;
+                }
+            }
+            
+            // Handle Purchase Order views based on role
+            if (className.equals("PurchaseOrder.Main_PO") || 
+                className.equals("PurchaseOrder.PM_View_PO") || 
+                className.equals("PurchaseOrder.View_All_PO_UI") ||
+                className.equals("PurchaseOrder.FM_View_PO_Approval")) {
+                try {
+                    // Check if already in cache
+                    if (activePanels.containsKey(className)) {
+                        cardLayout.show(contentPanel, className);
+                        return;
+                    }
+                    
+                    // Create instance of appropriate class based on role
+                    JFrame poPanel;
+                    PR_Management prmanagement = new PR_Management();
+                    
+                    if (className.equals("PurchaseOrder.PM_View_PO")) {
+                        // Purchase Manager view
+                        poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                    } else if (className.equals("PurchaseOrder.View_All_PO_UI")) {
+                        // View for Admin/Sales Manager/Inventory Manager
+                        poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                    } else if (className.equals("PurchaseOrder.FM_View_PO_Approval")) {
+                        // Finance Manager approval view
+                        poPanel = new PurchaseOrder.PO_Approval();
+                    } else {
+                        // Default view
+                        poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                    }
+                    
+                    // Use our method to preserve layout
+                    showFrameContentPreservingLayout(poPanel, className);
+                    return;
+                } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Error showing Purchase Order view: " + e.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                    return;
+                }
+            }
+            
+            // Handle specific Purchase Order interfaces
+            if (className.equals("PurchaseOrder.PM_PO_List_UI") || 
+                className.equals("PurchaseOrder.PO_CRUD_UI") ||
+                className.equals("PurchaseOrder.PO_GenerationUI") ||
+                className.equals("PurchaseOrder.PO_Approval")) {
+                try {
+                    // Check if already in cache
+                    if (activePanels.containsKey(className)) {
+                        cardLayout.show(contentPanel, className);
+                        return;
+                    }
+                    
+                    // Create the appropriate panel based on className
+                    JFrame poPanel = null;
+                    
+                    if (className.equals("PurchaseOrder.PM_PO_List_UI")) {
+                        poPanel = new PurchaseOrder.PM_PO_List_UI();
+                    } else if (className.equals("PurchaseOrder.PO_CRUD_UI")) {
+                        // Need a selected PO to create this, will be handled elsewhere
+                        JOptionPane.showMessageDialog(this, "Please select a Purchase Order to edit");
+                        return;
+                    } else if (className.equals("PurchaseOrder.PO_GenerationUI")) {
+                        PR_Management prManagement = new PR_Management();
+                        poPanel = new PurchaseOrder.PO_Panel(prManagement);
+                    } else if (className.equals("PurchaseOrder.PO_Approval")) {
+                        poPanel = new PurchaseOrder.PO_Approval();
+                    }
+                    
+                    if (poPanel == null) {
+                        JOptionPane.showMessageDialog(this, "Could not create interface: " + className);
+                        return;
+                    }
+                    
+                    // Use our method to preserve layout
+                    showFrameContentPreservingLayout(poPanel, className);
+                    return;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error showing Purchase Order interface: " + e.getMessage(),
                             "Error", JOptionPane.ERROR_MESSAGE);
                     e.printStackTrace();
                     return;
@@ -278,6 +394,55 @@ public class MainContainer extends javax.swing.JFrame {
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error showing feature: " + e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Shows a JFrame's content in the main container while preserving its original layout
+     * 
+     * @param frame The JFrame to extract content from
+     * @param className The class name to use as the identifier in the card layout
+     */
+    private void showFrameContentPreservingLayout(JFrame frame, String className) {
+        try {
+            // Extract content from the frame
+            Container frameContent = frame.getContentPane();
+            
+            // Create a panel to hold the original content without modifying its layout
+            JPanel contentWrapper = new JPanel();
+            contentWrapper.setLayout(null); // Use null layout to preserve absolute positioning
+            
+            // Get the preferred size to ensure proper rendering
+            Dimension frameSize = frameContent.getPreferredSize();
+            contentWrapper.setPreferredSize(frameSize);
+            
+            // Copy all components with their original bounds
+            Component[] components = frameContent.getComponents();
+            for (Component component : components) {
+                // Get the component's current bounds
+                Rectangle bounds = component.getBounds();
+                
+                // Special case: if this is a text field with "total" in its name
+                if (component instanceof JTextField && 
+                    component.getName() != null && 
+                    component.getName().toLowerCase().contains("total")) {
+                    // Limit the width to prevent excessive expansion
+                    bounds.width = Math.min(bounds.width, 200);
+                }
+                
+                // Add to content wrapper with original bounds
+                contentWrapper.add(component);
+                component.setBounds(bounds);
+            }
+            
+            // Add the content wrapper to the content panel
+            contentPanel.add(contentWrapper, className);
+            activePanels.put(className, contentWrapper);
+            cardLayout.show(contentPanel, className);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error showing content: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }

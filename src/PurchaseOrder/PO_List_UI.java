@@ -124,7 +124,6 @@ public class PO_List_UI extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        NAVPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         PurchaseOrderTable = new javax.swing.JTable();
         Edit = new javax.swing.JButton();
@@ -135,19 +134,6 @@ public class PO_List_UI extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(1280, 720));
-
-        NAVPanel.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout NAVPanelLayout = new javax.swing.GroupLayout(NAVPanel);
-        NAVPanel.setLayout(NAVPanelLayout);
-        NAVPanelLayout.setHorizontalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 156, Short.MAX_VALUE)
-        );
-        NAVPanelLayout.setVerticalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         PurchaseOrderTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         PurchaseOrderTable.getTableHeader().setReorderingAllowed(false);
@@ -205,24 +191,20 @@ public class PO_List_UI extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(NAVPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(389, 389, 389)
-                        .addComponent(Refresh)
-                        .addGap(36, 36, 36)
-                        .addComponent(Edit)
-                        .addGap(37, 37, 37)
-                        .addComponent(DeleteButton)
-                        .addContainerGap(434, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())))
+                .addGap(545, 545, 545)
+                .addComponent(Refresh)
+                .addGap(36, 36, 36)
+                .addComponent(Edit)
+                .addGap(37, 37, 37)
+                .addComponent(DeleteButton)
+                .addContainerGap(432, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(170, 170, 170)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(NAVPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(132, 132, 132)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -331,7 +313,6 @@ public class PO_List_UI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton DeleteButton;
     private javax.swing.JButton Edit;
-    private javax.swing.JPanel NAVPanel;
     private javax.swing.JTable PurchaseOrderTable;
     private javax.swing.JButton Refresh;
     private javax.swing.JPanel jPanel1;
