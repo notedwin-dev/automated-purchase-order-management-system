@@ -252,7 +252,7 @@ public class InventoryUI extends javax.swing.JFrame {
                 .addComponent(jButton2)
                 .addGap(366, 366, 366))
             .addGroup(layout.createSequentialGroup()
-                .addGap(120, 120, 120)
+                .addGap(60, 60, 60)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel8)

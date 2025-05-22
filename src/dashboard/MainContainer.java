@@ -235,13 +235,13 @@ public class MainContainer extends javax.swing.JFrame {
                     
                     if (className.equals("PurchaseOrder.PM_View_PO")) {
                         // Purchase Manager view
-                        poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                        poPanel = new PurchaseOrder.PM_PO_List_UI();
                     } else if (className.equals("PurchaseOrder.View_All_PO_UI")) {
                         // View for Admin/Sales Manager/Inventory Manager
-                        poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                        poPanel = new PurchaseOrder.View_All_PO_UI();
                     } else if (className.equals("PurchaseOrder.FM_View_PO_Approval")) {
                         // Finance Manager approval view
-                        poPanel = new PurchaseOrder.PO_Approval();
+                        poPanel = new PurchaseOrder.FM_View_PO_Approval();
                     } else {
                         // Default view
                         poPanel = new PurchaseOrder.PO_Panel(prmanagement);
@@ -296,6 +296,69 @@ public class MainContainer extends javax.swing.JFrame {
                     return;
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Error showing Purchase Order interface: " + e.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                    return;
+                }
+            }
+            
+            // Special handling for specific UI classes that need layout preservation
+            if (className.equals("DailySalesManagement.DailySalesUI") || 
+                className.equals("InventoryManagement.InventoryUI") ||
+                className.equals("InventoryManagement.View_Inventory_List")) {
+                try {
+                    // Check if already in cache
+                    if (activePanels.containsKey(className)) {
+                        cardLayout.show(contentPanel, className);
+                        return;
+                    }
+                    
+                    // Create the UI frame
+                    JFrame uiFrame = (JFrame) Class.forName(className).getDeclaredConstructor().newInstance();
+                    
+                    // Set preferred size
+                    uiFrame.setPreferredSize(new Dimension(1000, 700));
+                    uiFrame.pack();
+                    
+                    // Use our method to preserve layout
+                    showFrameContentPreservingLayout(uiFrame, className);
+                    return;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error showing UI: " + e.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                    return;
+                }
+            }
+            
+            // Special handling for Report Management classes
+            if (className.equals("ReportManagement.InventoryReportMain") || 
+                className.equals("ReportManagement.SalesReportMain")) {
+                try {
+                    // Check if already in cache
+                    if (activePanels.containsKey(className)) {
+                        cardLayout.show(contentPanel, className);
+                        return;
+                    }
+                    
+                    // Instead of running the main method, directly create the UI class
+                    JFrame reportFrame;
+                    
+                    if (className.equals("ReportManagement.InventoryReportMain")) {
+                        reportFrame = new ReportManagement.InventoryReportUI();
+                    } else { // SalesReportMain
+                        reportFrame = new ReportManagement.SalesReportUI();
+                    }
+                    
+                    // Set preferred size for the UI
+                    reportFrame.setPreferredSize(new Dimension(1000, 700));
+                    reportFrame.pack();
+                    
+                    // Use our method to preserve layout
+                    showFrameContentPreservingLayout(reportFrame, className);
+                    return;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error showing report: " + e.getMessage(),
                             "Error", JOptionPane.ERROR_MESSAGE);
                     e.printStackTrace();
                     return;
@@ -389,8 +452,40 @@ public class MainContainer extends javax.swing.JFrame {
                 // We don't need the temporary frame anymore
                 tempFrame.dispose();
             } else {
-                // Not a supported type
-                throw new IllegalArgumentException("Feature class must be JPanel or JFrame");
+                // If not a JFrame or JPanel, try to invoke the main method
+                try {
+                    // Look for a main method
+                    java.lang.reflect.Method mainMethod = featureClass.getMethod("main", String[].class);
+                    
+                    // Create an info panel to let the user know we're launching the feature
+                    JPanel infoPanel = new JPanel(new BorderLayout());
+                    JLabel infoLabel = new JLabel("Launching " + className + "...", JLabel.CENTER);
+                    infoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                    infoPanel.add(infoLabel, BorderLayout.CENTER);
+                    
+                    // Add the info panel to our content
+                    contentPanel.add(infoPanel, className);
+                    activePanels.put(className, infoPanel);
+                    cardLayout.show(contentPanel, className);
+                    
+                    // Invoke the main method in a separate thread
+                    new Thread(() -> {
+                        try {
+                            // Call the main method with empty args
+                            mainMethod.invoke(null, (Object) new String[0]);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            SwingUtilities.invokeLater(() -> {
+                                JOptionPane.showMessageDialog(MainContainer.this, 
+                                        "Error launching " + className + ": " + ex.getMessage(),
+                                        "Launch Error", JOptionPane.ERROR_MESSAGE);
+                            });
+                        }
+                    }).start();
+                } catch (NoSuchMethodException e) {
+                    // No main method, try regular instantiation
+                    Class.forName(className).getDeclaredConstructor().newInstance();
+                }
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error showing feature: " + e.getMessage(), 
