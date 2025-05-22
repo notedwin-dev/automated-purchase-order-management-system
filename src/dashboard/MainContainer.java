@@ -145,7 +145,7 @@ public class MainContainer extends javax.swing.JFrame {
             }
             
             // Special handling for DailySalesManagement.DailySalesUI to fix layout issues
-            if (className.equals("DailySalesManagement.DailySalesUI")) {
+            if (className.equals("DailySalesManagement.DailySalesUI") || className.equals("DailySalesManagement.View_DailySales_List")) {
                 try {
                     // Check if already in cache
                     if (activePanels.containsKey(className)) {

@@ -27,7 +27,9 @@ public class SalesManagerRole extends Role {
         addPermission(Feature.SUPPLIER_ENTRY, PermissionLevel.ADD_EDIT_DELETE_VIEW);
         
         // Sales Management - Full access
+        addPermission(Feature.DAILY_SALES, PermissionLevel.ADD_EDIT_DELETE_VIEW);
         addPermission(Feature.SALES_ENTRY, PermissionLevel.ADD_EDIT_DELETE_VIEW);
+        addPermission(Feature.SALES_REPORT, PermissionLevel.GENERATE_REPORTS);
         
         // Purchase Requisition - Full access for create, view only for display
         addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.ADD_EDIT_DELETE_VIEW);
@@ -45,7 +47,6 @@ public class SalesManagerRole extends Role {
         addPermission(Feature.STOCK_REPORTS, PermissionLevel.NO_ACCESS);
         
         // Financial Management - No access
-        addPermission(Feature.FINANCIAL_REPORTS, PermissionLevel.NO_ACCESS);
         addPermission(Feature.SUPPLIER_PAYMENTS, PermissionLevel.NO_ACCESS);
     }
 }

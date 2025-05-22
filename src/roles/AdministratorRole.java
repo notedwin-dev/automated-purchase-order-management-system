@@ -29,6 +29,8 @@ public class AdministratorRole extends Role {
         
         // Sales Management
         addPermission(Feature.SALES_ENTRY, PermissionLevel.FULL_ACCESS);
+        addPermission(Feature.SALES_REPORT, PermissionLevel.FULL_ACCESS);
+        addPermission(Feature.DAILY_SALES, PermissionLevel.FULL_ACCESS);
         
         // Purchase Requisition
         addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.FULL_ACCESS);
@@ -46,7 +48,6 @@ public class AdministratorRole extends Role {
         addPermission(Feature.STOCK_REPORTS, PermissionLevel.FULL_ACCESS);
         
         // Financial Management
-        addPermission(Feature.FINANCIAL_REPORTS, PermissionLevel.FULL_ACCESS);
         addPermission(Feature.SUPPLIER_PAYMENTS, PermissionLevel.FULL_ACCESS);
     }
 }
