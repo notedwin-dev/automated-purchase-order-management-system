@@ -17,6 +17,7 @@ public class Feature {
     
     // Sales Management
     public static final String SALES_ENTRY = "Sales Entry";
+    public static final String SALES_REPORT = "Sales Report";
     
     // Purchase Requisition
     public static final String PURCHASE_REQUISITION = "Purchase Requisition";

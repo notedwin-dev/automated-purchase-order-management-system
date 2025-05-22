@@ -178,19 +178,9 @@ public class MainPanel extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         Logo_lbl = new javax.swing.JLabel();
-        Home_Button = new javax.swing.JButton();
         itemEntry_Button = new javax.swing.JButton();
         viewItemList_Button = new javax.swing.JButton();
         JTabbedPane = new javax.swing.JTabbedPane();
-        Home = new javax.swing.JPanel();
-        Welcome_panel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        Calendar_Panel = new javax.swing.JPanel();
-        jCalendar1 = new com.toedter.calendar.JCalendar();
-        Time_Panel = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jPanel6 = new javax.swing.JPanel();
         ItemEntry = new javax.swing.JPanel();
         itemName_lbl = new javax.swing.JLabel();
         retailPrice_lbl = new javax.swing.JLabel();
@@ -220,17 +210,6 @@ public class MainPanel extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 204));
 
-        Home_Button.setBackground(new java.awt.Color(255, 255, 204));
-        Home_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        Home_Button.setForeground(new java.awt.Color(0, 0, 0));
-        Home_Button.setText("Home");
-        Home_Button.setBorder(null);
-        Home_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Home_ButtonActionPerformed(evt);
-            }
-        });
-
         itemEntry_Button.setBackground(new java.awt.Color(255, 255, 204));
         itemEntry_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         itemEntry_Button.setForeground(new java.awt.Color(0, 0, 0));
@@ -258,7 +237,6 @@ public class MainPanel extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Logo_lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(Home_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(itemEntry_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
@@ -269,147 +247,12 @@ public class MainPanel extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(Logo_lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(97, 97, 97)
-                .addComponent(Home_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(132, 132, 132)
                 .addComponent(itemEntry_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(viewItemList_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
-
-        Home.setBackground(new java.awt.Color(255, 255, 255));
-
-        Welcome_panel.setBackground(new java.awt.Color(255, 255, 255));
-
-        jLabel1.setFont(new java.awt.Font("Arial", 0, 48)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel1.setText("Welcome in, NIXON");
-
-        javax.swing.GroupLayout Welcome_panelLayout = new javax.swing.GroupLayout(Welcome_panel);
-        Welcome_panel.setLayout(Welcome_panelLayout);
-        Welcome_panelLayout.setHorizontalGroup(
-            Welcome_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Welcome_panelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        Welcome_panelLayout.setVerticalGroup(
-            Welcome_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Welcome_panelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        Calendar_Panel.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout Calendar_PanelLayout = new javax.swing.GroupLayout(Calendar_Panel);
-        Calendar_Panel.setLayout(Calendar_PanelLayout);
-        Calendar_PanelLayout.setHorizontalGroup(
-            Calendar_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Calendar_PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        Calendar_PanelLayout.setVerticalGroup(
-            Calendar_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(Calendar_PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        Time_Panel.setBackground(new java.awt.Color(255, 102, 102));
-
-        javax.swing.GroupLayout Time_PanelLayout = new javax.swing.GroupLayout(Time_Panel);
-        Time_Panel.setLayout(Time_PanelLayout);
-        Time_PanelLayout.setHorizontalGroup(
-            Time_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 312, Short.MAX_VALUE)
-        );
-        Time_PanelLayout.setVerticalGroup(
-            Time_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
-        );
-
-        jPanel4.setBackground(new java.awt.Color(51, 102, 255));
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 200, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 630, Short.MAX_VALUE)
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 82, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 948, Short.MAX_VALUE)
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 184, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout HomeLayout = new javax.swing.GroupLayout(Home);
-        Home.setLayout(HomeLayout);
-        HomeLayout.setHorizontalGroup(
-            HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(HomeLayout.createSequentialGroup()
-                .addContainerGap(64, Short.MAX_VALUE)
-                .addGroup(HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Welcome_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(HomeLayout.createSequentialGroup()
-                        .addComponent(Calendar_Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(HomeLayout.createSequentialGroup()
-                                .addComponent(Time_Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(64, Short.MAX_VALUE))
-        );
-        HomeLayout.setVerticalGroup(
-            HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(HomeLayout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(Welcome_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(HomeLayout.createSequentialGroup()
-                        .addGroup(HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Time_Panel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(Calendar_Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(51, Short.MAX_VALUE))
-        );
-
-        JTabbedPane.addTab("Home", Home);
 
         ItemEntry.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -706,58 +549,54 @@ public class MainPanel extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-     // - - - - - - - - - - ADD FUNCTION - - - - - - - - - - //
-    private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
-        itemOps.add();
-    }//GEN-LAST:event_add_ButtonActionPerformed
+    private void itemTableScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPane1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemTableScrollPane1MouseClicked
 
-     // - - - - - - - - - - UPDATE FUNCTION - - - - - - - - - - //
-    private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
-        itemOps.update();
-    }//GEN-LAST:event_update_ButtonActionPerformed
+    private void itemName_textboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemName_textboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemName_textboxActionPerformed
 
-     // - - - - - - - - - - DELETE FUNCTION - - - - - - - - - - //
-    private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
-        itemOps.delete();
-    }//GEN-LAST:event_delete_ButtonActionPerformed
-
-     // - - - - - - - - - - REFRESH FUNCTION - - - - - - - - - - //
-    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
-        itemOps.refresh();
-    }//GEN-LAST:event_refresh_ButtonActionPerformed
+    private void itemTableScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPaneMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_itemTableScrollPaneMouseClicked
 
      // - - - - - - - - - - CLEAN FUNCTION - - - - - - - - - - //
     private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
         itemOps.clean();
     }//GEN-LAST:event_clean_ButtonActionPerformed
 
-    private void itemTableScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPaneMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_itemTableScrollPaneMouseClicked
-
-    private void itemName_textboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemName_textboxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_itemName_textboxActionPerformed
-
-    private void Home_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Home_ButtonActionPerformed
-        JTabbedPane.setSelectedIndex(0);
-    }//GEN-LAST:event_Home_ButtonActionPerformed
-
-    private void itemEntry_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEntry_ButtonActionPerformed
-        JTabbedPane.setSelectedIndex(1);
-    }//GEN-LAST:event_itemEntry_ButtonActionPerformed
-
     private void supplierID_comboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_supplierID_comboBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_supplierID_comboBoxActionPerformed
 
+     // - - - - - - - - - - REFRESH FUNCTION - - - - - - - - - - //
+    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
+        itemOps.refresh();
+    }//GEN-LAST:event_refresh_ButtonActionPerformed
+
+     // - - - - - - - - - - DELETE FUNCTION - - - - - - - - - - //
+    private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
+        itemOps.delete();
+    }//GEN-LAST:event_delete_ButtonActionPerformed
+
+     // - - - - - - - - - - UPDATE FUNCTION - - - - - - - - - - //
+    private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
+        itemOps.update();
+    }//GEN-LAST:event_update_ButtonActionPerformed
+
+     // - - - - - - - - - - ADD FUNCTION - - - - - - - - - - //
+    private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
+        itemOps.add();
+    }//GEN-LAST:event_add_ButtonActionPerformed
+
     private void viewItemList_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_ButtonActionPerformed
-       JTabbedPane.setSelectedIndex(2);
+        JTabbedPane.setSelectedIndex(1);
     }//GEN-LAST:event_viewItemList_ButtonActionPerformed
 
-    private void itemTableScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPane1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_itemTableScrollPane1MouseClicked
+    private void itemEntry_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEntry_ButtonActionPerformed
+        JTabbedPane.setSelectedIndex(0);
+    }//GEN-LAST:event_itemEntry_ButtonActionPerformed
 
 
 
@@ -800,14 +639,9 @@ public class MainPanel extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel Calendar_Panel;
-    private javax.swing.JPanel Home;
-    private javax.swing.JButton Home_Button;
     private javax.swing.JPanel ItemEntry;
     private javax.swing.JTabbedPane JTabbedPane;
     private javax.swing.JLabel Logo_lbl;
-    private javax.swing.JPanel Time_Panel;
-    private javax.swing.JPanel Welcome_panel;
     private javax.swing.JButton add_Button;
     private javax.swing.JButton clean_Button;
     private javax.swing.JButton delete_Button;
@@ -819,14 +653,9 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JTable itemTable;
     private javax.swing.JScrollPane itemTableScrollPane;
     private javax.swing.JScrollPane itemTableScrollPane1;
-    private com.toedter.calendar.JCalendar jCalendar1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
     private javax.swing.JButton refresh_Button;
     private javax.swing.JLabel retailPrice_lbl;
     private javax.swing.JTextField retailPrice_textbox;
