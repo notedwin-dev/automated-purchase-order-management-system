@@ -26,8 +26,10 @@ public class PurchaseManagerRole extends Role {
         addPermission(Feature.ITEM_ENTRY, PermissionLevel.VIEW_ONLY);
         addPermission(Feature.SUPPLIER_ENTRY, PermissionLevel.VIEW_ONLY);
         
-        // Sales Management - No access
+        // Sales Management - No access to daily operations, view only for reports
+        addPermission(Feature.DAILY_SALES, PermissionLevel.NO_ACCESS);
         addPermission(Feature.SALES_ENTRY, PermissionLevel.NO_ACCESS);
+        addPermission(Feature.SALES_REPORT, PermissionLevel.VIEW_ONLY);
         
         // Purchase Requisition - View only
         addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.VIEW_ONLY);
@@ -45,7 +47,6 @@ public class PurchaseManagerRole extends Role {
         addPermission(Feature.STOCK_REPORTS, PermissionLevel.NO_ACCESS);
         
         // Financial Management - No access
-        addPermission(Feature.FINANCIAL_REPORTS, PermissionLevel.NO_ACCESS);
         addPermission(Feature.SUPPLIER_PAYMENTS, PermissionLevel.NO_ACCESS);
     }
 }

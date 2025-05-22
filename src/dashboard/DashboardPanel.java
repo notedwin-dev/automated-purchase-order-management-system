@@ -128,7 +128,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
         addFeatureButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
         addFeatureButtonIfPermitted(Feature.DAILY_SALES, Feature.DAILY_SALES, "DailySalesManagement.View_DailySales_List");
-        addFeatureButtonIfPermitted(Feature.SALES_ENTRY, "Daily Sales", "DailySalesManagement.DailySalesUI");
+        addFeatureButtonIfPermitted(Feature.SALES_ENTRY, Feature.SALES_ENTRY, "DailySalesManagement.DailySalesUI");
         addFeatureButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
         addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.Main_PO");
         addFeatureButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, Feature.PURCHASE_ORDERS_LIST, "PurchaseOrder.PO_Panel");
@@ -139,7 +139,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         // Fix the typo in the package name - ReportManagerment should be ReportManagement
         addFeatureButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "ReportManagement.InventoryReportMain");
         addFeatureButtonIfPermitted(Feature.SALES_REPORT, Feature.SALES_REPORT, "ReportManagement.SalesReportMain");
-        addFeatureButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "FinancialManagement.PaymentsUI");
+        addFeatureButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "ReportManagement.Payment_UI");
         
         // Configure button sizes to be consistent
         for (Component comp : pnlFeatures.getComponents()) {
