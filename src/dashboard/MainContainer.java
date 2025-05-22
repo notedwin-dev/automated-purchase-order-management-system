@@ -230,7 +230,7 @@ public class MainContainer extends javax.swing.JFrame {
                     }
                     
                     // Create instance of appropriate class based on role
-                    JFrame poPanel;
+                    JFrame poPanel = null;
                     PR_Management prmanagement = new PR_Management();
                     
                     if (className.equals("PurchaseOrder.PM_View_PO")) {
@@ -242,13 +242,17 @@ public class MainContainer extends javax.swing.JFrame {
                     } else if (className.equals("PurchaseOrder.FM_View_PO_Approval")) {
                         // Finance Manager approval view
                         poPanel = new PurchaseOrder.FM_View_PO_Approval();
-                    } else {
-                        // Default view
+                    } else if (className.equals("PurchaseOrder.Main_PO")) {
+                        // Main_PO should create a PO_Panel for generating POs from PRs
                         poPanel = new PurchaseOrder.PO_Panel(prmanagement);
                     }
                     
-                    // Use our method to preserve layout
-                    showFrameContentPreservingLayout(poPanel, className);
+                    // Use our method to preserve layout if poPanel was initialized
+                    if (poPanel != null) {
+                        showFrameContentPreservingLayout(poPanel, className);
+                    } else {
+                        throw new RuntimeException("Failed to create panel for " + className);
+                    }
                     return;
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Error showing Purchase Order view: " + e.getMessage(),

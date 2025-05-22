@@ -214,17 +214,7 @@ public class Navbar extends javax.swing.JPanel {
                         // Handle role-based redirections for Purchase Order features
                         if (className.equals("PurchaseOrder.Main_PO") || 
                             buttonText.equals(Feature.DISPLAY_REQUISITION)) {
-                            String userRole = currentUser.getRole();
-                            // All roles view requisitions but with different views
-                            if ("Purchase Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PM_View_PO");
-                            } else if ("Finance Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.FM_View_PO_Approval");
-                            } else if ("Administrator".equals(userRole) || 
-                                      "Sales Manager".equals(userRole) || 
-                                      "Inventory Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI");
-                            }
+                                navigationListener.onNavigate("PurchaseOrder.Main_PO");
                         } 
                         // Handle Purchase Orders List with proper role-based redirections
                         else if (className.equals("PurchaseOrder.PO_Panel") || 
@@ -247,15 +237,13 @@ public class Navbar extends javax.swing.JPanel {
                         else if (buttonText.equals(Feature.GENERATE_PURCHASE_ORDER)) {
                             String userRole = currentUser.getRole();
                             
-                            // Only Purchase Manager and Admin can generate POs
-                            if ("Purchase Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PO_GenerationUI");
-                            } else if ("Administrator".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PO_GenerationUI");
+                            // Admin and Purchase Manager should see the PR list to generate POs
+                            if ("Purchase Manager".equals(userRole) || "Administrator".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.Main_PO");
                             } else if ("Finance Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PO_Approval"); // FM approves only
+                                navigationListener.onNavigate("PurchaseOrder.PO_Approval"); 
                             } else if ("Inventory Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI"); // IM views only for verification
+                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI"); 
                             }
                         } else {
                             // Regular navigation for other screens
