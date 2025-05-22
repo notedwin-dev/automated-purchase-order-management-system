@@ -82,7 +82,6 @@ public class PO_Approval extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        NAVPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         POApprovalTable = new javax.swing.JTable();
         ApprovalButton = new javax.swing.JButton();
@@ -90,19 +89,6 @@ public class PO_Approval extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        NAVPanel.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout NAVPanelLayout = new javax.swing.GroupLayout(NAVPanel);
-        NAVPanel.setLayout(NAVPanelLayout);
-        NAVPanelLayout.setHorizontalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 156, Short.MAX_VALUE)
-        );
-        NAVPanelLayout.setVerticalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         POApprovalTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -129,20 +115,16 @@ public class PO_Approval extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(NAVPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1)
-                        .addContainerGap())
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(476, 476, 476)
-                        .addComponent(ApprovalButton)
-                        .addContainerGap(532, Short.MAX_VALUE))))
+                .addGap(106, 106, 106)
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(632, 632, 632)
+                .addComponent(ApprovalButton)
+                .addContainerGap(532, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(NAVPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -230,7 +212,6 @@ public class PO_Approval extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ApprovalButton;
-    private javax.swing.JPanel NAVPanel;
     private javax.swing.JTable POApprovalTable;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
