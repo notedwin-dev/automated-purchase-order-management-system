@@ -74,7 +74,7 @@ public class Register extends javax.swing.JFrame {
     }
 
     private void clear() {
-        txtID.setText("");
+        txtID.setText("U");
         txtUsername.setText("");
         txtPassword.setText("");
         txtDepartment.setText("");
@@ -137,6 +137,7 @@ public class Register extends javax.swing.JFrame {
         txtUsername.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
 
         txtID.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
+        txtID.setText("U");
 
         cbRole.setFont(new java.awt.Font("Arial", 0, 24)); // NOI18N
         cbRole.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] {

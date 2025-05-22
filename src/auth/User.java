@@ -63,7 +63,9 @@ public class User {
 
     public void setDepartment(String department) {
         this.department = department;
-    }    public String getRole() {
+    }
+
+    public String getRole() {
         return role;
     }
 
@@ -71,10 +73,10 @@ public class User {
         this.role = role;
         this.userRole = roles.RoleFactory.createRole(role);
     }
-    
+
     /**
      * Gets the Role object for this user
-     * 
+     *
      * @return The Role object
      */
     public Role getUserRole() {
@@ -83,20 +85,20 @@ public class User {
         }
         return userRole;
     }
-    
+
     /**
      * Checks if the user has access to a specific feature
-     * 
+     *
      * @param featureName The name of the feature
      * @return True if the user has access, false otherwise
      */
     public boolean hasAccess(String featureName) {
         return getUserRole() != null && getUserRole().hasAccess(featureName);
     }
-    
+
     /**
      * Checks if the user can modify a specific feature
-     * 
+     *
      * @param featureName The name of the feature
      * @return True if the user can modify, false otherwise
      */
@@ -106,16 +108,16 @@ public class User {
 
     /**
      * Get the proper path to the user login file
-     * 
+     *
      * @return The path to the login file
      */
     private String getLoginFilePath() {
         return "src/auth/txtlogin.txt";
     }
-    
+
     /**
      * Get the proper path to the temporary file used during updates
-     * 
+     *
      * @return The path to the temporary file
      */
     private String getTempFilePath() {
@@ -129,8 +131,8 @@ public class User {
         }
 
         // ID must be numeric
-        if (!this.id.matches("\\d+")) {
-            JOptionPane.showMessageDialog(null, "ID must be numeric!");
+        if (!this.id.matches("U\\d{4}")) { // Checks for 'U' followed by exactly 4 digits
+            JOptionPane.showMessageDialog(null, "ID must be in the format UXXX (e.g., U0001)!");
             return;
         }        // Check if ID is already used
         try (BufferedReader reader = new BufferedReader(new FileReader(getLoginFilePath()))) {
@@ -158,11 +160,13 @@ public class User {
         }
 
     }
-public void delete() {
+
+    public void delete() {
         if (did == 0) {
             JOptionPane.showMessageDialog(null, "Please select a row to delete!");
             return;
-        }        int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this record?", "Confirmation", JOptionPane.YES_NO_OPTION);
+        }
+        int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this record?", "Confirmation", JOptionPane.YES_NO_OPTION);
         if (choice == JOptionPane.YES_OPTION) {
             try {
                 removeRecord(getLoginFilePath(), did);
@@ -178,13 +182,13 @@ public void delete() {
         }
 
     }
-    
 
     public void update() {
         if (this.id == null || this.username == null || this.password == null || this.department == null || this.role == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
-        }        try {
+        }
+        try {
             // Create temporary file
             File inputFile = new File(getLoginFilePath());
             File tempFile = new File(getTempFilePath());
@@ -232,7 +236,9 @@ public void delete() {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
         }
-    }    public static void removeRecord(String filePath, int deleteLine) {
+    }
+
+    public static void removeRecord(String filePath, int deleteLine) {
 
         String tempFile = "src/auth/temp.txt";
         File oldFile = new File(filePath);
@@ -242,7 +248,8 @@ public void delete() {
         String currentLine;
 
         try {
-            FileWriter fw = new FileWriter(tempFile, true);            BufferedWriter bw = new BufferedWriter(fw);
+            FileWriter fw = new FileWriter(tempFile, true);
+            BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
 
             FileReader fr = new FileReader(filePath);
