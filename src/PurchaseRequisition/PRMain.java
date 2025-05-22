@@ -10,6 +10,7 @@ import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,8 +27,9 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PRMain extends javax.swing.JFrame {
 
-    public PROperation prop;
+    private boolean ignoreTableClick = false;
 
+    public PROperation prop;
     int did;
     String prid = "PR";
     String date = "";
@@ -51,13 +53,17 @@ public class PRMain extends javax.swing.JFrame {
     // Add this to store temporary modifications for new records
     private List<String> tempItemCodes = new ArrayList<>();
     private List<String> tempQuantities = new ArrayList<>();
-    private boolean quantityModified = false;
 
     /**
      * Creates new form PRMain
      */
     public PRMain() {
         initComponents();
+        RemoveItembtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            }
+        });
+
         prop = new PROperation(prid, date, smname, smid, itemcode, quantity, exdate, status);
         tableLoad();
         try {
@@ -120,97 +126,117 @@ public class PRMain extends javax.swing.JFrame {
 
         // Load items for new record
         loadItemsForNewRecord();
+
+        PRTable.getSelectionModel().addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            @Override
+            public void valueChanged(javax.swing.event.ListSelectionEvent e) {
+                // This is crucial to prevent multiple calls during a single selection change
+                // and to ensure the event is "finished" adjusting.
+                if (e.getValueIsAdjusting()) {
+                    return;
+                }
+
+                // Check if we are currently ignoring table clicks due to a removal operation
+                if (ignoreTableClick) {
+                    return; // Ignore this selection event
+                }
+
+                int selectedRow = PRTable.getSelectedRow();
+                if (selectedRow == -1) {
+                    // No row is selected. This is the natural state after a row is removed,
+                    // or if the user clicks outside a row.
+                    // Clear the input fields. DO NOT show an error message here.
+                    cbItemCode.setSelectedIndex(-1);
+                    txtQuantity.setText("");
+                    return; // Exit as nothing valid is selected
+                }
+
+                // Process the selected row and populate fields
+                DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
+                if (selectedRow >= 0 && selectedRow < model.getRowCount()) {
+                    try {
+                        String itemCode = model.getValueAt(selectedRow, 0).toString();
+                        String quantity = model.getValueAt(selectedRow, 1).toString();
+
+                        cbItemCode.setSelectedItem(itemCode);
+                        txtQuantity.setText(quantity);
+
+                        // Set isAddingNewRecord to false when an existing item is selected
+                        isAddingNewRecord = false;
+                        // Clear temporary lists if they were used for previous item entry
+                        tempItemCodes.clear();
+                        tempQuantities.clear();
+
+                    } catch (Exception ex) {
+                        // Log or handle the error, but avoid modal dialogs for selection changes
+                        System.err.println("Error retrieving data from table selection: " + ex.getMessage());
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     private void getData() {
-        String rawDate = ((com.toedter.calendar.JTextFieldDateEditor) txtDate.getDateEditor().getUiComponent()).getText();
-        String rawExDate = ((com.toedter.calendar.JTextFieldDateEditor) txtExDate.getDateEditor().getUiComponent()).getText();
-        try {
-            java.util.Date date = new java.text.SimpleDateFormat("dd MMM yyyy").parse(rawDate);
-            String formattedDate = new java.text.SimpleDateFormat("dd-MM-yyyy").format(date);
-            prop.setDate(formattedDate);
-
-            java.util.Date exDate = new java.text.SimpleDateFormat("dd MMM yyyy").parse(rawExDate);
-            String formattedExDate = new java.text.SimpleDateFormat("dd-MM-yyyy").format(exDate);
-            prop.setExDate(formattedExDate);
-        } catch (java.text.ParseException e) {
-            JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
-        }
-
-        prop.setPRID(txtPRID.getText());
-        prop.setSMName(txtSMName.getText());
-        prop.setSMID(txtSMID.getText());
-
-        // Modify the item code and quantity collection logic
         StringBuilder itemCodesBuilder = new StringBuilder("{");
         StringBuilder quantitiesBuilder = new StringBuilder("{");
 
-        if (isAddingNewRecord) {
-            // For new records, use the temporary lists of modified items
-            boolean isFirst = true;
+        if (cbItemCode.getSelectedItem() != null && !txtQuantity.getText().isEmpty()) {
+            String currentItemCode = cbItemCode.getSelectedItem().toString();
+            String currentQuantity = txtQuantity.getText();
 
-            // If the current selection has been modified, make sure it's in the temp lists
-            if (quantityModified && cbItemCode.getSelectedItem() != null) {
-                String currentItem = cbItemCode.getSelectedItem().toString();
-                String currentQty = txtQuantity.getText();
-
-                // Check if this item is already in our temp lists
-                int existingIndex = tempItemCodes.indexOf(currentItem);
+            if (isAddingNewRecord) {
+                // Find and update in temp lists
+                int existingIndex = tempItemCodes.indexOf(currentItemCode);
                 if (existingIndex >= 0) {
-                    // Update existing entry
-                    tempQuantities.set(existingIndex, currentQty);
-                } else if (!currentQty.equals("0")) {
-                    // Add as new entry if quantity is not zero
-                    tempItemCodes.add(currentItem);
-                    tempQuantities.add(currentQty);
+                    tempQuantities.set(existingIndex, currentQuantity);
+                } else if (!currentQuantity.equals("0")) {
+                    tempItemCodes.add(currentItemCode);
+                    tempQuantities.add(currentQuantity);
                 }
-
-                // Reset the modified flag
-                quantityModified = false;
+            } else {
+                // Update in itemQuantityMap for existing records
+                itemQuantityMap.put(currentItemCode, currentQuantity);
             }
+        }
 
-            // Build the formatted strings from our temporary lists
-            for (int i = 0; i < tempItemCodes.size(); i++) {
-                // Only include items with non-zero quantities
-                String qty = tempQuantities.get(i);
-                if (!qty.equals("0")) {
+        if (isAddingNewRecord) {
+            // For new records, iterate through the items currently in PRTable
+            DefaultTableModel tableModel = (DefaultTableModel) PRTable.getModel();
+            boolean isFirst = true;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                String itemCode = tableModel.getValueAt(i, 0).toString();
+                String quantity = tableModel.getValueAt(i, 1).toString();
+
+                if (!quantity.equals("0")) { // Only include non-zero quantities
                     if (!isFirst) {
                         itemCodesBuilder.append(", ");
                         quantitiesBuilder.append(", ");
                     } else {
                         isFirst = false;
                     }
-                    itemCodesBuilder.append(tempItemCodes.get(i));
-                    quantitiesBuilder.append(qty);
+                    itemCodesBuilder.append(itemCode);
+                    quantitiesBuilder.append(quantity);
                 }
             }
         } else {
-            // For updating existing records, use the previous logic
-            if (selectedItemCodes != null && selectedItemCodes.length > 0) {
-                for (int i = 0; i < selectedItemCodes.length; i++) {
-                    if (i > 0) {
+            // For updating existing records, iterate through the items currently in PRTable
+            // (as it should reflect the latest state including any additions/removals)
+            DefaultTableModel tableModel = (DefaultTableModel) PRTable.getModel();
+            boolean isFirst = true;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                String itemCode = tableModel.getValueAt(i, 0).toString();
+                String quantity = tableModel.getValueAt(i, 1).toString();
+
+                if (!quantity.equals("0")) { // Only include non-zero quantities
+                    if (!isFirst) {
                         itemCodesBuilder.append(", ");
                         quantitiesBuilder.append(", ");
-                    }
-                    String itemCode = selectedItemCodes[i];
-                    itemCodesBuilder.append(itemCode);
-
-                    // If the quantity was edited, use the edited value for the selected item
-                    if (cbItemCode.getSelectedItem() != null
-                            && cbItemCode.getSelectedItem().toString().equals(itemCode)) {
-                        quantitiesBuilder.append(txtQuantity.getText());
-                        // Update the map with the new quantity
-                        itemQuantityMap.put(itemCode, txtQuantity.getText());
                     } else {
-                        quantitiesBuilder.append(itemQuantityMap.get(itemCode));
+                        isFirst = false;
                     }
-                }
-            } else {
-                // Fallback to selected item only if no mapping exists
-                if (cbItemCode.getSelectedItem() != null) {
-                    String selectedItem = cbItemCode.getSelectedItem().toString();
-                    itemCodesBuilder.append(selectedItem);
-                    quantitiesBuilder.append(txtQuantity.getText());
+                    itemCodesBuilder.append(itemCode);
+                    quantitiesBuilder.append(quantity);
                 }
             }
         }
@@ -253,14 +279,15 @@ public class PRMain extends javax.swing.JFrame {
         try {
             File itemsFile = new File("src/itemmanagement/items.txt");
             if (!itemsFile.exists()) {
-                JOptionPane.showMessageDialog(this, "Items file not found.");
+                // Improved error message for file not found
+                JOptionPane.showMessageDialog(this, "Items file not found at: " + itemsFile.getAbsolutePath(), "File Not Found", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
             BufferedReader br = new BufferedReader(new FileReader(itemsFile));
 
             List<String> itemCodes = new ArrayList<>();
-            itemQuantityMap.clear();
+            itemQuantityMap.clear(); // Clear the map when loading new items for a new record
 
             String line;
             while ((line = br.readLine()) != null) {
@@ -268,7 +295,7 @@ public class PRMain extends javax.swing.JFrame {
                 if (parts.length >= 2) {
                     String itemCode = parts[1].trim(); // code is in the second column
                     itemCodes.add(itemCode);
-                    itemQuantityMap.put(itemCode, "0"); // Default quantity to 0
+                    itemQuantityMap.put(itemCode, "0"); // Default quantity to 0 for new records
                 }
             }
             br.close();
@@ -276,50 +303,69 @@ public class PRMain extends javax.swing.JFrame {
             // Set the array of item codes
             selectedItemCodes = itemCodes.toArray(new String[0]);
 
-            // Populate the dropdown with item codes
-            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(selectedItemCodes);
-            cbItemCode.setModel(model);
-
-            // Add item listener to update quantity when item is selected
-            cbItemCode.removeAllItems(); // Remove existing items
-            for (String code : selectedItemCodes) {
-                cbItemCode.addItem(code);
-            }
-
-            // Add item listener to update quantity when item is selected
+            // --- START OF CORRECTED COMBO BOX POPULATION AND LISTENER MANAGEMENT ---
+            // 1. Remove all existing ItemListeners to prevent duplicate events.
+            // This is crucial to ensure that the itemStateChanged logic only runs once per selection.
+            // Do this BEFORE setting a new model or adding items, as changing the model might
+            // trigger events or make previous listeners irrelevant.
             for (ItemListener listener : cbItemCode.getItemListeners()) {
                 cbItemCode.removeItemListener(listener);
             }
 
+            // 2. Populate the dropdown with item codes by setting a new model.
+            // This is the correct and efficient way to load all items.
+            // It also implicitly clears any existing items in the JComboBox.
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(selectedItemCodes);
+            cbItemCode.setModel(model);
+
+            // 3. Add the ItemListener back after setting the new model.
+            // This listener will handle updating txtQuantity based on selection.
             cbItemCode.addItemListener(new ItemListener() {
                 @Override
                 public void itemStateChanged(ItemEvent e) {
                     if (e.getStateChange() == ItemEvent.SELECTED) {
-                        String selectedItem = cbItemCode.getSelectedItem().toString();
-
-                        // Check if this item is in our temp lists first
-                        int tempIndex = tempItemCodes.indexOf(selectedItem);
-                        if (tempIndex >= 0) {
-                            // Use the temp value
-                            txtQuantity.setText(tempQuantities.get(tempIndex));
-                        } else {
-                            // Fall back to the default map
-                            String qty = itemQuantityMap.get(selectedItem);
-                            if (qty != null) {
-                                txtQuantity.setText(qty);
+                        String selectedItem = (String) cbItemCode.getSelectedItem(); // Cast to String
+                        if (selectedItem != null) { // Defensive check: ensure an item is actually selected
+                            // Check if this item has a temporary quantity (if modified in the current session)
+                            int tempIndex = tempItemCodes.indexOf(selectedItem);
+                            if (tempIndex >= 0) {
+                                // Use the temporary quantity if it exists
+                                txtQuantity.setText(tempQuantities.get(tempIndex));
                             } else {
-                                txtQuantity.setText("0");
+                                // Otherwise, fall back to the initial "0" from itemQuantityMap
+                                String qty = itemQuantityMap.get(selectedItem);
+                                if (qty != null) {
+                                    txtQuantity.setText(qty);
+                                } else {
+                                    txtQuantity.setText("0"); // Fallback, should ideally always find a quantity
+                                }
                             }
+                        } else {
+                            txtQuantity.setText(""); // Clear quantity if no item is selected (e.g., empty combo box)
                         }
                     }
                 }
             });
 
-            // Add document listener to the quantity text field to track changes
+            // --- END OF CORRECTED COMBO BOX POPULATION AND LISTENER MANAGEMENT ---
+            // --- DocumentListener for txtQuantity ---
+            // This part is correctly placed, but make sure it's not being added multiple times
+            // if loadItemsForNewRecord() is called frequently.
+            // A common pattern is to add this DocumentListener once in the constructor.
+            // If you are only calling loadItemsForNewRecord() on initial load and for a "new record" clear operation,
+            // then it might be fine to keep it here, assuming 'isAddingNewRecord' manages its behavior.
+            // However, if it's called multiple times, you might need to remove previous DocumentListeners too.
+            // For now, assuming it's okay as is, but be aware of potential duplicates.
+            // Remove previous DocumentListeners to avoid duplicates if this method can be called multiple times
+            // outside of initial setup. A cleaner approach for DocumentListener is often to add it ONCE
+            // in the constructor. But if it MUST be here, this is how you'd manage it:
+            // for (DocumentListener dl : ((AbstractDocument)txtQuantity.getDocument()).getDocumentListeners()) {
+            //     txtQuantity.getDocument().removeDocumentListener(dl);
+            // }
+            // txtQuantity.getDocument().addDocumentListener(...); // Add it after removing old ones if needed
             txtQuantity.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
                 @Override
                 public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                    quantityModified = true;
 
                     // If we're adding a new record, update the temporary lists
                     if (isAddingNewRecord && cbItemCode.getSelectedItem() != null) {
@@ -330,10 +376,14 @@ public class PRMain extends javax.swing.JFrame {
                         if (existingIndex >= 0) {
                             // Update existing entry
                             tempQuantities.set(existingIndex, currentQty);
-                        } else if (!currentQty.equals("0")) {
-                            // Add new entry if not zero
+                        } else if (!currentQty.equals("0") && !currentQty.isEmpty()) { // Add !currentQty.isEmpty()
+                            // Add new entry if not zero and not empty
                             tempItemCodes.add(currentItem);
                             tempQuantities.add(currentQty);
+                        } else if (currentQty.equals("0") && existingIndex >= 0) {
+                            // If it becomes "0", remove from temp lists
+                            tempItemCodes.remove(existingIndex);
+                            tempQuantities.remove(existingIndex);
                         }
                     }
                 }
@@ -349,16 +399,23 @@ public class PRMain extends javax.swing.JFrame {
                 }
             });
 
-            // Select first item
+            // Select first item and set quantity to 0
             if (itemCodes.size() > 0) {
                 cbItemCode.setSelectedIndex(0);
-                txtQuantity.setText("0");
+                txtQuantity.setText("0"); // Always start with 0 quantity for a newly selected item in a new record
+            } else {
+                // If no items are loaded, clear the quantity field
+                txtQuantity.setText("");
             }
 
-            itemsLoaded = true;
+            itemsLoaded = true; // Mark items as loaded
 
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error loading item codes: " + e.getMessage());
+        } catch (IOException e) { // Catch IOException specifically for file errors
+            // Improved error message for file read issues
+            JOptionPane.showMessageDialog(this, "Error loading item codes from file: " + e.getMessage(), "File Read Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        } catch (Exception e) { // Catch any other unexpected exceptions
+            JOptionPane.showMessageDialog(this, "An unexpected error occurred during item loading: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -548,6 +605,11 @@ public class PRMain extends javax.swing.JFrame {
 
         cbItemCode.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         cbItemCode.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbItemCode.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbItemCodeActionPerformed(evt);
+            }
+        });
 
         AddItembtn.setText("Add Item");
         AddItembtn.addActionListener(new java.awt.event.ActionListener() {
@@ -557,6 +619,11 @@ public class PRMain extends javax.swing.JFrame {
         });
 
         RemoveItembtn.setText("Remove Item");
+        RemoveItembtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveItembtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -762,78 +829,139 @@ public class PRMain extends javax.swing.JFrame {
 
     private void AddItembtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItembtnActionPerformed
         // TODO add your handling code here:
+        // Get the JTable's model
+        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
+
+        String selectedItemCode = (String) cbItemCode.getSelectedItem();
+        String quantityText = txtQuantity.getText();
+
+        if (selectedItemCode == null || selectedItemCode.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select an Item Code.", "Input Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (quantityText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a Quantity.", "Input Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int quantity;
+        try {
+            quantity = Integer.parseInt(quantityText);
+            if (quantity <= 0) {
+                JOptionPane.showMessageDialog(this, "Quantity must be a positive number.", "Input Error", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Invalid quantity. Please enter a whole number.", "Input Error", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Check if the item already exists in the PRTable
+        boolean itemExists = false;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).equals(selectedItemCode)) {
+                // Item exists, update its quantity
+                int existingQuantity = Integer.parseInt(model.getValueAt(i, 1).toString());
+                model.setValueAt(String.valueOf(existingQuantity + quantity), i, 1);
+                itemExists = true;
+                break;
+            }
+        }
+
+        if (!itemExists) {
+            // If item doesn't exist, add a new row
+            model.addRow(new Object[]{selectedItemCode, quantityText});
+        }
+
+        // After adding/updating, you might want to clear the quantity field or reset for next entry
+        txtQuantity.setText("0"); // Or "" if you prefer it completely empty
+        cbItemCode.setSelectedIndex(0); // Reset to first item or keep current
     }//GEN-LAST:event_AddItembtnActionPerformed
 
+    private void cbItemCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCodeActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_cbItemCodeActionPerformed
+
+    private void RemoveItembtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveItembtnActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
+        int selectedRow = PRTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a row to remove from the table.", "No Row Selected", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to remove the selected item?",
+                "Confirm Removal",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            try {
+                ignoreTableClick = true; // Set flag to ignore subsequent table selection events
+
+                model.removeRow(selectedRow);
+
+                JOptionPane.showMessageDialog(this, "Selected item removed successfully!", "Item Removed", JOptionPane.INFORMATION_MESSAGE);
+
+                // Clear the input fields after removal
+                cbItemCode.setSelectedIndex(0);
+                txtQuantity.setText("");
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error removing item: " + e.getMessage(), "Removal Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            } finally {
+                // Always reset the flag, even if an error occurred during removal
+                ignoreTableClick = false;
+            }
+        }
+    }//GEN-LAST:event_RemoveItembtnActionPerformed
+
     private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
-        DefaultTableModel tmodel = (DefaultTableModel) PRTable.getModel();
-        int selectrowindex = PRTable.getSelectedRow();
+        int selectedRow = PRTable.getSelectedRow();
+        if (selectedRow == -1) {
+            // No row selected, or selection cleared. This might happen with mouse clicks.
+            // You can simply return or clear relevant fields if needed.
+            return;
+        }
 
-        if (selectrowindex >= 0) { // Check if a valid row is selected
-            
-            itemcode = tmodel.getValueAt(selectrowindex, 5).toString();
-            quantity = tmodel.getValueAt(selectrowindex, 6).toString();
+        // Get the table model
+        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
 
-            // Extract and store item codes and quantities for dropdown
-            String itemsStr = tmodel.getValueAt(selectrowindex, 5).toString();
-            itemQuantityMap.clear();
-
-            // Parse multiple items like "SP2AP(10), SP2BN(5)"
-            String[] itemParts = itemsStr.split(", ");
-            selectedItemCodes = new String[itemParts.length];
-            selectedQuantities = new String[itemParts.length];
-
-            for (int i = 0; i < itemParts.length; i++) {
-                String part = itemParts[i].trim();
-                if (part.contains("(") && part.contains(")")) {
-                    int startPos = part.indexOf("(") + 1;
-                    int endPos = part.indexOf(")");
-                    if (startPos < endPos) {
-                        String code = part.substring(0, part.indexOf("(")).trim();
-                        String qty = part.substring(startPos, endPos).trim();
-
-                        selectedItemCodes[i] = code;
-                        selectedQuantities[i] = qty;
-                        itemQuantityMap.put(code, qty);
-                    }
-                }
-            }
-
-            // Populate the dropdown
-            populateItemCodeDropdown();
-
-            // Select the first item by default
-            if (selectedItemCodes != null && selectedItemCodes.length > 0) {
-                cbItemCode.setSelectedItem(selectedItemCodes[0]);
-                txtQuantity.setText(itemQuantityMap.get(selectedItemCodes[0]));
-            }
-
-            txtPRID.setText(prid);
-            // Date
+        // Ensure the row index is valid before proceeding
+        if (selectedRow >= 0 && selectedRow < model.getRowCount()) {
             try {
-                java.util.Date parsedDate = new java.text.SimpleDateFormat("dd-MM-yyyy").parse(date);
-                txtDate.setDate(parsedDate); // Use the parsed Date object
-            } catch (java.text.ParseException e) {
-                JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
+                // Retrieve data from the selected row using correct column indices
+                // Column 0 is "Item Code"
+                String itemCode = model.getValueAt(selectedRow, 0).toString();
+                // Column 1 is "Quantity"
+                String quantity = model.getValueAt(selectedRow, 1).toString();
+
+                // Populate the input fields
+                cbItemCode.setSelectedItem(itemCode); // Set the selected item in the combo box
+                txtQuantity.setText(quantity); // Set the quantity in the text field
+
+                // When an existing record is clicked, we are no longer "adding a new record"
+                // You might want to adjust your isAddingNewRecord flag here
+                isAddingNewRecord = false;
+
+                // Clear temporary lists because we are now working with an existing record's data
+                tempItemCodes.clear();
+                tempQuantities.clear();
+
+                // You might want to populate other fields here if they were part of the row data
+                // For example, if your table contained 'PRID', 'SMName', etc.
+                // However, your PRTable is specifically for "Item Code" and "Quantity".
+                // The other fields (PRID, Date, SMName, SMID, ExDate, Status) are likely from the main PR record.
+                // If you click a row in PRTable, it's just to edit that specific item/quantity, not change the whole PR.
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error retrieving data from table: " + e.getMessage(), "Table Data Error", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace(); // Print the stack trace for debugging
             }
-
-            txtSMName.setText(smname);
-            txtSMID.setText(smid);
-
-            // Expected Delivery Date
-            try {
-                java.util.Date parsedExDate = new java.text.SimpleDateFormat("dd-MM-yyyy").parse(exdate);
-                txtExDate.setDate(parsedExDate);
-            } catch (java.text.ParseException e) {
-                JOptionPane.showMessageDialog(this, "Error parsing date: " + e.getMessage());
-            }
-
-            // Set the selected item in the combo box
-            cbStatus.setSelectedItem(status);
-
-            // Set properties for the PROperation
-            
-            prop.setItemCode(itemcode);
-            prop.setQuantity(quantity);
         }
     }
 
