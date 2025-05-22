@@ -145,7 +145,9 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, Feature.INVENTORY_MANAGEMENT, "InventoryManagement.InventoryUI");
             addNavButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, "Inventory List", "InventoryManagement.View_Inventory_List");
             addNavButtonIfPermitted(Feature.USER_MANAGEMENT, Feature.USER_MANAGEMENT, "auth.Register");
-            addNavButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "InventoryManagement.View_Inventory_List");
+            // Fix the typo in the package name - ReportManagerment should be ReportManagement
+            addNavButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "ReportManagement.InventoryReportMain");
+            addNavButtonIfPermitted(Feature.SALES_ENTRY, Feature.SALES_ENTRY, "ReportManagement.SalesReportMain");
             addNavButtonIfPermitted(Feature.FINANCIAL_REPORTS, Feature.FINANCIAL_REPORTS, "FinancialManagement.ReportsUI");
             addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "FinancialManagement.PaymentsUI");
             
@@ -212,17 +214,7 @@ public class Navbar extends javax.swing.JPanel {
                         // Handle role-based redirections for Purchase Order features
                         if (className.equals("PurchaseOrder.Main_PO") || 
                             buttonText.equals(Feature.DISPLAY_REQUISITION)) {
-                            String userRole = currentUser.getRole();
-                            // All roles view requisitions but with different views
-                            if ("Purchase Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PM_View_PO");
-                            } else if ("Finance Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.FM_View_PO_Approval");
-                            } else if ("Administrator".equals(userRole) || 
-                                      "Sales Manager".equals(userRole) || 
-                                      "Inventory Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI");
-                            }
+                                navigationListener.onNavigate("PurchaseOrder.Main_PO");
                         } 
                         // Handle Purchase Orders List with proper role-based redirections
                         else if (className.equals("PurchaseOrder.PO_Panel") || 
@@ -245,15 +237,13 @@ public class Navbar extends javax.swing.JPanel {
                         else if (buttonText.equals(Feature.GENERATE_PURCHASE_ORDER)) {
                             String userRole = currentUser.getRole();
                             
-                            // Only Purchase Manager and Admin can generate POs
-                            if ("Purchase Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PO_GenerationUI");
-                            } else if ("Administrator".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PO_GenerationUI");
+                            // Admin and Purchase Manager should see the PR list to generate POs
+                            if ("Purchase Manager".equals(userRole) || "Administrator".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.Main_PO");
                             } else if ("Finance Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PO_Approval"); // FM approves only
+                                navigationListener.onNavigate("PurchaseOrder.PO_Approval"); 
                             } else if ("Inventory Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI"); // IM views only for verification
+                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI"); 
                             }
                         } else {
                             // Regular navigation for other screens
@@ -398,6 +388,8 @@ public class Navbar extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         Logo_lbl = new javax.swing.JLabel();
+        // Create a JScrollPane to contain navButtonsPanel
+        JScrollPane navScrollPane = new JScrollPane();
         navButtonsPanel = new javax.swing.JPanel();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 204));
@@ -418,6 +410,13 @@ public class Navbar extends javax.swing.JPanel {
         // Configure navigation buttons panel
         navButtonsPanel.setBackground(new java.awt.Color(255, 255, 204));
         navButtonsPanel.setLayout(new javax.swing.BoxLayout(navButtonsPanel, javax.swing.BoxLayout.Y_AXIS));
+        
+        // Configure the scroll pane
+        navScrollPane.setViewportView(navButtonsPanel);
+        navScrollPane.setBorder(BorderFactory.createEmptyBorder());  // Remove border
+        navScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);  // Hide horizontal scrollbar
+        navScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);  // Show vertical scrollbar when needed
+        navScrollPane.getVerticalScrollBar().setUnitIncrement(16);  // Smoother scrolling
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -425,7 +424,7 @@ public class Navbar extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(userInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(navButtonsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(navScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -434,7 +433,7 @@ public class Navbar extends javax.swing.JPanel {
                 .addGap(0, 0, 0)
                 .addComponent(userInfoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(navButtonsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
+                .addComponent(navScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
