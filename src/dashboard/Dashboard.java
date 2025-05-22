@@ -28,7 +28,7 @@ public class Dashboard extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
     
-    /**
+      /**
      * Creates new Dashboard with a specified user
      * 
      * @param user The logged-in user
@@ -44,7 +44,7 @@ public class Dashboard extends javax.swing.JFrame {
         // Set up available features based on user role
         setupFeatureButtons();
     }
-    
+
     /**
      * Sets up the feature buttons based on the user's role permissions
      */
@@ -66,7 +66,7 @@ public class Dashboard extends javax.swing.JFrame {
         addFeatureButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
         addFeatureButtonIfPermitted(Feature.SALES_ENTRY, "Daily Sales", "DailySalesManagement.DailySalesUI");
         addFeatureButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Purchase Requisition", "PurchaseRequisition.PRMain");
-        addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, "View Requisitions", "PurchaseRequisition.PRMain");
+        addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, "View Requisitions", "PurchaseOrder.Main_PO");
         addFeatureButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, "Purchase Orders", "PurchaseOrder.PO_Panel");
         addFeatureButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, "Generate Purchase Order", "PurchaseOrder.PO_Panel");
         addFeatureButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, "Inventory Management", "InventoryManagement.InventoryUI");
@@ -125,9 +125,39 @@ public class Dashboard extends javax.swing.JFrame {
      */   
     private void openFeature(String className) {
         try {
+            // Special handling for "dashboard.Dashboard" to prevent reopening
+            if (className.equals("dashboard.Dashboard")) {
+                return; // Already in dashboard, do nothing
+            }
+            
+            // Handle logout separately
+            if (className.equals("auth.Login")) {
+                logout();
+                return;
+            }
+
+            if (className.equals("PurchaseOrder.Main_PO")) {
+                // Pass the PR_Management instance to the PO_Panel
+                Class<?> prClass = Class.forName("PurchaseRequisition.PR_Management");
+                Object prInstance = prClass.getDeclaredConstructor().newInstance();
+                Class<?> poClass = Class.forName(className);
+                Object poInstance = poClass.getDeclaredConstructor(prClass).newInstance(prInstance);
+                ((JFrame) poInstance).setVisible(true);
+                return;
+            }
+            
             // Use reflection to create an instance of the class
             Class<?> featureClass = Class.forName(className);
-            Object instance = featureClass.getDeclaredConstructor().newInstance();
+            Object instance;
+            
+            // Check if we need to pass the current user
+            try {
+                // Try to find a constructor that takes a User parameter
+                instance = featureClass.getDeclaredConstructor(User.class).newInstance(currentUser);
+            } catch (NoSuchMethodException nsme) {
+                // Fall back to default constructor
+                instance = featureClass.getDeclaredConstructor().newInstance();
+            }
             
             // If it's a JFrame, make it visible
             if (instance instanceof JFrame) {
@@ -164,8 +194,9 @@ public class Dashboard extends javax.swing.JFrame {
      * This method is called from within the constructor to initialize the form.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         pnlMain = new javax.swing.JPanel();
         pnlHeader = new javax.swing.JPanel();
         lblTitle = new javax.swing.JLabel();
@@ -176,35 +207,42 @@ public class Dashboard extends javax.swing.JFrame {
         setTitle("OWSB - Dashboard");
         setPreferredSize(new java.awt.Dimension(1200, 800));
 
-        pnlMain.setLayout(new BorderLayout(10, 10));
+        pnlMain.setLayout(new java.awt.BorderLayout(10, 10));
 
-        pnlHeader.setBackground(new Color(153, 153, 255));
-        pnlHeader.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlHeader.setLayout(new BorderLayout());
+        pnlHeader.setBackground(new java.awt.Color(153, 153, 255));
+        pnlHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        pnlHeader.setLayout(new java.awt.BorderLayout());
 
-        lblTitle.setFont(new Font("Arial", Font.BOLD, 36));
-        lblTitle.setForeground(Color.WHITE);
+        lblTitle.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
+        lblTitle.setForeground(new java.awt.Color(255, 255, 255));
         lblTitle.setText("OMEGA WHOLESALE SDN BHD - Dashboard");
-        pnlHeader.add(lblTitle, BorderLayout.WEST);
+        pnlHeader.add(lblTitle, java.awt.BorderLayout.WEST);
 
-        lblWelcome.setFont(new Font("Arial", Font.BOLD, 18));
-        lblWelcome.setForeground(Color.WHITE);
+        lblWelcome.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        lblWelcome.setForeground(new java.awt.Color(255, 255, 255));
+        lblWelcome.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblWelcome.setText("Welcome, User");
-        lblWelcome.setHorizontalAlignment(SwingConstants.RIGHT);
-        pnlHeader.add(lblWelcome, BorderLayout.EAST);
+        pnlHeader.add(lblWelcome, java.awt.BorderLayout.EAST);
 
-        pnlMain.add(pnlHeader, BorderLayout.NORTH);
-
-        pnlFeatures.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlFeatures.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        pnlMain.add(pnlHeader, java.awt.BorderLayout.NORTH);        // Create a content panel to hold the feature buttons (in the center)
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         
-        pnlMain.add(pnlFeatures, BorderLayout.CENTER);
+        // Configure the features panel
+        pnlFeatures.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        pnlFeatures.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 20));
+        
+        // Add the features panel to the content panel
+        contentPanel.add(pnlFeatures, BorderLayout.CENTER);
+        
+        // Add the content panel to the main panel's center
+        pnlMain.add(contentPanel, java.awt.BorderLayout.CENTER);
 
-        getContentPane().add(pnlMain);
+        getContentPane().add(pnlMain, java.awt.BorderLayout.CENTER);
 
         pack();
         setLocationRelativeTo(null);
-    }// </editor-fold>
+    }// </editor-fold>//GEN-END:initComponents
 
     /**
      * @param args the command line arguments
@@ -236,11 +274,11 @@ public class Dashboard extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblTitle;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JPanel pnlFeatures;
     private javax.swing.JPanel pnlHeader;
     private javax.swing.JPanel pnlMain;
-    // End of variables declaration
+    // End of variables declaration//GEN-END:variables
 }

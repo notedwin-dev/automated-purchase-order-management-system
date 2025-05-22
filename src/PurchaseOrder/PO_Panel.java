@@ -23,11 +23,6 @@ public class PO_Panel extends javax.swing.JFrame {
         initComponents();
         this.prmanagement = prmanagement;
         this.prmanagement.getPRfromtxtfile();
-        // - - - - - RESIZE ICON LOGO - - - - - //
-        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/resources/icons/Logo.png"));
-        Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-        ImageIcon resizedLogo = new ImageIcon(scaled_logo);
-        Logo_lbl.setIcon(resizedLogo);
 
         tmodel = new DefaultTableModel(
             new Object[]{"No.", "PR ID", "Date", "SM Name", "SM ID", "Item Code", "Quantity", "Expected Delivery Date", "Status"}, 0  ) {
@@ -164,10 +159,6 @@ public class PO_Panel extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        Logo_lbl = new javax.swing.JLabel();
-        Home_Button = new javax.swing.JButton();
-        PRList_Button = new javax.swing.JButton();
         PO_TabbedPane = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
@@ -177,47 +168,6 @@ public class PO_Panel extends javax.swing.JFrame {
         generatePO_button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 204));
-
-        Home_Button.setBackground(new java.awt.Color(255, 255, 204));
-        Home_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        Home_Button.setText("Home");
-        Home_Button.setBorder(null);
-        Home_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                Home_ButtonActionPerformed(evt);
-            }
-        });
-
-        PRList_Button.setBackground(new java.awt.Color(255, 255, 204));
-        PRList_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        PRList_Button.setText("PR List");
-        PRList_Button.setBorder(null);
-        PRList_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PRList_ButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Logo_lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(Home_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(PRList_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(Logo_lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(97, 97, 97)
-                .addComponent(Home_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36)
-                .addComponent(PRList_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -312,30 +262,16 @@ public class PO_Panel extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(152, Short.MAX_VALUE)
                 .addComponent(PO_TabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1082, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(PO_TabbedPane)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void Home_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Home_ButtonActionPerformed
-        PO_TabbedPane.setSelectedIndex(0);
-    }//GEN-LAST:event_Home_ButtonActionPerformed
-
-    private void PRList_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PRList_ButtonActionPerformed
-        PO_TabbedPane.setSelectedIndex(1);
-    }//GEN-LAST:event_PRList_ButtonActionPerformed
-
-    private void prTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prTableMouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_prTableMouseClicked
 
     private void generatePO_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePO_buttonActionPerformed
         // TODO add your handling code here:
@@ -345,6 +281,10 @@ public class PO_Panel extends javax.swing.JFrame {
             this.dispose();
         }
     }//GEN-LAST:event_generatePO_buttonActionPerformed
+
+    private void prTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prTableMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_prTableMouseClicked
 
     
  
@@ -387,13 +327,9 @@ public class PO_Panel extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Home_Button;
-    private javax.swing.JLabel Logo_lbl;
     private javax.swing.JTabbedPane PO_TabbedPane;
-    private javax.swing.JButton PRList_Button;
     private javax.swing.JLabel Title_lbl;
     private javax.swing.JButton generatePO_button;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;

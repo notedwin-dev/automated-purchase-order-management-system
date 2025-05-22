@@ -4,7 +4,7 @@
  */
 package auth;
 
-import dashboard.Dashboard;
+import dashboard.MainContainer;
 import java.io.InputStream;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
@@ -152,17 +152,17 @@ public class Login extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents    
-    
-    private void BtnLogin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLogin1ActionPerformed
+      private void BtnLogin1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnLogin1ActionPerformed
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
         boolean found = false; // Flag to track if login details are found
-
+        
         try {
+            // First try to load as a resource
             InputStream is = getClass().getClassLoader().getResourceAsStream("auth/txtlogin.txt");
-
+            
             if (is == null) {
-                JOptionPane.showMessageDialog(this, "Login file not found in classpath.");
+                JOptionPane.showMessageDialog(this, "Login file not found. Please check the file path.");
                 return;
             }
 
@@ -191,14 +191,15 @@ public class Login extends javax.swing.JFrame {
                 }
             }
             reader.close(); // Close the reader after the loop
-            
-            if (found && loggedInUser != null) {
+              if (found && loggedInUser != null) {
                 // Set the current user in SecurityUtils
                 SecurityUtils.setCurrentUser(loggedInUser);
+                  // Store the user in the Session singleton
+                Session.getInstance().setCurrentUser(loggedInUser);
                 
-                // Open dashboard with the logged in user
-                Dashboard dashboard = new Dashboard(loggedInUser);
-                dashboard.setVisible(true);
+                // Open the MainContainer with the logged in user
+                MainContainer mainContainer = new MainContainer(loggedInUser);
+                mainContainer.setVisible(true);
                 this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid Details");
