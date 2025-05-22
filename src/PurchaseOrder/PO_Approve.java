@@ -265,7 +265,6 @@ public class PO_Approve extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        NAVPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         PurchaseOrderApproveTable = new javax.swing.JTable();
         POID_TextField = new javax.swing.JTextField();
@@ -303,19 +302,6 @@ public class PO_Approve extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        NAVPanel.setBackground(new java.awt.Color(204, 204, 204));
-
-        javax.swing.GroupLayout NAVPanelLayout = new javax.swing.GroupLayout(NAVPanel);
-        NAVPanel.setLayout(NAVPanelLayout);
-        NAVPanelLayout.setHorizontalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 156, Short.MAX_VALUE)
-        );
-        NAVPanelLayout.setVerticalGroup(
-            NAVPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
 
         PurchaseOrderApproveTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         PurchaseOrderApproveTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -428,13 +414,12 @@ public class PO_Approve extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(NAVPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                        .addGap(174, 174, 174)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1089, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
+                        .addGap(192, 192, 192)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -513,7 +498,6 @@ public class PO_Approve extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(NAVPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -655,7 +639,6 @@ public class PO_Approve extends javax.swing.JFrame {
     private javax.swing.JTextField Date_TextField;
     private javax.swing.JComboBox<String> ItemComcoBox;
     private javax.swing.JTextField ItemName_TextField;
-    private javax.swing.JPanel NAVPanel;
     private javax.swing.JTextField PMID_TextField;
     private javax.swing.JTextField PMName_TextField;
     private javax.swing.JTextField POID_TextField;

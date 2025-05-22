@@ -6,3 +6,4 @@ ID , Username , Password , Department , Role
 4,weq,qss,asdd,Purchase Manager
 5,sdf,s,df,Purchase Manager
 6,dsf,sdsd,dsfij,Finance Manager
+7,finance,finance,asas,Finance Manager
