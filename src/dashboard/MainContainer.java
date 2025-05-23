@@ -145,7 +145,7 @@ public class MainContainer extends javax.swing.JFrame {
             }
             
             // Special handling for DailySalesManagement.DailySalesUI to fix layout issues
-            if (className.equals("DailySalesManagement.DailySalesUI") || className.equals("DailySalesManagement.View_DailySales_List")) {
+            if (className.equals("DailySalesManagement.DailySalesUI")) {
                 try {
                     // Check if already in cache
                     if (activePanels.containsKey(className)) {
@@ -153,60 +153,40 @@ public class MainContainer extends javax.swing.JFrame {
                         return;
                     }
                     
-                    // Create a JFrame for DailySalesUI
-                    JFrame dailySalesFrame = (JFrame) Class.forName(className).getDeclaredConstructor().newInstance();
+                    // Instead of trying to embed the UI, launch it in a new window
+                    JOptionPane.showMessageDialog(this, 
+                            "Daily Sales UI will open in a new window", 
+                            "Information", JOptionPane.INFORMATION_MESSAGE);
                     
-                    // Set preferred size for the original frame to control component sizing
-                    dailySalesFrame.setPreferredSize(new Dimension(1000, 700));
-                    dailySalesFrame.pack();
-                    
-                    // We'll wrap the content in a scroll pane to handle potential size issues
-                    // but hide the scrollbars for a cleaner look
-                    JScrollPane scrollPane = new JScrollPane();
-                    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-                    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-                    scrollPane.setBorder(BorderFactory.createEmptyBorder()); // Remove border
-                    
-                    // Extract content from the frame
-                    Container frameContent = dailySalesFrame.getContentPane();
-                    
-                    // Create a panel to hold the original content without modifying its layout
-                    JPanel contentWrapper = new JPanel();
-                    contentWrapper.setLayout(null); // Use null layout to preserve absolute positioning
-                    
-                    // Get the preferred size to ensure proper rendering
-                    Dimension frameSize = frameContent.getPreferredSize();
-                    contentWrapper.setPreferredSize(frameSize);
-                    
-                    // Copy all components with their original bounds
-                    Component[] components = frameContent.getComponents();
-                    for (Component component : components) {
-                        // Get the component's current bounds
-                        Rectangle bounds = component.getBounds();
-                        
-                        // Special case: if this is a text field with "total" in its name
-                        if (component instanceof JTextField && 
-                            component.getName() != null && 
-                            component.getName().toLowerCase().contains("total")) {
-                            // Limit the width to prevent excessive expansion
-                            bounds.width = Math.min(bounds.width, 200);
+                    // Launch the DailySalesUI in a separate thread to prevent UI freezing
+                    new Thread(() -> {
+                        try {
+                            // Create an instance and make it visible
+                            SwingUtilities.invokeLater(() -> {
+                                try {
+                                    // Use main method to launch the UI properly
+                                    Class<?> salesClass = Class.forName(className);
+                                    java.lang.reflect.Method mainMethod = salesClass.getMethod("main", String[].class);
+                                    mainMethod.invoke(null, (Object) new String[0]);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
-                        
-                        // Add to content wrapper with original bounds
-                        contentWrapper.add(component);
-                        component.setBounds(bounds);
-                    }
+                    }).start();
                     
-                    // Add the content wrapper to the scroll pane
-                    scrollPane.setViewportView(contentWrapper);
+                    // Create a simple placeholder panel to show in the main UI
+                    JPanel placeholderPanel = new JPanel(new BorderLayout());
+                    JLabel infoLabel = new JLabel("Daily Sales UI is running in a separate window", JLabel.CENTER);
+                    infoLabel.setFont(new Font("Arial", Font.BOLD, 16));
+                    placeholderPanel.add(infoLabel, BorderLayout.CENTER);
                     
-                    // Add scroll pane to the content panel
-                    contentPanel.add(scrollPane, className);
-                    activePanels.put(className, scrollPane);
+                    // Add placeholder to content panel and cache it
+                    contentPanel.add(placeholderPanel, className);
+                    activePanels.put(className, placeholderPanel);
                     cardLayout.show(contentPanel, className);
-                    
-                    // Dispose of the temporary frame
-                    dailySalesFrame.dispose();
                     
                     return;
                 } catch (Exception e) {
@@ -217,7 +197,34 @@ public class MainContainer extends javax.swing.JFrame {
                 }
             }
             
-            // Handle Purchase Order views based on role
+            // Special handling for DailySalesManagement.View_DailySales_List
+            if (className.equals("DailySalesManagement.View_DailySales_List")) {
+                try {
+                    // Check if already in cache
+                    if (activePanels.containsKey(className)) {
+                        cardLayout.show(contentPanel, className);
+                        return;
+                    }
+                    
+                    // Create a JFrame for View_DailySales_List
+                    JFrame dailySalesListFrame = (JFrame) Class.forName(className).getDeclaredConstructor().newInstance();
+                    
+                    // Set preferred size for the original frame to control component sizing
+                    dailySalesListFrame.setPreferredSize(new Dimension(1000, 700));
+                    dailySalesListFrame.pack();
+                    
+                    // Use our method to preserve layout
+                    showFrameContentPreservingLayout(dailySalesListFrame, className);
+                    return;
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error showing Daily Sales List: " + e.getMessage(),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                    return;
+                }
+            }
+
+            // Special handling for Purchase Order views based on role
             if (className.equals("PurchaseOrder.Main_PO") || 
                 className.equals("PurchaseOrder.PM_View_PO") || 
                 className.equals("PurchaseOrder.View_All_PO_UI") ||

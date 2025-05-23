@@ -11,13 +11,15 @@ package roles;
 public class Feature {
     // Item Management
     public static final String ITEM_ENTRY = "Item Entry";
+    public static final String ITEM_LIST = "Item List";
     
     // Supplier Management
     public static final String SUPPLIER_ENTRY = "Supplier Entry";
+    public static final String SUPPLIER_LIST = "Supplier List";
     
     // Sales Management
-    public static final String DAILY_SALES = "Daily Sales";
-    public static final String SALES_ENTRY = "Sales Entry";
+    public static final String DAILY_SALES = "Daily Sales List";
+    public static final String SALES_ENTRY = "Daily Sales Entry";
     public static final String SALES_REPORT = "Sales Report";
     
     // Purchase Requisition
@@ -35,6 +37,7 @@ public class Feature {
     
     // Inventory Management
     public static final String INVENTORY_MANAGEMENT = "Inventory Management";
+    public static final String INVENTORY_LIST = "Inventory List";
     public static final String STOCK_REPORTS = "Stock Reports";
     
     // Financial Management
