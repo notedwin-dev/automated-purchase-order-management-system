@@ -24,9 +24,8 @@ public class PurchaseReportUI extends javax.swing.JFrame {
         initComponents();
         
         tmodel = new DefaultTableModel(new Object[]{
-            "Payment ID", "PO ID", "Delivery Date", "Company", "Supplier ID",
-            "Item Name", "Item Code", "Quantity",
-            "Status", "Payment Status", "Total Amount", "Payment Date"
+            "Payment ID", "PO ID", "Item Code", "Item Name",
+            "Company", "Supplier ID", "Quantity", "Payment Status", "Unit Price", "Total Amount", "Payment Date"
         }, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -39,8 +38,10 @@ public class PurchaseReportUI extends javax.swing.JFrame {
         report_manage = new PurchaseReport_Management();
 
         refreshTable();
+        System.out.println(PurchaseReportTable.getColumnCount());
         applyCustomRenderer();
         setColumnWidth();
+        
     }
 
     // ========== APPLY CUSTOM RENDERER ========== //
@@ -104,16 +105,14 @@ public class PurchaseReportUI extends javax.swing.JFrame {
     private void setColumnWidth() {
         PurchaseReportTable.getColumnModel().getColumn(0).setPreferredWidth(60);  // Payment ID
         PurchaseReportTable.getColumnModel().getColumn(1).setPreferredWidth(60);   // PO ID
-        PurchaseReportTable.getColumnModel().getColumn(2).setPreferredWidth(90);  // Delivery Date
-        PurchaseReportTable.getColumnModel().getColumn(3).setPreferredWidth(140);  // Company
-        PurchaseReportTable.getColumnModel().getColumn(4).setPreferredWidth(60);   // Supplier ID
-        PurchaseReportTable.getColumnModel().getColumn(5).setPreferredWidth(100);  // Item Name
-        PurchaseReportTable.getColumnModel().getColumn(6).setPreferredWidth(60);   // Item Code
-        PurchaseReportTable.getColumnModel().getColumn(7).setPreferredWidth(60);   // Quantity
-        PurchaseReportTable.getColumnModel().getColumn(8).setPreferredWidth(60);   // Status
-        PurchaseReportTable.getColumnModel().getColumn(9).setPreferredWidth(60);  // Payment Status
-        PurchaseReportTable.getColumnModel().getColumn(10).setPreferredWidth(90);  // Total Amount
-        PurchaseReportTable.getColumnModel().getColumn(11).setPreferredWidth(100); // Payment Date
+        PurchaseReportTable.getColumnModel().getColumn(2).setPreferredWidth(140);  // Company
+        PurchaseReportTable.getColumnModel().getColumn(3).setPreferredWidth(60);   // Supplier ID
+        PurchaseReportTable.getColumnModel().getColumn(4).setPreferredWidth(100);  // Item Name
+        PurchaseReportTable.getColumnModel().getColumn(5).setPreferredWidth(60);   // Item Code
+        PurchaseReportTable.getColumnModel().getColumn(6).setPreferredWidth(60);   // Quantity
+        PurchaseReportTable.getColumnModel().getColumn(7).setPreferredWidth(60);  // Payment Status
+        PurchaseReportTable.getColumnModel().getColumn(8).setPreferredWidth(90);  // Total Amount
+        PurchaseReportTable.getColumnModel().getColumn(9).setPreferredWidth(100); // Payment Date
     }
 
     

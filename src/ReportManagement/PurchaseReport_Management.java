@@ -8,7 +8,6 @@ package ReportManagement;
  *
  * @author nixon
  */
-import InventoryManagement.TextFile;
 import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.*;
@@ -18,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import TextFile_Handler.TextFile;
         
 /**
  *
@@ -68,12 +68,12 @@ public class PurchaseReport_Management {
                 String quantityText = String.join("\n", quantities).trim();
 
                 tableData.add(new Object[]{
-                    paymentID, poID, "", companyText, supplierIDText,
+                    paymentID, poID, companyText, supplierIDText,
                     itemNameText, itemCodeText, quantityText,
-                    status, "", totalAmount, paymentDate
+                    status, totalAmount, paymentDate
                 });
 
-                System.out.println("✅ Added: " + paymentID); // ✅ Debug
+                System.out.println("✅ Added: " + paymentID); 
             } else {
                 System.out.println("❌ Skipped due to incorrect fields: " + data.length);
             }
