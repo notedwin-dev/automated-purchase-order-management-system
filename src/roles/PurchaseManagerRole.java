@@ -23,8 +23,8 @@ public class PurchaseManagerRole extends Role {
     @Override
     protected void setupPermissions() {
         // Item and Supplier Management - View only
-        addPermission(Feature.ITEM_ENTRY, PermissionLevel.VIEW_ONLY);
-        addPermission(Feature.SUPPLIER_ENTRY, PermissionLevel.VIEW_ONLY);
+        addPermission(Feature.ITEM_LIST, PermissionLevel.VIEW_ONLY);
+        addPermission(Feature.SUPPLIER_LIST, PermissionLevel.VIEW_ONLY);
         
         // Sales Management - No access to daily operations, view only for reports
         addPermission(Feature.DAILY_SALES, PermissionLevel.NO_ACCESS);
@@ -32,7 +32,6 @@ public class PurchaseManagerRole extends Role {
         addPermission(Feature.SALES_REPORT, PermissionLevel.VIEW_ONLY);
         
         // Purchase Requisition - View only
-        addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.VIEW_ONLY);
         addPermission(Feature.DISPLAY_REQUISITION, PermissionLevel.VIEW_ONLY);
         
         // Purchase Orders - Full access for generate, view only for list
