@@ -122,23 +122,21 @@ public class Payment {
     }
     
     public static String getItemCodes(String poId) {
-    List<PurchaseOrder> poList = getAllPurchaseOrders();
-    for (PurchaseOrder po : poList) {
-        if (po.getPO_ID().equals(poId)) {
-            // Remove {} from item codes string and return it
-            return po.getItemCode().replace("{", "").replace("}", "");
+        List<PurchaseOrder> poList = getAllPurchaseOrders();
+        for (PurchaseOrder po : poList) {
+            if (po.getPO_ID().equals(poId)) {
+                // Remove {} from item codes string and return it
+                return po.getItemCode().replace("{", "").replace("}", "");
+            }
         }
+        return "";
     }
-    return "";
-}
 
     
     public static int getQuantityForItem(String poId, String itemCode) {
         String itemCodesStr = getItemCodes(poId);     // e.g. "SP1AP,SP1BP"
         String quantityStr = getOriginalQuantity(poId); // e.g. "20,30"
-
         if (itemCodesStr == null || quantityStr == null) return 0;
-
         String[] itemCodes = itemCodesStr.split(",");
         String[] quantities = quantityStr.split(",");
 
@@ -159,16 +157,12 @@ public class Payment {
     public static boolean updatePaymentStatusToPaid(String poID) {
         List<String> lines = TextFile.readFile(POfile);
         boolean updated = false;
-
         for (int i = 0; i < lines.size(); i++) {
-            
             String line = lines.get(i);
             List<String> fields = smartSplit(line);
-
             if (fields.size() != 17) {
                 continue;
             }
-
             // Match POID and update payment status
             if (fields.get(0).equals(poID)) {
                 fields.set(16, "paid"); 
@@ -178,13 +172,35 @@ public class Payment {
                 break;
             }
         }
-
         if (updated) {
             TextFile.overwriteFile(POfile, lines);
             return true;
         }
-
         return false;
+    }
+    
+    public static boolean updatePaymentFileStatusToPaid(String poID) {
+        List<String> lines = TextFile.readFile(PaymentFile);
+        boolean updated = false;
+
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            List<String> fields = smartSplit(line);
+
+            if (fields.size() >= 19 && fields.get(1).equals(poID)) {
+                fields.set(18, "paid");
+                String updatedLine = String.join(",", fields);
+                lines.set(i, updatedLine);
+                updated = true;
+                break;
+            }
+        }
+
+        if (updated) {
+            TextFile.overwriteFile(PaymentFile, lines);
+        }
+
+        return updated;
     }
     
     private static List<String> smartSplit(String line) {
@@ -211,14 +227,73 @@ public class Payment {
     }
     
     
+//    public static boolean appendPayment(String poID, List<String> rowData) {
+//        try {
+//            String paymentID = generatePaymentID();
+//            String paymentDate = getCurrentDate();
+//            
+//            rowData.add(0, paymentID);
+//            rowData.add(paymentDate);
+//            
+//            String itemCodesStr = getItemCodes(poID); // e.g., "SP1AP,SP1BP"
+//            String[] itemCodes = itemCodesStr.split(",");
+//            
+//            List<String> unitPrices = new ArrayList<>();
+//            for (String code : itemCodes) {
+//                double price = getUnitPrice(code.trim());
+//                unitPrices.add(String.valueOf(price));
+//            }
+//            // Format as {1.2,2.3,4.5}
+//            String unitPriceStr = "{" + String.join(",", unitPrices) + "}";
+//            rowData.add(14, unitPriceStr);
+//            String formattedLine = formatRowForPaymentTxt(rowData);
+//            TextFile.appendTo(PaymentFile, formattedLine);
+//            updatePaymentFileStatusToPaid(poID);
+//            updatePaymentStatusToPaid(poID);
+//            return true;
+//        } catch (Exception e) {
+//            System.out.println("Error processing payment: " + e.getMessage());
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+    
     public static boolean appendPayment(String poID, List<String> rowData) {
-        // Update payment status in PO.txt
-        boolean updateSuccess = updatePaymentStatusToPaid(poID);
-        if (!updateSuccess) return false;
-
         try {
-            String formattedLine = formatRowForPaymentTxt(rowData);
+            String paymentID = generatePaymentID();
+            String paymentDate = getCurrentDate();
+
+            String itemCodesStr = getItemCodes(poID); // e.g., "SP1AP,SP1BP"
+            String[] itemCodes = itemCodesStr.split(",");
+
+            List<String> unitPrices = new ArrayList<>();
+            for (String code : itemCodes) {
+                double price = getUnitPrice(code.trim());
+                unitPrices.add(String.valueOf(price));
+            }
+            String unitPriceStr = "{" + String.join(",", unitPrices) + "}";
+
+            List<String> filteredData = new ArrayList<>();
+            filteredData.add(paymentID);                // payment ID
+            filteredData.add(poID);                     // PO ID
+
+            filteredData.add(rowData.get(2));  // po status
+            filteredData.add(rowData.get(3));  // supplierName
+            filteredData.add(rowData.get(4));  // supplierID
+            filteredData.add(rowData.get(5));  // itemName
+            filteredData.add(rowData.get(6));  // itemCode
+            filteredData.add(rowData.get(7));  // quantity
+            filteredData.add(unitPriceStr);    // unitPrices (grouped)
+            filteredData.add(rowData.get(8));  // paymentStatus
+            filteredData.add(paymentDate);              // Payment date
+
+            // Format and write
+            String formattedLine = formatRowForPaymentTxt(filteredData);
             TextFile.appendTo(PaymentFile, formattedLine);
+
+            updatePaymentFileStatusToPaid(poID);
+            updatePaymentStatusToPaid(poID);
+
             return true;
         } catch (Exception e) {
             System.out.println("Error processing payment: " + e.getMessage());
@@ -229,9 +304,8 @@ public class Payment {
 
     private static String formatRowForPaymentTxt(List<String> data) {
         StringBuilder sb = new StringBuilder();
-
         // Grouped fields (wrap with {})
-        int[] groupedIndices = {8, 9, 10, 11, 12};
+        int[] groupedIndices = {2, 3, 4, 5, 6};
 
         for (int i = 0; i < data.size(); i++) {
             String value = data.get(i);
@@ -243,18 +317,40 @@ public class Payment {
                     break;
                 }
             }
-
             if (isGrouped && !value.startsWith("{")) {
                 value = "{" + value + "}";
             }
-
             sb.append(value);
-
             if (i < data.size() - 1) {
                 sb.append(",");
             }
         }
-
         return sb.toString();
+    }
+    
+    private static String generatePaymentID() {
+        List<String> lines = TextFile.readFile(PaymentFile);
+        if (lines.isEmpty()) {
+            return "PAY001";
+        }
+
+        String lastLine = lines.get(lines.size() - 1);
+        String[] parts = lastLine.split(",", -1);
+
+        if (parts.length > 0 && parts[0].startsWith("PAY")) {
+            String lastID = parts[0];
+            try {
+                int num = Integer.parseInt(lastID.substring(3));
+                return String.format("PAY%03d", num + 1);
+            } catch (NumberFormatException e) {
+                // fallback if format is wrong
+                return "PAY001";
+            }
+        }
+        return "PAY001";
+    }
+
+    private static String getCurrentDate() {
+        return java.time.LocalDate.now().toString(); // e.g., 2025-05-22
     }
 }

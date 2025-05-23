@@ -370,22 +370,51 @@ public class PO_GenerationManagement {
         return false;
     }
     
-    public void updatePOStatus(String poID, String newStatus) { 
+    public void updatePOStatus(String poID, String newStatus) {
         List<String> allLines = TextFile.readFile(POfile);
 
         for (String line : allLines) {
             if (line.startsWith(poID + ",")) {
-                int lastCommaIndex = line.lastIndexOf(",");
-                if (lastCommaIndex != -1) {
-                    String updatedLine = line.substring(0, lastCommaIndex + 1) + newStatus;
+                List<String> parts = smartSplit(line);
+
+                if (parts.size() > 13) {
+                    parts.set(13, newStatus); // status is column 14 (index 13)
+                    String updatedLine = String.join(",", parts);
                     TextFile.replaceLine(POfile, line, updatedLine);
                 }
                 return;
             }
         }
 
-        // If not found, append new line
+        // If not found
         TextFile.appendTo(POfile, poID + "," + newStatus);
     }
+    
+    private List<String> smartSplit(String line) {
+    List<String> result = new ArrayList<>();
+    StringBuilder current = new StringBuilder();
+    boolean insideBraces = false;
+
+    for (int i = 0; i < line.length(); i++) {
+        char c = line.charAt(i);
+        if (c == '{') {
+            insideBraces = true;
+        } else if (c == '}') {
+            insideBraces = false;
+        }
+
+        if (c == ',' && !insideBraces) {
+            result.add(current.toString());
+            current.setLength(0);
+        } else {
+            current.append(c);
+        }
+    }
+
+    // Add last field
+    result.add(current.toString());
+
+    return result;
+}
     
 }
