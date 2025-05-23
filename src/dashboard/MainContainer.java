@@ -144,59 +144,6 @@ public class MainContainer extends javax.swing.JFrame {
                 return;
             }
             
-            // Special handling for DailySalesManagement.DailySalesUI to fix layout issues
-            if (className.equals("DailySalesManagement.DailySalesUI")) {
-                try {
-                    // Check if already in cache
-                    if (activePanels.containsKey(className)) {
-                        cardLayout.show(contentPanel, className);
-                        return;
-                    }
-                    
-                    // Instead of trying to embed the UI, launch it in a new window
-                    JOptionPane.showMessageDialog(this, 
-                            "Daily Sales UI will open in a new window", 
-                            "Information", JOptionPane.INFORMATION_MESSAGE);
-                    
-                    // Launch the DailySalesUI in a separate thread to prevent UI freezing
-                    new Thread(() -> {
-                        try {
-                            // Create an instance and make it visible
-                            SwingUtilities.invokeLater(() -> {
-                                try {
-                                    // Use main method to launch the UI properly
-                                    Class<?> salesClass = Class.forName(className);
-                                    java.lang.reflect.Method mainMethod = salesClass.getMethod("main", String[].class);
-                                    mainMethod.invoke(null, (Object) new String[0]);
-                                } catch (Exception ex) {
-                                    ex.printStackTrace();
-                                }
-                            });
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }).start();
-                    
-                    // Create a simple placeholder panel to show in the main UI
-                    JPanel placeholderPanel = new JPanel(new BorderLayout());
-                    JLabel infoLabel = new JLabel("Daily Sales UI is running in a separate window", JLabel.CENTER);
-                    infoLabel.setFont(new Font("Arial", Font.BOLD, 16));
-                    placeholderPanel.add(infoLabel, BorderLayout.CENTER);
-                    
-                    // Add placeholder to content panel and cache it
-                    contentPanel.add(placeholderPanel, className);
-                    activePanels.put(className, placeholderPanel);
-                    cardLayout.show(contentPanel, className);
-                    
-                    return;
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(this, "Error showing Daily Sales UI: " + e.getMessage(),
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    e.printStackTrace();
-                    return;
-                }
-            }
-            
             // Special handling for DailySalesManagement.View_DailySales_List
             if (className.equals("DailySalesManagement.View_DailySales_List")) {
                 try {
