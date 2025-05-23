@@ -203,7 +203,6 @@ public class MainPanel extends javax.swing.JFrame {
 
         itemEntry_Button.setBackground(new java.awt.Color(255, 255, 204));
         itemEntry_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        itemEntry_Button.setForeground(new java.awt.Color(0, 0, 0));
         itemEntry_Button.setText("Item Entry");
         itemEntry_Button.setBorder(null);
         itemEntry_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -214,7 +213,6 @@ public class MainPanel extends javax.swing.JFrame {
 
         viewItemList_Button.setBackground(new java.awt.Color(255, 255, 204));
         viewItemList_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        viewItemList_Button.setForeground(new java.awt.Color(0, 0, 0));
         viewItemList_Button.setText("View Item List");
         viewItemList_Button.setBorder(null);
         viewItemList_Button.addActionListener(new java.awt.event.ActionListener() {
@@ -263,15 +261,12 @@ public class MainPanel extends javax.swing.JFrame {
         ItemEntry.setBackground(new java.awt.Color(255, 255, 255));
 
         itemName_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        itemName_lbl.setForeground(new java.awt.Color(0, 0, 0));
         itemName_lbl.setText("Item Name");
 
         retailPrice_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        retailPrice_lbl.setForeground(new java.awt.Color(0, 0, 0));
         retailPrice_lbl.setText("Retail Price");
 
         supplierID_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierID_lbl.setForeground(new java.awt.Color(0, 0, 0));
         supplierID_lbl.setText("Supplier ID");
 
         add_Button.setBackground(new java.awt.Color(120, 211, 77));
@@ -283,7 +278,6 @@ public class MainPanel extends javax.swing.JFrame {
         });
 
         unitPrice_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        unitPrice_lbl.setForeground(new java.awt.Color(0, 0, 0));
         unitPrice_lbl.setText("Unit Price");
 
         update_Button.setBackground(new java.awt.Color(76, 134, 168));
@@ -303,7 +297,6 @@ public class MainPanel extends javax.swing.JFrame {
         });
 
         supplierName_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierName_lbl.setForeground(new java.awt.Color(0, 0, 0));
         supplierName_lbl.setText("Supplier Name");
 
         refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
@@ -370,7 +363,6 @@ public class MainPanel extends javax.swing.JFrame {
         });
 
         itemCode_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        itemCode_lbl.setForeground(new java.awt.Color(0, 0, 0));
         itemCode_lbl.setText("Item Code");
 
         javax.swing.GroupLayout ItemEntryLayout = new javax.swing.GroupLayout(ItemEntry);
@@ -450,10 +442,10 @@ public class MainPanel extends javax.swing.JFrame {
                 .addGap(83, 83, 83)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(add_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(refresh_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(delete_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(update_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                        .addComponent(add_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(148, 148, 148))
             .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -508,7 +500,6 @@ public class MainPanel extends javax.swing.JFrame {
         }
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Item List");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);

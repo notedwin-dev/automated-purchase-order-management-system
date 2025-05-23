@@ -1,6 +1,7 @@
 AppleKorean,SP1AP,SP001,ChingChoongSDNBHD,600,1.2,3.5,false
 AppleJapan,SP2AP,SP002,TungSahurSDNBHD,900,2.2,4.7,false
 BananaThailand,SP1BN,SP001,ChingChoongSDNBHD,1000,1.3,3.0,false
-BananaIraq,SP2BN,SP002,TungSahurSDNBHD,1000,5.0,6.7,false
+BananaIraq,SP2BN,SP002,TungSahurSDNBHD,1001,5.0,6.7,false
 CocoMelon,SP2CM,SP002,TungSahurSDNBHD,700,7.0,11.2,false
-DeezNuts,SP1DN,SP001,ChingChoongSDNBHD,800,2.5,5.0,true
+DeezNuts,SP1DN,SP001,ChingChoongSDNBHD,772,2.5,5.0,false
+DragonFruit,SP2DF,SP002,TungSahurSDNBHD,800,2.5,5.0,false
