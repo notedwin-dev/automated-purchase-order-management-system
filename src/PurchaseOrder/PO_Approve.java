@@ -634,9 +634,6 @@ public class PO_Approve extends javax.swing.JFrame {
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
         // Save All
         saveNewData();
-        this.dispose();
-        PO_Approval poApprovalUi = new PO_Approval();
-        poApprovalUi.setVisible(true);
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void ApproveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApproveButtonActionPerformed
