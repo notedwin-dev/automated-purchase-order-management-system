@@ -32,7 +32,7 @@ public class FinanceManagerRole extends Role {
         addPermission(Feature.SALES_REPORT, PermissionLevel.GENERATE_REPORTS);
         
         // Purchase Requisition - View only
-        addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.VIEW_ONLY);
+        addPermission(Feature.PURCHASE_REQUISITION, PermissionLevel.NO_ACCESS);
         addPermission(Feature.DISPLAY_REQUISITION, PermissionLevel.VIEW_ONLY);
         
         // Purchase Orders - Approve only for generate, view only for list
