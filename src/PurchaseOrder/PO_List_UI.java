@@ -11,7 +11,7 @@ package PurchaseOrder;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.*;
-import PurchaseOrder.TextFile;
+import TextFile_Handler.TextFile;
 import PurchaseOrder.PO_GenerationManagement;
 
 public class PO_List_UI extends javax.swing.JFrame {

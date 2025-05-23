@@ -6,6 +6,7 @@ package ReportManagement;
 
 import PurchaseOrder.PurchaseOrder;
 import InventoryManagement.Inventory;
+import TextFile_Handler.TextFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
