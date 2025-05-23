@@ -16,7 +16,7 @@ import InventoryManagement.Inventory;
 import java.util.HashMap;
 import java.util.Map;
 public class PO_GenerationManagement {
-    private static final String ItemFile = "src/InventoryManagement/Items.txt"; 
+    private static final String ItemFile = "src/itemManagement/Items.txt"; 
     private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
     public static final String POfile = "src/PurchaseOrder/PO.txt";
     private static Map<String, String> quantityMap = new HashMap<>();
