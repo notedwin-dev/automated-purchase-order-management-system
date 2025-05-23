@@ -20,10 +20,8 @@ public class Payment_UI extends javax.swing.JFrame {
     public Payment_UI() {
         initComponents();
         model = new DefaultTableModel(
-                new String[]{"No", "PO ID", "PR ID", "Date", "Purchase Manager Name", "Purchase Manager ID", 
-                    "Sales Manager Name", "Sales Manager ID",  "Expected Delivery Date", "Supplier Name", 
-                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "Status", "Finance Manager Name", 
-                    "Finance Manager ID", "Payment Status", "Total Payment"}, 
+                new String[]{"No", "PO ID", "PO Status", "Supplier Name",
+                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "Payment Status", "Total Payment"}, 
                 0 );
         
         PaymentTable.setModel(model);
@@ -70,9 +68,9 @@ public class Payment_UI extends javax.swing.JFrame {
 
                     // Build combined strings
                     if (i > 0) {
-                        combinedItemNames.append(", ");
-                        combinedItemCodes.append(", ");
-                        combinedQuantities.append(", ");
+                        combinedItemNames.append(",");
+                        combinedItemCodes.append(",");
+                        combinedQuantities.append(",");
                     }
                     combinedItemNames.append(itemName);
                     combinedItemCodes.append(code);
@@ -82,23 +80,33 @@ public class Payment_UI extends javax.swing.JFrame {
                 String totalPaymentFormatted = "RM " + String.format("%.2f", totalPayment);
 
                 Object[] rowData = {
+//                    no++,
+//                    po.getPO_ID(),
+//                    po.getPR_ID(),
+//                    po.getDate(),
+//                    po.getPM_Name(),
+//                    po.getPM_ID(),
+//                    po.getSM_Name(),
+//                    po.getSM_ID(),
+//                    po.getExpectedDeliveryDate(),
+//                    supplierName,
+//                    supplierID,
+//                    combinedItemNames.toString(),
+//                    combinedItemCodes.toString(),
+//                    combinedQuantities.toString(),
+//                    po.getStatus(),
+//                    po.getFM_Name(),
+//                    po.getFM_ID(),
+//                    po.getPaymentStatus(),
+//                    totalPaymentFormatted
                     no++,
-                    po.getPO_ID(),
-                    po.getPR_ID(),
-                    po.getDate(),
-                    po.getPM_Name(),
-                    po.getPM_ID(),
-                    po.getSM_Name(),
-                    po.getSM_ID(),
-                    po.getExpectedDeliveryDate(),
+                    po.getPO_ID(),           
+                    po.getStatus(),
                     supplierName,
                     supplierID,
                     combinedItemNames.toString(),
                     combinedItemCodes.toString(),
                     combinedQuantities.toString(),
-                    po.getStatus(),
-                    po.getFM_Name(),
-                    po.getFM_ID(),
                     po.getPaymentStatus(),
                     totalPaymentFormatted
                 };
@@ -148,7 +156,7 @@ public class Payment_UI extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No.", "Purchase Order ID", "Purchsae Requisition ID", "Date", "Purchase Manager Name", "Sales Manager Name", "Expected Delivery Date", "Supplier Name", "Item Name", "Item Code", "Quantity", "Purchase Order Status", "Finance Manager Name", "Payment Status", "Total Payment"
+                "No.", "PO ID", "PR ID", "Date", "PM Name", "SM Name", "Expected Delivery Date", "Supplier Name", "Item Name", "Item Code", "Quantity", "Purchase Order Status", "FM Name", "Payment Status", "Total Payment"
             }
         ) {
             Class[] types = new Class [] {
@@ -228,7 +236,7 @@ public class Payment_UI extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             // Get full row data as list of Strings
             List<String> rowData = new ArrayList<>();
-            for (int i = 0; i < PaymentTable.getColumnCount(); i++) {
+            for (int i = 1; i < PaymentTable.getColumnCount(); i++) {
                 rowData.add(PaymentTable.getValueAt(selectedRow, i).toString());
             }
 

@@ -6,6 +6,8 @@ package ReportManagement;
 
 import DailySalesManagement.Sales;
 import ReportManagement.SalesReportManagement;
+import auth.Session;
+import auth.User;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -53,7 +55,10 @@ public class SalesReportUI extends javax.swing.JFrame {
         jTextField2.setText(reportDate);
         jTextField3.setText(Integer.toString(manager.getTotalTransactions()));
         jTextField4.setText(Double.toString(manager.getTotalSalesAmount()));
-        jTextField5.setText("");
+        User currentUser = Session.getInstance().getCurrentUser();
+        if(currentUser != null){
+            jTextField5.setText(currentUser.getUsername());
+        }
         
         List<String> summaryList = manager.getItemWiseSummary();
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -244,7 +249,7 @@ public class SalesReportUI extends javax.swing.JFrame {
                                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(12, 12, 12))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(190, 190, 190)
+                        .addGap(193, 193, 193)
                         .addComponent(jLabel2))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(49, 49, 49)

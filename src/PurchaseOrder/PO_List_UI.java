@@ -23,9 +23,9 @@ public class PO_List_UI extends javax.swing.JFrame {
         initComponents();
 
         model = new DefaultTableModel(
-                new String[]{"No", "PO ID", "PR ID", "Date", "Purchase Manager Name", "Purchase Manager ID", 
-                    "Sales Manager Name", "Sales Manager ID",  "Expected Delivery Date", "Supplier Name", 
-                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "Status", "Finance Manager Name", "Finance Manager ID", "Payment Status"}, 
+                new String[]{"No", "PO ID", "PR ID", "Date", "Purchase Manager ID", 
+                    "Sales Manager ID",  "Expected Delivery Date", "Supplier Name", 
+                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "PO Status","Finance Manager ID", "Payment Status"}, 
                 0 );
         
         PurchaseOrderTable.setModel(model);
@@ -56,9 +56,7 @@ public class PO_List_UI extends javax.swing.JFrame {
                 po.getPO_ID(),
                 po.getPR_ID(),
                 po.getDate(),
-                po.getPM_Name(),
                 po.getPM_ID(),
-                po.getSM_Name(),
                 po.getSM_ID(),
                 po.getExpectedDeliveryDate(),
                 supplierName,
@@ -67,7 +65,6 @@ public class PO_List_UI extends javax.swing.JFrame {
                 itemCode,
                 quantity,
                 po.getStatus(),
-                po.getFM_Name(),
                 po.getFM_ID(),
                 po.getPaymentStatus()
             };
