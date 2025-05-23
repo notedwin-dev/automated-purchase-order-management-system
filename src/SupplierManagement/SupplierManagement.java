@@ -8,6 +8,7 @@ package SupplierManagement;
  *
  * @author Jengsiang
  */
+import TextFile_Handler.TextFile;
 import java.util.*;
 import java.io.*;
 import javax.swing.*;

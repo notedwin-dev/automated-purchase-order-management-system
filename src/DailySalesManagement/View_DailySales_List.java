@@ -27,10 +27,10 @@ public class View_DailySales_List extends javax.swing.JFrame {
     public View_DailySales_List() {
         initComponents();
         dailySalesManagement = new DailySalesManagement();
-        dailySalesManagement.getAllSalesFromFile();
         Date today = new Date();
         filterdate.setDate(today);
         filterSalesWithDate();
+        dailySalesManagement.getAllSalesFromFile();
         displayTotalSales();
         
         filterdate.getDateEditor().addPropertyChangeListener("date", new PropertyChangeListener(){
@@ -42,10 +42,15 @@ public class View_DailySales_List extends javax.swing.JFrame {
     }
     
     private void filterSalesWithDate() {
-            
+        Date inputDate = filterdate.getDate();
+        if(inputDate != null){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            String dateStr = sdf.format(inputDate);
             List<Sales> filteredSales = new ArrayList<>();
             for(Sales sale : dailySalesManagement.getAllSales()){
-                filteredSales.add(sale);  
+                if(sale.getSalesDate().equals(dateStr)){
+                    filteredSales.add(sale);
+                }
             }
 
             DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
@@ -62,7 +67,10 @@ public class View_DailySales_List extends javax.swing.JFrame {
                     sale.getTotalAmount()
                 });
             }
+            displayTotalSales();
         }
+    } 
+        
     
 
     private void displayTotalSales(){
@@ -77,6 +85,7 @@ public class View_DailySales_List extends javax.swing.JFrame {
         double totalSales = dailySalesManagement.calculateTotalSalesOfDay(salesDate);
         totalsalestxt.setText(df.format(totalSales));
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

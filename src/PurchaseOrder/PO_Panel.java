@@ -68,7 +68,6 @@ public class PO_Panel extends javax.swing.JFrame {
 
         refreshTable();
         setColumnWidth();
-
     }
     
     // ========== APPLY CUSTOM RENDERER ========== // 
