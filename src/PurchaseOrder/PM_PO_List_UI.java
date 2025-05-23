@@ -11,8 +11,10 @@ package PurchaseOrder;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.*;
-import PurchaseOrder.TextFile;
+import TextFile_Handler.TextFile;
 import PurchaseOrder.PO_GenerationManagement;
+import auth.Session;
+import auth.User;
 public class PM_PO_List_UI extends javax.swing.JFrame {
 
     private DefaultTableModel model;
@@ -32,10 +34,14 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
     
     private void displayPOTable() {
         model.setRowCount(0);
-
+        User currentUser = Session.getInstance().getCurrentUser();
+        String currentPMID = currentUser.getID();
         List<PurchaseOrder> poList = PO_GenerationManagement.getAllPurchaseOrders(); 
         int no = 1;
         for (PurchaseOrder po : poList) {
+            if (!po.getPM_ID().equals(currentPMID)) {
+                continue;
+            }
             String supplierName = po.getSP_Name().replace("{", "").replace("}", "");
             String supplierID = po.getSP_ID().replace("{", "").replace("}", "");
             String itemName = po.getItemName().replace("{", "").replace("}", "");

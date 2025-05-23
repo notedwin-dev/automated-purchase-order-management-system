@@ -4,6 +4,8 @@
  */
 package PurchaseOrder;
 
+import auth.Session;
+import auth.User;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,12 +33,13 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
     
     private void displayPOTable() {
         model.setRowCount(0);
-
+        User currentUser = Session.getInstance().getCurrentUser();
+        String currentPMID = currentUser.getID();
         List<PurchaseOrder> poList = PO_GenerationManagement.getAllPurchaseOrders(); 
         int no = 1;
         for (PurchaseOrder po : poList) {
-            if (!"Pending".equalsIgnoreCase(po.getStatus())) {
-                continue;  // Skip non-pending
+            if (!"Pending".equalsIgnoreCase(po.getStatus()) && !po.getPM_ID().equals(currentPMID)) {
+                continue;  
             }
             String supplierName = po.getSP_Name().replace("{", "").replace("}", "");
             String supplierID = po.getSP_ID().replace("{", "").replace("}", "");
@@ -68,7 +71,7 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
             };
             model.addRow(rowData);
         }
-    }
+    }        
 
     /**
      * This method is called from within the constructor to initialize the form.

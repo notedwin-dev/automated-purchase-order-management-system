@@ -4,6 +4,7 @@
  */
 package InventoryManagement;
 
+import TextFile_Handler.TextFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,5 +91,17 @@ public class InventoryManager {
             }
         }
         return lowstock;
+    }
+    
+    public static List<Inventory> searchFunction(String keyword){
+        keyword = keyword.toLowerCase();
+        List<Inventory> filteredList = new ArrayList<>();
+        for(Inventory inv : getAllInventory()){
+            String line = inv.getItemName() + inv.getItemCode() + inv.getSupplierID() + inv.getSupplierName();
+            if(line.toLowerCase().contains(keyword)){
+                filteredList.add(inv);
+            }
+        }
+        return filteredList;
     }
 }

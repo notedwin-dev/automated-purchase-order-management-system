@@ -13,10 +13,11 @@ import java.util.stream.Collectors;
  * @author user
  */
 import InventoryManagement.Inventory;
+import TextFile_Handler.TextFile;
 import java.util.HashMap;
 import java.util.Map;
 public class PO_GenerationManagement {
-    private static final String ItemFile = "src/InventoryManagement/Items.txt"; 
+    private static final String ItemFile = "src/itemManagement/Items.txt"; 
     private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
     public static final String POfile = "src/PurchaseOrder/PO.txt";
     private static Map<String, String> quantityMap = new HashMap<>();
@@ -29,10 +30,10 @@ public class PO_GenerationManagement {
 
         // ========== Read the PR_List text file ========== //
         public PRData() {
-            readDataFromPR_List();
+            readPR_List();
         }
         
-        private void readDataFromPR_List() {
+        private void readPR_List() {
             List<String> lines = TextFile.readFile(PRfile);
             boolean isFirstLine = true;
             int rowNo = 1;
@@ -75,7 +76,7 @@ public class PO_GenerationManagement {
     }
     
     public Inventory getItemDetailsByCode(String itemCode) {
-        List<String> lines = PurchaseRequisition.TextFile.readFile(ItemFile);
+        List<String> lines = TextFile.readFile(ItemFile);
         for (String line : lines) {
             String[] parts = line.split(",");
             if (parts.length >= 8 && parts[1].trim().equals(itemCode)) {
@@ -96,7 +97,7 @@ public class PO_GenerationManagement {
 
     public String generatePO_ID() {
         int maxID = 0;
-        List<String> lines = PurchaseRequisition.TextFile.readFile(POfile);
+        List<String> lines = TextFile.readFile(POfile);
         for (String line : lines) {
             String[] parts = line.split(",");
             if (parts.length > 0 && parts[0].startsWith("PO")) {

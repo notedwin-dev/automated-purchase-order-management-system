@@ -22,7 +22,7 @@ public class MainPanel extends javax.swing.JFrame {
 
     private ItemManagement itemOps; // ----- This is a field ----- //
     private Map<String, String> supplierMap = new HashMap<>();
-
+    private DefaultTableModel model;
 
     public MainPanel() {
         initComponents();
@@ -58,6 +58,15 @@ public class MainPanel extends javax.swing.JFrame {
         Logo_lbl.setIcon(resizedLogo);
         
 
+        model = new DefaultTableModel(
+            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", "Unit Price", "Retail Price", "Delivery Status"}, 0
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
         // - - - - - HIDES THE TABS - - - - - //
         JTabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
             @Override
@@ -73,12 +82,6 @@ public class MainPanel extends javax.swing.JFrame {
                 //----- Remove the tab panel border -----//
             }
         });
-        
-        // - - - - - FULL DISABLES INTERACTIONS - - - - - //
-        viewItemTable.setRowSelectionAllowed(false);
-        viewItemTable.setCellSelectionEnabled(false);
-        viewItemTable.setFocusable(false);
-        viewItemTable.setEnabled(false); 
 
         
          // - - - - - DISABLE CLICKING TABS - - - - - //
@@ -88,10 +91,10 @@ public class MainPanel extends javax.swing.JFrame {
                 evt.consume(); // prevent clicking on tabs
             }
         });
+         
         
         // - - - - -  SET MODEL - - - - - //
-        itemTable.setModel(ItemManagement.sharedModel);
-        viewItemTable.setModel(ItemManagement.sharedModel);
+        itemTable.setModel(model);
  
 
         //----- Initialize ItemManagement with necessary components -----//
@@ -169,7 +172,6 @@ public class MainPanel extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         Logo_lbl = new javax.swing.JLabel();
         itemEntry_Button = new javax.swing.JButton();
-        viewItemList_Button = new javax.swing.JButton();
         viewItemList_Button1 = new javax.swing.JButton();
         JTabbedPane = new javax.swing.JTabbedPane();
         ItemEntry = new javax.swing.JPanel();
@@ -192,10 +194,6 @@ public class MainPanel extends javax.swing.JFrame {
         itemName_textbox = new javax.swing.JTextField();
         itemCode_lbl = new javax.swing.JLabel();
         supplierName_textbox = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
-        itemTableScrollPane1 = new javax.swing.JScrollPane();
-        viewItemTable = new javax.swing.JTable();
-        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -203,23 +201,11 @@ public class MainPanel extends javax.swing.JFrame {
 
         itemEntry_Button.setBackground(new java.awt.Color(255, 255, 204));
         itemEntry_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        itemEntry_Button.setForeground(new java.awt.Color(0, 0, 0));
         itemEntry_Button.setText("Item Entry");
         itemEntry_Button.setBorder(null);
         itemEntry_Button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 itemEntry_ButtonActionPerformed(evt);
-            }
-        });
-
-        viewItemList_Button.setBackground(new java.awt.Color(255, 255, 204));
-        viewItemList_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        viewItemList_Button.setForeground(new java.awt.Color(0, 0, 0));
-        viewItemList_Button.setText("View Item List");
-        viewItemList_Button.setBorder(null);
-        viewItemList_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewItemList_ButtonActionPerformed(evt);
             }
         });
 
@@ -242,9 +228,7 @@ public class MainPanel extends javax.swing.JFrame {
             .addComponent(itemEntry_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(viewItemList_Button, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(viewItemList_Button1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addComponent(viewItemList_Button1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -254,8 +238,6 @@ public class MainPanel extends javax.swing.JFrame {
                 .addGap(132, 132, 132)
                 .addComponent(itemEntry_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(viewItemList_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addComponent(viewItemList_Button1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
@@ -263,15 +245,12 @@ public class MainPanel extends javax.swing.JFrame {
         ItemEntry.setBackground(new java.awt.Color(255, 255, 255));
 
         itemName_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        itemName_lbl.setForeground(new java.awt.Color(0, 0, 0));
         itemName_lbl.setText("Item Name");
 
         retailPrice_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        retailPrice_lbl.setForeground(new java.awt.Color(0, 0, 0));
         retailPrice_lbl.setText("Retail Price");
 
         supplierID_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierID_lbl.setForeground(new java.awt.Color(0, 0, 0));
         supplierID_lbl.setText("Supplier ID");
 
         add_Button.setBackground(new java.awt.Color(120, 211, 77));
@@ -283,7 +262,6 @@ public class MainPanel extends javax.swing.JFrame {
         });
 
         unitPrice_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        unitPrice_lbl.setForeground(new java.awt.Color(0, 0, 0));
         unitPrice_lbl.setText("Unit Price");
 
         update_Button.setBackground(new java.awt.Color(76, 134, 168));
@@ -303,7 +281,6 @@ public class MainPanel extends javax.swing.JFrame {
         });
 
         supplierName_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        supplierName_lbl.setForeground(new java.awt.Color(0, 0, 0));
         supplierName_lbl.setText("Supplier Name");
 
         refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
@@ -370,7 +347,6 @@ public class MainPanel extends javax.swing.JFrame {
         });
 
         itemCode_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        itemCode_lbl.setForeground(new java.awt.Color(0, 0, 0));
         itemCode_lbl.setText("Item Code");
 
         javax.swing.GroupLayout ItemEntryLayout = new javax.swing.GroupLayout(ItemEntry);
@@ -450,10 +426,10 @@ public class MainPanel extends javax.swing.JFrame {
                 .addGap(83, 83, 83)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(add_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(refresh_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(delete_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(update_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                        .addComponent(add_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(148, 148, 148))
             .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -464,77 +440,6 @@ public class MainPanel extends javax.swing.JFrame {
         );
 
         JTabbedPane.addTab("Item Entry", ItemEntry);
-
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-
-        itemTableScrollPane1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                itemTableScrollPane1MouseClicked(evt);
-            }
-        });
-        viewItemTable = new javax.swing.JTable() {
-            public boolean isCellEditable(int row, int column) {
-                return false; // makes it uneditable even if model allows it
-            }
-        };
-
-        viewItemTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Retail Price", "Delivery Status"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, true
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        viewItemTable.getTableHeader().setReorderingAllowed(false);
-        itemTableScrollPane1.setViewportView(viewItemTable);
-        if (viewItemTable.getColumnModel().getColumnCount() > 0) {
-            viewItemTable.getColumnModel().getColumn(0).setMaxWidth(35);
-        }
-
-        jLabel2.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Item List");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(69, Short.MAX_VALUE)
-                .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 934, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(73, 73, 73))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(431, 431, 431)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
-                .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(71, 71, 71))
-        );
-
-        JTabbedPane.addTab("View Item List", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -555,9 +460,13 @@ public class MainPanel extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void itemTableScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPane1MouseClicked
+    private void itemEntry_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEntry_ButtonActionPerformed
+        JTabbedPane.setSelectedIndex(0);
+    }//GEN-LAST:event_itemEntry_ButtonActionPerformed
+
+    private void viewItemList_Button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_Button1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_itemTableScrollPane1MouseClicked
+    }//GEN-LAST:event_viewItemList_Button1ActionPerformed
 
     private void itemName_textboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemName_textboxActionPerformed
         // TODO add your handling code here:
@@ -595,23 +504,6 @@ public class MainPanel extends javax.swing.JFrame {
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
         itemOps.add();
     }//GEN-LAST:event_add_ButtonActionPerformed
-
-    private void viewItemList_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_ButtonActionPerformed
-        // - - - - - I created this just to test whether it's working or not (can delete once linked) - - - - - //
-        JFrame frame = new JFrame("Item List Viewer");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        frame.setSize(1080, 700);
-        frame.add(new ViewItemList());
-        frame.setVisible(true);
-    }//GEN-LAST:event_viewItemList_ButtonActionPerformed
-
-    private void itemEntry_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEntry_ButtonActionPerformed
-        JTabbedPane.setSelectedIndex(0);
-    }//GEN-LAST:event_itemEntry_ButtonActionPerformed
-
-    private void viewItemList_Button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_Button1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_viewItemList_Button1ActionPerformed
 
 
 
@@ -668,10 +560,7 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JTextField itemName_textbox;
     private javax.swing.JTable itemTable;
     private javax.swing.JScrollPane itemTableScrollPane;
-    private javax.swing.JScrollPane itemTableScrollPane1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JButton refresh_Button;
     private javax.swing.JLabel retailPrice_lbl;
     private javax.swing.JTextField retailPrice_textbox;
@@ -682,8 +571,6 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JLabel unitPrice_lbl;
     private javax.swing.JTextField unitPrice_textbox;
     private javax.swing.JButton update_Button;
-    private javax.swing.JButton viewItemList_Button;
     private javax.swing.JButton viewItemList_Button1;
-    private javax.swing.JTable viewItemTable;
     // End of variables declaration//GEN-END:variables
 }
