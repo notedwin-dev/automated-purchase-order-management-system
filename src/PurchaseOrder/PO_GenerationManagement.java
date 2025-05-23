@@ -30,10 +30,10 @@ public class PO_GenerationManagement {
 
         // ========== Read the PR_List text file ========== //
         public PRData() {
-            readDataFromPR_List();
+            readPR_List();
         }
         
-        private void readDataFromPR_List() {
+        private void readPR_List() {
             List<String> lines = TextFile.readFile(PRfile);
             boolean isFirstLine = true;
             int rowNo = 1;

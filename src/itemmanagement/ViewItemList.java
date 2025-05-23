@@ -15,11 +15,11 @@ public class ViewItemList extends javax.swing.JPanel {
      */
     public ViewItemList() {
         initComponents();
-        viewItemTable.setModel(ItemManagement.sharedModel);
-        viewItemTable.setRowSelectionAllowed(false);
-        viewItemTable.setCellSelectionEnabled(false);
-        viewItemTable.setFocusable(false);
-        viewItemTable.setEnabled(false); 
+//        viewItemTable.setModel(ItemManagement.sharedModel);
+//        viewItemTable.setRowSelectionAllowed(false);
+//        viewItemTable.setCellSelectionEnabled(false);
+//        viewItemTable.setFocusable(false);
+//        viewItemTable.setEnabled(false); 
     }
 
     /**
