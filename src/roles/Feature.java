@@ -27,6 +27,8 @@ public class Feature {
     // Purchase Orders
     public static final String PURCHASE_ORDERS_LIST = "Purchase Orders List";
     public static final String GENERATE_PURCHASE_ORDER = "Generate Purchase Order";
+    public static final String APPROVE_PURCHASE_ORDER = "Approve Purchase Order";
+    public static final String PURCHASING_REPORT = "Purchasing Report";
     
     // User Management
     public static final String USER_MANAGEMENT = "User Management";

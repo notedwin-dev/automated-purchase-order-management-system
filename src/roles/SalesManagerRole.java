@@ -37,14 +37,15 @@ public class SalesManagerRole extends Role {
         
         // Purchase Orders - View only
         addPermission(Feature.PURCHASE_ORDERS_LIST, PermissionLevel.VIEW_ONLY);
-        addPermission(Feature.GENERATE_PURCHASE_ORDER, PermissionLevel.NO_ACCESS);
+        addPermission(Feature.GENERATE_PURCHASE_ORDER, PermissionLevel.GENERATE_REPORTS);
+        addPermission(Feature.APPROVE_PURCHASE_ORDER, PermissionLevel.APPROVE_ONLY);
         
         // User Management - No access
         addPermission(Feature.USER_MANAGEMENT, PermissionLevel.NO_ACCESS);
         
         // Inventory Management - No access
-        addPermission(Feature.INVENTORY_MANAGEMENT, PermissionLevel.NO_ACCESS);
-        addPermission(Feature.STOCK_REPORTS, PermissionLevel.NO_ACCESS);
+        addPermission(Feature.INVENTORY_MANAGEMENT, PermissionLevel.VIEW_ONLY);
+        addPermission(Feature.STOCK_REPORTS, PermissionLevel.VIEW_ONLY);
         
         // Financial Management - No access
         addPermission(Feature.SUPPLIER_PAYMENTS, PermissionLevel.NO_ACCESS);
