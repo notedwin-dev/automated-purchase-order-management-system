@@ -5,7 +5,7 @@
 package ReportManagement;
 
 import DailySalesManagement.Sales;
-import InventoryManagement.TextFile;
+import TextFile_Handler.TextFile;
 import java.util.ArrayList;
 import java.util.List;
 

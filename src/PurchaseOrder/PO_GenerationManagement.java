@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  * @author user
  */
 import InventoryManagement.Inventory;
+import TextFile_Handler.TextFile;
 import java.util.HashMap;
 import java.util.Map;
 public class PO_GenerationManagement {
@@ -75,7 +76,7 @@ public class PO_GenerationManagement {
     }
     
     public Inventory getItemDetailsByCode(String itemCode) {
-        List<String> lines = PurchaseRequisition.TextFile.readFile(ItemFile);
+        List<String> lines = TextFile.readFile(ItemFile);
         for (String line : lines) {
             String[] parts = line.split(",");
             if (parts.length >= 8 && parts[1].trim().equals(itemCode)) {
@@ -96,7 +97,7 @@ public class PO_GenerationManagement {
 
     public String generatePO_ID() {
         int maxID = 0;
-        List<String> lines = PurchaseRequisition.TextFile.readFile(POfile);
+        List<String> lines = TextFile.readFile(POfile);
         for (String line : lines) {
             String[] parts = line.split(",");
             if (parts.length > 0 && parts[0].startsWith("PO")) {
