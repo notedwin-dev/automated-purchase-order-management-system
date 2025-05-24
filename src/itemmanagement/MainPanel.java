@@ -51,11 +51,6 @@ public class MainPanel extends javax.swing.JFrame {
         Image scaled_clean = cleanIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon resizedClean = new ImageIcon(scaled_clean);
         clean_Button.setIcon(resizedClean);
-         // - - - - - RESIZE ICON LOGO - - - - - //
-        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/resources/icons/Logo.png"));
-        Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-        ImageIcon resizedLogo = new ImageIcon(scaled_logo);
-        Logo_lbl.setIcon(resizedLogo);
         
 
         model = new DefaultTableModel(
@@ -169,10 +164,6 @@ public class MainPanel extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        Logo_lbl = new javax.swing.JLabel();
-        itemEntry_Button = new javax.swing.JButton();
-        viewItemList_Button1 = new javax.swing.JButton();
         JTabbedPane = new javax.swing.JTabbedPane();
         ItemEntry = new javax.swing.JPanel();
         itemName_lbl = new javax.swing.JLabel();
@@ -196,51 +187,6 @@ public class MainPanel extends javax.swing.JFrame {
         supplierName_textbox = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 204));
-
-        itemEntry_Button.setBackground(new java.awt.Color(255, 255, 204));
-        itemEntry_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        itemEntry_Button.setText("Item Entry");
-        itemEntry_Button.setBorder(null);
-        itemEntry_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemEntry_ButtonActionPerformed(evt);
-            }
-        });
-
-        viewItemList_Button1.setBackground(new java.awt.Color(255, 153, 153));
-        viewItemList_Button1.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        viewItemList_Button1.setForeground(new java.awt.Color(0, 0, 0));
-        viewItemList_Button1.setText("Back");
-        viewItemList_Button1.setBorder(null);
-        viewItemList_Button1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                viewItemList_Button1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Logo_lbl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(itemEntry_Button, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(viewItemList_Button1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(Logo_lbl, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(132, 132, 132)
-                .addComponent(itemEntry_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(viewItemList_Button1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
 
         ItemEntry.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -446,27 +392,17 @@ public class MainPanel extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(JTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(JTabbedPane)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void itemEntry_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemEntry_ButtonActionPerformed
-        JTabbedPane.setSelectedIndex(0);
-    }//GEN-LAST:event_itemEntry_ButtonActionPerformed
-
-    private void viewItemList_Button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewItemList_Button1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_viewItemList_Button1ActionPerformed
 
     private void itemName_textboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemName_textboxActionPerformed
         // TODO add your handling code here:
@@ -549,18 +485,15 @@ public class MainPanel extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ItemEntry;
     private javax.swing.JTabbedPane JTabbedPane;
-    private javax.swing.JLabel Logo_lbl;
     private javax.swing.JButton add_Button;
     private javax.swing.JButton clean_Button;
     private javax.swing.JButton delete_Button;
     private javax.swing.JLabel itemCode_lbl;
     private javax.swing.JTextField itemCode_textbox;
-    private javax.swing.JButton itemEntry_Button;
     private javax.swing.JLabel itemName_lbl;
     private javax.swing.JTextField itemName_textbox;
     private javax.swing.JTable itemTable;
     private javax.swing.JScrollPane itemTableScrollPane;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton refresh_Button;
     private javax.swing.JLabel retailPrice_lbl;
     private javax.swing.JTextField retailPrice_textbox;
@@ -571,6 +504,5 @@ public class MainPanel extends javax.swing.JFrame {
     private javax.swing.JLabel unitPrice_lbl;
     private javax.swing.JTextField unitPrice_textbox;
     private javax.swing.JButton update_Button;
-    private javax.swing.JButton viewItemList_Button1;
     // End of variables declaration//GEN-END:variables
 }
