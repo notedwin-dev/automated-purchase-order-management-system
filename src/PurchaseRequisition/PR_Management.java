@@ -29,8 +29,8 @@ public class PR_Management {
             if (parts.length == 8) {
                 String prID = parts[0].trim();
                 String date = parts[1].trim();
-                String smName = parts[2].trim();
-                String smID = parts[3].trim();
+                String prCreatedByName = parts[2].trim();
+                String prCreatedByID = parts[3].trim();
 
                 String[] itemCodes = parts[4].replace("{", "").replace("}", "").split(",");
                 String[] quantities = parts[5].replace("{", "").replace("}", "").split(",");
@@ -41,7 +41,7 @@ public class PR_Management {
                 String expectedDate = parts[6].trim();
                 String status = parts[7].trim();
 
-                PROperation pr = new PROperation(prID, date, smName, smID, itemCodeText, quantityText, expectedDate, status);
+                PROperation pr = new PROperation(prID, date, prCreatedByName, prCreatedByID, itemCodeText, quantityText, expectedDate, status);
                 prlist.add(pr);
             }
         }

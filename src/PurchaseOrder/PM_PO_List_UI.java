@@ -22,9 +22,9 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
         initComponents();
         
         model = new DefaultTableModel(
-                new String[]{"No", "PO ID", "PR ID", "Date", "Purchase Manager Name", "Purchase Manager ID", 
-                    "Sales Manager Name", "Sales Manager ID",  "Expected Delivery Date", "Supplier Name", 
-                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "Status", "Finance Manager Name", "Finance Manager ID", "Payment Status"}, 
+                new String[]{"No", "PO ID", "PR ID", "Date", "PO Created By (Name)", "PO Created By (ID)", 
+                    "PR Created By (Name)", "PR Created By (ID)", "Expected Delivery Date", "Supplier Name",
+                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "Status", "PO Approved By (Name)", "PO Approved By (ID)", "Payment Status"}, 
                 0 );
         
         PurchaseOrderTable.setModel(model);
@@ -39,7 +39,7 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
         List<PurchaseOrder> poList = PO_GenerationManagement.getAllPurchaseOrders(); 
         int no = 1;
         for (PurchaseOrder po : poList) {
-            if (!po.getPM_ID().equals(currentPMID)) {
+            if (!po.getPOCreatedByID().equals(currentPMID)) {
                 continue;
             }
             String supplierName = po.getSP_Name().replace("{", "").replace("}", "");
@@ -55,10 +55,10 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
                 po.getPO_ID(),
                 po.getPR_ID(),
                 po.getDate(),
-                po.getPM_Name(),
-                po.getPM_ID(),
-                po.getSM_Name(),
-                po.getSM_ID(),
+                po.getPOCreatedByName(),
+                po.getPOCreatedByID(),
+                po.getPRCreatedByName(),
+                po.getPRCreatedByID(),
                 po.getExpectedDeliveryDate(),
                 supplierName,
                 supplierID,
@@ -66,8 +66,8 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
                 itemCode,
                 quantity,
                 po.getStatus(),
-                po.getFM_Name(),
-                po.getFM_ID(),
+                po.getPOApprovedByName(),
+                po.getPOApprovedByID(),
                 po.getPaymentStatus()
             };
             model.addRow(rowData);
@@ -126,6 +126,7 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
         RefreshButton = new javax.swing.JButton();
         EditButton = new javax.swing.JButton();
         DeleteButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -165,29 +166,39 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
+        jLabel1.setText("Puchase Manager Purchase Order List");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(174, 174, 174)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jScrollPane1)
-                .addContainerGap())
+                .addGap(17, 17, 17))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(573, 573, 573)
-                .addComponent(RefreshButton)
-                .addGap(52, 52, 52)
-                .addComponent(EditButton)
-                .addGap(55, 55, 55)
-                .addComponent(DeleteButton)
-                .addContainerGap(372, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(573, 573, 573)
+                        .addComponent(RefreshButton)
+                        .addGap(52, 52, 52)
+                        .addComponent(EditButton)
+                        .addGap(55, 55, 55)
+                        .addComponent(DeleteButton))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)))
+                .addContainerGap(384, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(40, 40, 40)
+                .addGap(29, 29, 29)
+                .addComponent(jLabel1)
+                .addGap(45, 45, 45)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(RefreshButton)
                     .addComponent(EditButton)
@@ -292,6 +303,7 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
     private javax.swing.JButton EditButton;
     private javax.swing.JTable PurchaseOrderTable;
     private javax.swing.JButton RefreshButton;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables

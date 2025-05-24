@@ -143,12 +143,14 @@
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="146" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="Refresh" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
-                              <Component id="Delete" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
-                              <Component id="Update" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="Add" alignment="1" min="-2" pref="35" max="-2" attributes="0"/>
-                              <Component id="Clear" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="Refresh" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="Delete" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="Update" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                                  <Component id="Clear" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <Component id="jScrollPane1" min="-2" pref="419" max="-2" attributes="0"/>
@@ -161,9 +163,6 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="SupplierID">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Supplier ID :"/>
           </Properties>
         </Component>
@@ -184,9 +183,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="SupplierName">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Supplier Name :"/>
           </Properties>
         </Component>
@@ -207,9 +203,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="SupplierContact">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Contact Number :"/>
           </Properties>
         </Component>
@@ -227,9 +220,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="SupplierEmail">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Email : "/>
           </Properties>
         </Component>
@@ -247,9 +237,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="SupplierAddress">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Address :"/>
           </Properties>
         </Component>
@@ -267,9 +254,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="SupplierItemDescription">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
             <Property name="text" type="java.lang.String" value="Item Description : "/>
           </Properties>
         </Component>
@@ -365,9 +349,6 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="4d" green="d3" red="78" type="rgb"/>
             </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AddActionPerformed"/>
@@ -377,9 +358,6 @@
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="a8" green="86" red="4c" type="rgb"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
           </Properties>
           <Events>
@@ -391,9 +369,6 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="0" green="e1" red="f0" type="rgb"/>
             </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ClearActionPerformed"/>
@@ -404,9 +379,6 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="23" green="52" red="fb" type="rgb"/>
             </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
-            </Property>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DeleteActionPerformed"/>
@@ -416,9 +388,6 @@
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="99" green="99" red="99" type="rgb"/>
-            </Property>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="0" green="0" red="0" type="rgb"/>
             </Property>
           </Properties>
           <Events>

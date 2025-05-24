@@ -33,8 +33,8 @@ public class PRMain extends javax.swing.JFrame {
     int did;
     String prid = "PR";
     String date = "";
-    String smname = "";
-    String smid = "SM";
+    String prCreatedByName = "";
+    String prCreatedByID = "SM";
     String itemcode = "";
     String quantity = "";
     String exdate = "";
@@ -64,7 +64,7 @@ public class PRMain extends javax.swing.JFrame {
             }
         });
 
-        prop = new PROperation(prid, date, smname, smid, itemcode, quantity, exdate, status);
+        prop = new PROperation(prid, date, prCreatedByName, prCreatedByID, itemcode, quantity, exdate, status);
         tableLoad();
         try {
             // Load Add icon
