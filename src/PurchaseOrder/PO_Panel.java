@@ -70,6 +70,7 @@ public class PO_Panel extends javax.swing.JFrame {
         setColumnWidth();
     }
     
+    
     // ========== APPLY CUSTOM RENDERER ========== // 
     public void applyCustomRenderer() {
         prTable.getColumnModel().getColumn(5).setCellRenderer(new MultiLineRenderer());
@@ -108,7 +109,6 @@ public class PO_Panel extends javax.swing.JFrame {
             
     // ========== LOAD DATA INTO TABLE ========== //   
     public void refreshTable() {
-//        DefaultTableModel tmodel = (DefaultTableModel) prTable.getModel();
         tmodel.setRowCount(0); // Clear table
 
         List<Object[]> data = manage.getTableData();
@@ -121,9 +121,6 @@ public class PO_Panel extends javax.swing.JFrame {
 
         applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
     }
-    
-  
-
     
     
     // ========== ADJUST TABLE COLUMN SIZE ========== //   

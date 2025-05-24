@@ -8,84 +8,96 @@ package ReportManagement;
  *
  * @author nixon
  */
-import java.util.ArrayList;
-import java.io.BufferedReader;
-import java.io.*;
-import java.util.Arrays;
+
 import org.apache.pdfbox.pdmodel.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import TextFile_Handler.TextFile;
-        
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.*;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+
+import javax.swing.table.TableModel;
+
+import java.io.File;
+import java.io.IOException;     
+import javax.swing.JOptionPane;
 /**
  *
  * @author nixon
  */
 public class PurchaseReport_Management {
+    private final String paymentFile = "src/ReportManagement/payment.txt";
 
-    private List<Object[]> tableData = new ArrayList<>();
-    private static final String paymentFile = "src/ReportManagement/Payment.txt";
+    public class PurchaseData {
+        public String paymentID, poID, totalAmount, paymentDate;
+        public List<PurchaseReportItem> items = new ArrayList<>();
+        private List<Object[]> tableData = new ArrayList<>();
 
-    public PurchaseReport_Management() {
-        readPaymentFile();
-    }
+        public PurchaseData() {
+            readPaymentFile();
+        }
 
-    private void readPaymentFile() {
-        List<String> lines = TextFile.readFile(paymentFile);
-        boolean isFirstLine = true;
+        // ========== READ METHOD FOR PAYMENT FILE ========== //
+        private void readPaymentFile() {
+            List<String> lines = TextFile.readFile(paymentFile);
+            boolean isFirstLine = true;
 
-        for (String line : lines) {
-            if (isFirstLine) {
-                isFirstLine = false;
-                continue;
-            }
+            for (String line : lines) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+                
+                String[] data = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)");
+                if (data.length >= 11) {
+                    String paymentID = data[0].trim();
+                    String poID = data[1].trim();
 
-            System.out.println("Reading line: " + line); // ✅ Debug
+                    String[] companies = data[2].replace("{", "").replace("}", "").split(",");
+                    String[] supplierIDs = data[3].replace("{", "").replace("}", "").split(",");
+                    String[] itemNames = data[4].replace("{", "").replace("}", "").split(",");
+                    String[] itemCodes = data[5].replace("{", "").replace("}", "").split(",");
+                    String[] quantities = data[6].replace("{", "").replace("}", "").split(",");
+                    String[] unitPrices = data[8].replace("{", "").replace("}", "").split(",");
 
-            String[] data = line.split(",(?![^\\{]*\\})");
+                    String totalAmount = data[9].trim();
+                    String paymentDateStr = data[10].trim();
+                    
+                    String itemCodeText = String.join("\n", itemCodes).trim();
+                    String itemNameText = String.join("\n", itemNames).trim();
+                    String companyText = String.join("\n", companies).trim();
+                    String supplierIDText = String.join("\n", supplierIDs).trim();
+                    String quantityText = String.join("\n", quantities).trim();
+                    String unitPriceText = String.join("\n", unitPrices).trim();
 
-            System.out.println("Parsed data length: " + data.length); // ✅ Debug
-
-            if (data.length >= 11) {
-                String paymentID = data[0].trim();
-                String poID = data[1].trim();
-                String[] companies = data[2].replace("{", "").replace("}", "").split(",");
-                String[] supplierIDs = data[3].replace("{", "").replace("}", "").split(",");
-                String[] itemNames = data[4].replace("{", "").replace("}", "").split(",");
-                String[] itemCodes = data[5].replace("{", "").replace("}", "").split(",");
-                String[] quantities = data[6].replace("{", "").replace("}", "").split(",");
-                String status = data[7].trim();
-                String[] prices = data[8].replace("{", "").replace("}", "").split(",");
-                String totalAmount = data[9].trim();
-                String paymentDate = data[10].trim();
-
-                String companyText = String.join("\n", companies).trim();
-                String supplierIDText = String.join("\n", supplierIDs).trim();
-                String itemNameText = String.join("\n", itemNames).trim();
-                String itemCodeText = String.join("\n", itemCodes).trim();
-                String quantityText = String.join("\n", quantities).trim();
-
-                tableData.add(new Object[]{
-                    paymentID, poID, companyText, supplierIDText,
-                    itemNameText, itemCodeText, quantityText,
-                    status, totalAmount, paymentDate
-                });
-
-                System.out.println("✅ Added: " + paymentID); 
-            } else {
-                System.out.println("❌ Skipped due to incorrect fields: " + data.length);
+                    tableData.add( new Object[] {
+                        paymentID,
+                        poID,
+                        itemCodeText,
+                        itemNameText,
+                        companyText,
+                        supplierIDText,
+                        quantityText,
+                        unitPriceText,
+                        totalAmount,
+                        paymentDateStr
+                    });
+                }
             }
         }
+        
+        public List<Object[]> getTableData() {
+            return tableData;  // where tableData is a List<Object[]> field
+        }
     }
-
-
-
-    public List<Object[]> getTableData() {
-        return tableData;
-    }
-  
-    //==================================== GENERATE PDF ====================================//
     
+    // ========== PUBLIC METHOD TO ACCESS PR TABLE DATA ========== //
+    public List<Object[]> getTableData() {
+        PurchaseData prData = new PurchaseData();
+        return prData.getTableData();
+    }
 }
