@@ -21,9 +21,9 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
         initComponents();
         PO = new PO_GenerationManagement();
         model = new DefaultTableModel(
-                new String[]{"No", "PO ID", "PR ID", "Date", "Purchase Manager Name", "Purchase Manager ID", 
-                    "Sales Manager Name", "Sales Manager ID", "Expected Delivery Date", "Supplier Name",
-                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "Status", "Finance Manager Name", "Finance Manager ID", "Payment Status"}, 
+                new String[]{"No", "PO ID", "PR ID", "Date", "PO Created By (Name)", "PO Created By (ID)", 
+                    "PR Created By (Name)", "PR Created By (ID)", "Expected Delivery Date", "Supplier Name",
+                    "Supplier ID",  "Item Name", "Item Code", "Quantity", "Status", "PO Approved By (Name)", "PO Approved By (ID)", "Payment Status"}, 
                 0 );
         
         POApprovalTable.setModel(model);
@@ -34,12 +34,12 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
     private void displayPOTable() {
         model.setRowCount(0);
         User currentUser = Session.getInstance().getCurrentUser();
-        String currentPMID = currentUser.getID();
+        String currentID = currentUser.getID();
         List<PurchaseOrder> poList = PO_GenerationManagement.getAllPurchaseOrders(); 
         int no = 1;
         for (PurchaseOrder po : poList) {
-            if (!"Pending".equalsIgnoreCase(po.getStatus()) && !po.getPM_ID().equals(currentPMID)) {
-                continue;  
+            if (!po.getPOApprovedByID().equals(currentID)) {
+                continue;
             }
             String supplierName = po.getSP_Name().replace("{", "").replace("}", "");
             String supplierID = po.getSP_ID().replace("{", "").replace("}", "");
@@ -54,10 +54,10 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
                 po.getPO_ID(),
                 po.getPR_ID(),
                 po.getDate(),
-                po.getPM_Name(),
-                po.getPM_ID(),
-                po.getSM_Name(),
-                po.getSM_ID(),
+                po.getPOCreatedByName(),
+                po.getPOCreatedByID(),
+                po.getPRCreatedByName(),
+                po.getPRCreatedByID(),
                 po.getExpectedDeliveryDate(),
                 supplierName,
                 supplierID,
@@ -65,8 +65,8 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
                 itemCode,
                 quantity,
                 po.getStatus(),
-                po.getFM_Name(),
-                po.getFM_ID(),
+                po.getPOApprovedByName(),
+                po.getPOApprovedByID(),
                 po.getPaymentStatus()
             };
             model.addRow(rowData);
@@ -85,6 +85,7 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         POApprovalTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -111,21 +112,31 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(POApprovalTable);
 
+        jLabel1.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
+        jLabel1.setText("My Puchase Order Approval List");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(174, 174, 174)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(15, 15, 15)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1100, Short.MAX_VALUE)
+                        .addGap(165, 165, 165))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(75, 75, 75)
+                .addGap(44, 44, 44)
+                .addComponent(jLabel1)
+                .addGap(59, 59, 59)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(214, Short.MAX_VALUE))
+                .addContainerGap(148, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -179,6 +190,7 @@ public class FM_View_PO_Approval extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable POApprovalTable;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables

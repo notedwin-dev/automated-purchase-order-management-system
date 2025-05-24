@@ -24,7 +24,7 @@ public class PO_GenerationManagement {
 
     
     public class PRData{
-        public String PR_ID, date, SM_Name, SM_ID, expectedDeliveryDate;
+        public String PR_ID, date, PRCreatedByName, PRCreatedByID, expectedDeliveryDate;
         public List<PurchaseOrderItem> items = new ArrayList<>();
         private List<Object[]> tableData = new ArrayList<>();
 
@@ -47,8 +47,8 @@ public class PO_GenerationManagement {
                 if (data.length == 8) {
                     String prID = data[0].trim();
                     String date = data[1].trim();
-                    String smName = data[2].trim();
-                    String smID = data[3].trim();
+                    String PRCreatedByName = data[2].trim();
+                    String PRCreatedByID = data[3].trim();
                     String[] itemCodes = data[4].replace("{", "").replace("}", "").split(",");
                     String[] quantities = data[5].replace("{", "").replace("}", "").split(",");
                     String expectedDate = data[6].trim();
@@ -58,7 +58,7 @@ public class PO_GenerationManagement {
                     String quantityText = Arrays.stream(quantities).map(String::trim).collect(Collectors.joining("\n"));
 
                     tableData.add(new Object[]{
-                        rowNo++, prID, date, smName, smID, itemCodeText, quantityText, expectedDate, status
+                        rowNo++, prID, date, PRCreatedByName, PRCreatedByID, itemCodeText, quantityText, expectedDate, status
                     });
                 }
             }
@@ -145,7 +145,7 @@ public class PO_GenerationManagement {
         return null;
     }
     
-    public void saveToPOtxt(String PO_ID, String PR_ID, String date, String PM_Name, String PM_ID,String SM_Name, String SM_ID, String expectedDeliveryDate, List<PurchaseOrderItem> items) {
+    public void saveToPOtxt(String PO_ID, String PR_ID, String date, String POCreatedByName, String POCreatedByID,String PRCreatedByName, String PRCreatedByID, String expectedDeliveryDate, List<PurchaseOrderItem> items) {
         StringBuilder supplierName = new StringBuilder();
         StringBuilder supplierID = new StringBuilder();
         StringBuilder itemName = new StringBuilder();
@@ -175,8 +175,8 @@ public class PO_GenerationManagement {
         
         String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s,{%s},{%s},{%s},{%s},{%s},Pending,%s,%s,%s",
                 PO_ID,PR_ID,date,
-                PM_Name,PM_ID,
-                SM_Name,SM_ID,
+                POCreatedByName,POCreatedByID,
+                PRCreatedByName,PRCreatedByID,
                 expectedDeliveryDate,
                 supplierName.toString(),
                 supplierID.toString(),
@@ -224,7 +224,25 @@ public class PO_GenerationManagement {
         }
     }
     
-    
+    public void rejectPR(String PR_ID) {
+        List<String> lines = TextFile.readFile(PRfile);
+        List<String> updatedLines = new ArrayList<>();
+
+        for (String line : lines) {
+            if (line.startsWith(PR_ID + ",")) {
+                if (line.endsWith("PENDING")) {
+                    // Replace only the ending status
+                    line = line.substring(0, line.lastIndexOf("PENDING")) + "REJECTED";
+                }
+            }
+            updatedLines.add(line);
+        }
+
+        TextFile.overwriteFile(PRfile, updatedLines);
+    }
+
+
+
     private static PurchaseOrder parseLineToPO(String line) {
         List<String> parts = new ArrayList<>();
         StringBuilder currentPart = new StringBuilder();
@@ -252,10 +270,10 @@ public class PO_GenerationManagement {
         String PO_ID = parts.get(0);
         String PR_ID = parts.get(1);
         String date = parts.get(2);
-        String PM_Name = parts.get(3);
-        String PM_ID = parts.get(4);
-        String SM_Name = parts.get(5);
-        String SM_ID = parts.get(6);
+        String POCreatedByName = parts.get(3);
+        String POCreatedByID = parts.get(4);
+        String PRCreatedByName = parts.get(5);
+        String PRCreatedByID = parts.get(6);
         String expectedDeliveryDate = parts.get(7);
         String SP_Name = parts.get(8);
         String SP_ID = parts.get(9);
@@ -268,8 +286,8 @@ public class PO_GenerationManagement {
         String quantityStr = quantityField.replace("{", "").replace("}", "");
         quantityMap.put(PO_ID, quantityStr);
         
-        String FM_Name = parts.get(14);
-        String FM_ID = parts.get(15);
+        String POApprovedByName = parts.get(14);
+        String POApprovedByID = parts.get(15);
         String paymentStatus = parts.get(16);
         
         // Parse only the first quantity as int
@@ -284,8 +302,8 @@ public class PO_GenerationManagement {
             System.out.println("Invalid quantity in line: " + line);
         }
 
-        return new PurchaseOrder(PO_ID, PR_ID, date, PM_Name, PM_ID, SM_Name, SM_ID, expectedDeliveryDate,
-                                 SP_ID, SP_Name, itemCode, itemName, status, quantity, FM_Name, FM_ID, paymentStatus);
+        return new PurchaseOrder(PO_ID, PR_ID, date, POCreatedByName, POCreatedByID, PRCreatedByName, PRCreatedByID, expectedDeliveryDate,
+                                 SP_ID, SP_Name, itemCode, itemName, status, quantity, POApprovedByName, POApprovedByID, paymentStatus);
     }
     
     public static List<PurchaseOrder> getAllPurchaseOrders() {
@@ -335,10 +353,10 @@ public class PO_GenerationManagement {
             po.getPO_ID(),
             po.getPR_ID(),
             po.getDate(),
-            po.getPM_Name(),
-            po.getPM_ID(),
-            po.getSM_Name(),
-            po.getSM_ID(),
+            po.getPOCreatedByName(),
+            po.getPOCreatedByID(),
+            po.getPRCreatedByName(),
+            po.getPRCreatedByID(),
             po.getExpectedDeliveryDate(),
             spName,
             spID,
@@ -346,8 +364,8 @@ public class PO_GenerationManagement {
             itemCode,
             quantityList, // use the full quantity list string here
             po.getStatus(),
-            po.getFM_Name(),
-            po.getFM_ID(),
+            po.getPOApprovedByName(),
+            po.getPOApprovedByID(),
             po.getPaymentStatus()
         );
     }

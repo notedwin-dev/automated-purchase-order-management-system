@@ -20,12 +20,12 @@ import javax.swing.JOptionPane;
 public class PROperation {
 
     private int did;
-    private String prid, date, smname, smid, itemcode, quantity, exdate, status;
+    private String prid, date, prCreatedByName, prCreatedByID, itemcode, quantity, exdate, status;
 
-    public PROperation(String prid, String date, String smname, String smid, String itemcode, String quantity, String exdate, String status) {
+    public PROperation(String prid, String date, String prCreatedByName, String prCreatedByID, String itemcode, String quantity, String exdate, String status) {
         this.prid = prid;
-        this.smname = smname;
-        this.smid = smid;
+        this.prCreatedByName = prCreatedByName;
+        this.prCreatedByID = prCreatedByID;
         this.itemcode = itemcode;
         this.quantity = quantity;
         this.exdate = exdate;
@@ -52,21 +52,34 @@ public class PROperation {
         this.date = date;
     }
 
-    public String getSMName() {
-        return smname;
+    /**
+     * @return the prCreatedByName
+     */
+    public String getPrCreatedByName() {
+        return prCreatedByName;
     }
 
-    public void setSMName(String smname) {
-        this.smname = smname;
+    /**
+     * @param prCreatedByName the prCreatedByName to set
+     */
+    public void setPrCreatedByName(String prCreatedByName) {
+        this.prCreatedByName = prCreatedByName;
     }
 
-    public String getSMID() {
-        return smid;
+    /**
+     * @return the prCreatedByID
+     */
+    public String getPrCreatedByID() {
+        return prCreatedByID;
     }
 
-    public void setSMID(String smid) {
-        this.smid = smid;
+    /**
+     * @param prCreatedByID the prCreatedByID to set
+     */
+    public void setPrCreatedByID(String prCreatedByID) {
+        this.prCreatedByID = prCreatedByID;
     }
+    
 
     public String getItemCode() {
         return itemcode;
@@ -100,8 +113,10 @@ public class PROperation {
         this.status = status;
     }
 
+//    prCreatedByName, prCreatedByID,
+    
     public void add() {
-        if (this.prid == null || this.date == null || this.smname == null || this.smid == null
+        if (this.prid == null || this.date == null || this.prCreatedByName == null || this.prCreatedByID == null
                 || this.itemcode == null || this.quantity == null || this.exdate == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
@@ -109,7 +124,7 @@ public class PROperation {
 
         try {
             FileWriter writer = new FileWriter("src/PurchaseRequisition/PR.txt", true);
-            writer.write(this.prid + ", " + this.date + ", " + this.smname + ", " + this.smid + ", "
+            writer.write(this.prid + ", " + this.date + ", " + this.prCreatedByName + ", " + this.prCreatedByID + ", "
                     + this.itemcode + ", " + this.quantity + ", " + this.exdate + ", " + this.status);
             writer.write(System.getProperty("line.separator"));
             writer.close();
@@ -142,7 +157,7 @@ public class PROperation {
     }
 
     public void update() {
-        if (this.prid == null || this.date == null || this.smname == null || this.smid == null
+        if (this.prid == null || this.date == null || this.prCreatedByName == null || this.prCreatedByID == null
                 || this.itemcode == null || this.quantity == null || this.exdate == null || this.status == null) {
             JOptionPane.showMessageDialog(null, "All fields must be filled!");
             return;
@@ -166,7 +181,7 @@ public class PROperation {
                 String[] parts = currentLine.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)");
                 if (parts.length >= 1 && parts[0].trim().equals(this.prid)) {
                     // Write updated data
-                    writer.write(this.prid + ", " + this.date + ", " + this.smname + ", " + this.smid + ", "
+                    writer.write(this.prid + ", " + this.date + ", " + this.prCreatedByName + ", " + this.prCreatedByID + ", "
                             + this.itemcode + ", " + this.quantity + ", " + this.exdate + ", " + this.status);
                     found = true;
                 } else {
@@ -241,7 +256,7 @@ public class PROperation {
         }
 
     }
-    
+
   
     
 }
