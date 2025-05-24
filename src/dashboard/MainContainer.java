@@ -291,7 +291,7 @@ public class MainContainer extends javax.swing.JFrame {
             
             // Special handling for Report Management classes
             if (className.equals("ReportManagement.InventoryReportMain") || 
-                className.equals("ReportManagement.SalesReportMain")) {
+                className.equals("ReportManagement.SalesReportMain") || className.equals("ReportManagement.PurchaseReportMain")) {
                 try {
                     // Check if already in cache
                     if (activePanels.containsKey(className)) {
@@ -304,8 +304,10 @@ public class MainContainer extends javax.swing.JFrame {
                     
                     if (className.equals("ReportManagement.InventoryReportMain")) {
                         reportFrame = new ReportManagement.InventoryReportUI();
-                    } else { // SalesReportMain
+                    } else if (className.equals("ReportManagement.SalesReportMain")) { // SalesReportMain
                         reportFrame = new ReportManagement.SalesReportUI();
+                    } else {
+                        reportFrame = new ReportManagement.PurchaseReportUI();
                     }
                     
                     // Set preferred size for the UI
