@@ -153,7 +153,7 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "ReportManagement.InventoryReportMain");
             addNavButtonIfPermitted(Feature.SALES_REPORT, Feature.SALES_REPORT, "ReportManagement.SalesReportMain");
             addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "ReportManagement.Payment_UI");
-            addNavButtonIfPermitted(Feature.PURCHASING_REPORT, Feature.PURCHASING_REPORT, "ReportManagement.PurchasingReportMain");
+            addNavButtonIfPermitted(Feature.PURCHASING_REPORT, Feature.PURCHASING_REPORT, "ReportManagement.PurchaseReportMain");
             
             // Add logout button at the bottom
             addNavButton("Logout", "auth.Login", false);
