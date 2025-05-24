@@ -125,13 +125,11 @@ public class UI extends javax.swing.JFrame {
         Background.setBackground(new java.awt.Color(255, 255, 255));
         Background.setPreferredSize(new java.awt.Dimension(1280, 720));
 
-        SupplierID.setForeground(new java.awt.Color(0, 0, 0));
         SupplierID.setText("Supplier ID :");
 
         SupplierID_TextField.setBackground(new java.awt.Color(204, 204, 204));
         SupplierID_TextField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        SupplierName.setForeground(new java.awt.Color(0, 0, 0));
         SupplierName.setText("Supplier Name :");
 
         SupplierName_TextField.setBackground(new java.awt.Color(204, 204, 204));
@@ -142,25 +140,21 @@ public class UI extends javax.swing.JFrame {
             }
         });
 
-        SupplierContact.setForeground(new java.awt.Color(0, 0, 0));
         SupplierContact.setText("Contact Number :");
 
         SupplierContact_TextField.setBackground(new java.awt.Color(204, 204, 204));
         SupplierContact_TextField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        SupplierEmail.setForeground(new java.awt.Color(0, 0, 0));
         SupplierEmail.setText("Email : ");
 
         SupplierEmail_TextField.setBackground(new java.awt.Color(204, 204, 204));
         SupplierEmail_TextField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        SupplierAddress.setForeground(new java.awt.Color(0, 0, 0));
         SupplierAddress.setText("Address :");
 
         SupplierAddress_TextField.setBackground(new java.awt.Color(204, 204, 204));
         SupplierAddress_TextField.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        SupplierItemDescription.setForeground(new java.awt.Color(0, 0, 0));
         SupplierItemDescription.setText("Item Description : ");
 
         SupplierItemDescription_TextField.setBackground(new java.awt.Color(204, 204, 204));
@@ -184,7 +178,6 @@ public class UI extends javax.swing.JFrame {
         SupplierTable.getAccessibleContext().setAccessibleDescription("");
 
         Add.setBackground(new java.awt.Color(120, 211, 77));
-        Add.setForeground(new java.awt.Color(0, 0, 0));
         Add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 AddActionPerformed(evt);
@@ -192,7 +185,6 @@ public class UI extends javax.swing.JFrame {
         });
 
         Update.setBackground(new java.awt.Color(76, 134, 168));
-        Update.setForeground(new java.awt.Color(0, 0, 0));
         Update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 UpdateActionPerformed(evt);
@@ -200,7 +192,6 @@ public class UI extends javax.swing.JFrame {
         });
 
         Clear.setBackground(new java.awt.Color(240, 225, 0));
-        Clear.setForeground(new java.awt.Color(0, 0, 0));
         Clear.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ClearActionPerformed(evt);
@@ -208,7 +199,6 @@ public class UI extends javax.swing.JFrame {
         });
 
         Delete.setBackground(new java.awt.Color(251, 82, 35));
-        Delete.setForeground(new java.awt.Color(0, 0, 0));
         Delete.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 DeleteActionPerformed(evt);
@@ -216,7 +206,6 @@ public class UI extends javax.swing.JFrame {
         });
 
         Refresh.setBackground(new java.awt.Color(153, 153, 153));
-        Refresh.setForeground(new java.awt.Color(0, 0, 0));
         Refresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 RefreshActionPerformed(evt);
@@ -298,12 +287,13 @@ public class UI extends javax.swing.JFrame {
                                 .addComponent(SupplierID)
                                 .addGap(174, 174, 174)))
                         .addGap(146, 146, 146)
-                        .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(Refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Delete, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Add, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Clear, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(Add, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(BackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(Refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Delete, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Update, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(Clear, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 419, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(92, 92, 92))
         );

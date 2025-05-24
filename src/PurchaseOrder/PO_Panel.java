@@ -164,6 +164,7 @@ public class PO_Panel extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         prTable = new javax.swing.JTable();
         generatePO_button = new javax.swing.JButton();
+        rejectPO_btn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -206,6 +207,15 @@ public class PO_Panel extends javax.swing.JFrame {
             }
         });
 
+        rejectPO_btn.setBackground(new java.awt.Color(255, 255, 204));
+        rejectPO_btn.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        rejectPO_btn.setText("Reject");
+        rejectPO_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rejectPO_btnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -217,7 +227,9 @@ public class PO_Panel extends javax.swing.JFrame {
                         .addComponent(Title_lbl))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(442, 442, 442)
-                        .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(254, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -231,7 +243,9 @@ public class PO_Panel extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(Title_lbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 554, Short.MAX_VALUE)
-                .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -270,6 +284,27 @@ public class PO_Panel extends javax.swing.JFrame {
     private void prTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_prTableMouseClicked
+
+    private void rejectPO_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectPO_btnActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = prTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String prID = prTable.getValueAt(selectedRow, 0).toString(); 
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to reject PR " + prID + "?",
+                    "Confirm Rejection",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                PO_GenerationManagement manager = new PO_GenerationManagement();
+                manager.rejectPR(prID);
+                JOptionPane.showMessageDialog(this, "PR " + prID + " has been rejected.");
+                refreshTable(); 
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a PR to reject.");
+        }
+    }//GEN-LAST:event_rejectPO_btnActionPerformed
 
     
  
@@ -318,5 +353,6 @@ public class PO_Panel extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable prTable;
+    private javax.swing.JButton rejectPO_btn;
     // End of variables declaration//GEN-END:variables
 }

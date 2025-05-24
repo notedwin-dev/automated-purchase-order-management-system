@@ -9,17 +9,17 @@ package PurchaseOrder;
  * @author user
  */
 public class PurchaseOrder {
-    private String PO_ID, PR_ID, date, PM_Name, PM_ID, SM_Name, SM_ID, expectedDeliveryDate, SP_ID, SP_Name, itemCode, itemName, status = "PENDING", FM_Name, FM_ID, paymentStatus;
+    private String PO_ID, PR_ID, date, POCreatedByName, POCreatedByID, PRCreatedByName, PRCreatedByID, expectedDeliveryDate, SP_ID, SP_Name, itemCode, itemName, status = "PENDING", POApprovedByName, POApprovedByID, paymentStatus;
     private int quantity;
     
-    public PurchaseOrder(String PO_ID, String PR_ID, String date, String PM_Name, String PM_ID, String SM_Name, String SM_ID, String expectedDeliveryDate, String SP_ID, String SP_Name, String itemCode, String itemName, String status, int quantity, String FM_Name, String FM_ID, String paymentStatus){
+    public PurchaseOrder(String PO_ID, String PR_ID, String date, String POCreatedByName, String POCreatedByID, String PRCreatedByName, String PRCreatedByID, String expectedDeliveryDate, String SP_ID, String SP_Name, String itemCode, String itemName, String status, int quantity, String POApprovedByName, String POApprovedByID, String paymentStatus){
         this.PO_ID = PO_ID;
         this.PR_ID = PR_ID;
         this.date = date;
-        this.PM_Name = PM_Name;
-        this.PM_ID = PM_ID;
-        this.SM_Name = SM_Name;
-        this.SM_ID = SM_ID;
+        this.POCreatedByName = POCreatedByName;
+        this.POCreatedByID = POCreatedByID;
+        this.PRCreatedByName = PRCreatedByName;
+        this.PRCreatedByID = PRCreatedByID;
         this.expectedDeliveryDate = expectedDeliveryDate;
         this.SP_ID = SP_ID;
         this.SP_Name = SP_Name;
@@ -27,8 +27,8 @@ public class PurchaseOrder {
         this.itemName = itemName;
         this.status = status;
         this.quantity = quantity;
-        this.FM_Name = FM_Name;
-        this.FM_ID = FM_ID;
+        this.POApprovedByName = POApprovedByName;
+        this.POApprovedByID = POApprovedByID;
         this.paymentStatus = paymentStatus;
     }
 
@@ -75,31 +75,73 @@ public class PurchaseOrder {
     }
 
     /**
-     * @return the SM_Name
+     * @return the POCreatedByName
      */
-    public String getSM_Name() {
-        return SM_Name;
+    public String getPOCreatedByName() {
+        return POCreatedByName;
     }
 
     /**
-     * @param SM_Name the SM_Name to set
+     * @param POCreatedByName the POCreatedByName to set
      */
-    public void setSM_Name(String SM_Name) {
-        this.SM_Name = SM_Name;
+    public void setPOCreatedByName(String POCreatedByName) {
+        this.POCreatedByName = POCreatedByName;
     }
 
     /**
-     * @return the SM_ID
+     * @return the POCreatedByID
      */
-    public String getSM_ID() {
-        return SM_ID;
+    public String getPOCreatedByID() {
+        return POCreatedByID;
     }
 
     /**
-     * @param SM_ID the SM_ID to set
+     * @param POCreatedByID the POCreatedByID to set
      */
-    public void setSM_ID(String SM_ID) {
-        this.SM_ID = SM_ID;
+    public void setPOCreatedByID(String POCreatedByID) {
+        this.POCreatedByID = POCreatedByID;
+    }
+
+    /**
+     * @return the PRCreatedByName
+     */
+    public String getPRCreatedByName() {
+        return PRCreatedByName;
+    }
+
+    /**
+     * @param PRCreatedByName the PRCreatedByName to set
+     */
+    public void setPRCreatedByName(String PRCreatedByName) {
+        this.PRCreatedByName = PRCreatedByName;
+    }
+
+    /**
+     * @return the PRCreatedByID
+     */
+    public String getPRCreatedByID() {
+        return PRCreatedByID;
+    }
+
+    /**
+     * @param PRCreatedByID the PRCreatedByID to set
+     */
+    public void setPRCreatedByID(String PRCreatedByID) {
+        this.PRCreatedByID = PRCreatedByID;
+    }
+
+    /**
+     * @return the expectedDeliveryDate
+     */
+    public String getExpectedDeliveryDate() {
+        return expectedDeliveryDate;
+    }
+
+    /**
+     * @param expectedDeliveryDate the expectedDeliveryDate to set
+     */
+    public void setExpectedDeliveryDate(String expectedDeliveryDate) {
+        this.expectedDeliveryDate = expectedDeliveryDate;
     }
 
     /**
@@ -173,87 +215,31 @@ public class PurchaseOrder {
     }
 
     /**
-     * @return the quantity
+     * @return the POApprovedByName
      */
-    public int getQuantity() {
-        return quantity;
+    public String getPOApprovedByName() {
+        return POApprovedByName;
     }
 
     /**
-     * @param quantity the quantity to set
+     * @param POApprovedByName the POApprovedByName to set
      */
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setPOApprovedByName(String POApprovedByName) {
+        this.POApprovedByName = POApprovedByName;
     }
 
     /**
-     * @return the PM_Name
+     * @return the POApprovedByID
      */
-    public String getPM_Name() {
-        return PM_Name;
+    public String getPOApprovedByID() {
+        return POApprovedByID;
     }
 
     /**
-     * @param PM_Name the PM_Name to set
+     * @param POApprovedByID the POApprovedByID to set
      */
-    public void setPM_Name(String PM_Name) {
-        this.PM_Name = PM_Name;
-    }
-
-    /**
-     * @return the PM_ID
-     */
-    public String getPM_ID() {
-        return PM_ID;
-    }
-
-    /**
-     * @param PM_ID the PM_ID to set
-     */
-    public void setPM_ID(String PM_ID) {
-        this.PM_ID = PM_ID;
-    }
-
-    /**
-     * @return the expectedDeliveryDate
-     */
-    public String getExpectedDeliveryDate() {
-        return expectedDeliveryDate;
-    }
-
-    /**
-     * @param expectedDeliveryDate the expectedDeliveryDate to set
-     */
-    public void setExpectedDeliveryDate(String expectedDeliveryDate) {
-        this.expectedDeliveryDate = expectedDeliveryDate;
-    }
-
-    /**
-     * @return the FM_Name
-     */
-    public String getFM_Name() {
-        return FM_Name;
-    }
-
-    /**
-     * @param FM_Name the FM_Name to set
-     */
-    public void setFM_Name(String FM_Name) {
-        this.FM_Name = FM_Name;
-    }
-
-    /**
-     * @return the FM_ID
-     */
-    public String getFM_ID() {
-        return FM_ID;
-    }
-
-    /**
-     * @param FM_ID the FM_ID to set
-     */
-    public void setFM_ID(String FM_ID) {
-        this.FM_ID = FM_ID;
+    public void setPOApprovedByID(String POApprovedByID) {
+        this.POApprovedByID = POApprovedByID;
     }
 
     /**
@@ -269,5 +255,21 @@ public class PurchaseOrder {
     public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
+
+    /**
+     * @return the quantity
+     */
+    public int getQuantity() {
+        return quantity;
+    }
+
+    /**
+     * @param quantity the quantity to set
+     */
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+   
     
 }
