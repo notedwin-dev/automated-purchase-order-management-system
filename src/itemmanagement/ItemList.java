@@ -18,13 +18,13 @@ import java.util.*;
  *
  * @author nixon
  */
-public class MainPanel extends javax.swing.JFrame {
+public class ItemList extends javax.swing.JFrame {
 
     private ItemManagement itemOps; // ----- This is a field ----- //
     private Map<String, String> supplierMap = new HashMap<>();
     private DefaultTableModel model;
 
-    public MainPanel() {
+    public ItemList() {
         initComponents();
          // - - - - - RESIZE ICON ADD - - - - - //
         ImageIcon addIcon = new ImageIcon(getClass().getResource("/resources/icons/Add.png"));
@@ -463,20 +463,21 @@ public class MainPanel extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainPanel.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainPanel().setVisible(true);
+                new ItemList().setVisible(true);
             }
         });
     }

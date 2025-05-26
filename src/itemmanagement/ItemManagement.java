@@ -40,6 +40,11 @@ public class ItemManagement implements ItemOperations {
         this.retailPrice_textbox = rprice;
     }
     
+    // Constructor for view-only mode (just need the table)
+    public ItemManagement(JTable table) {
+        this.itemTable = table;
+    }
+
     // - - - - - - - - - - ADD FUNCTION - - - - - - - - - - //
     @Override //Acts like a "kastam" where it checks whether the method name, return type, and parameters are correctly used.
     public void add() {
