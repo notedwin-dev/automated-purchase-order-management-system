@@ -14,8 +14,12 @@ import java.util.stream.Collectors;
  */
 import InventoryManagement.Inventory;
 import TextFile_Handler.TextFile;
+import auth.Session;
+import auth.User;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
 public class PO_GenerationManagement {
     private static final String ItemFile = "src/itemManagement/Items.txt"; 
     private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
@@ -70,10 +74,29 @@ public class PO_GenerationManagement {
     }
     
     // ========== PUBLIC METHOD TO ACCESS PR TABLE DATA ========== //
-    public List<Object[]> getTableData() {
+   public List<Object[]> getTableData() {
         PRData prData = new PRData();
-        return prData.getTableData();
+        User currentUser = Session.getInstance().getCurrentUser();
+
+        if (currentUser == null) return Collections.emptyList();
+
+        String currentRole = currentUser.getRole();
+        String currentUserID = currentUser.getID();
+
+        // - - - - - Filter based on role - - - - - //
+        return prData.getTableData().stream()
+            .filter(row -> {
+                String creatorID = row[4].toString(); 
+                if ("Admin".equalsIgnoreCase(currentRole)) {
+                    return true; // Admin can see all
+                } else if ("Sales Manager".equalsIgnoreCase(currentRole)) {
+                    return creatorID.equals(currentUserID); // ----- Only can see their own PRs ----- //
+                }
+                return false; // Default deny
+            })
+            .collect(Collectors.toList());
     }
+
     
     public Inventory getItemDetailsByCode(String itemCode) {
         List<String> lines = TextFile.readFile(ItemFile);

@@ -59,9 +59,6 @@ public class PO_Panel extends javax.swing.JFrame {
                 evt.consume(); // prevent clicking on tabs
             }
         });
-        
-        //----- Link model to table -----//
-//        prTable.setModel(tmodel); 
 
         //----- Initialize manage -----//
         manage = new PO_GenerationManagement();
@@ -69,6 +66,7 @@ public class PO_Panel extends javax.swing.JFrame {
         refreshTable();
         setColumnWidth();
     }
+    
     
     // ========== APPLY CUSTOM RENDERER ========== // 
     public void applyCustomRenderer() {
@@ -108,7 +106,6 @@ public class PO_Panel extends javax.swing.JFrame {
             
     // ========== LOAD DATA INTO TABLE ========== //   
     public void refreshTable() {
-//        DefaultTableModel tmodel = (DefaultTableModel) prTable.getModel();
         tmodel.setRowCount(0); // Clear table
 
         List<Object[]> data = manage.getTableData();
@@ -121,9 +118,6 @@ public class PO_Panel extends javax.swing.JFrame {
 
         applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
     }
-    
-  
-
     
     
     // ========== ADJUST TABLE COLUMN SIZE ========== //   
