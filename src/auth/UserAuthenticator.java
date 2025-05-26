@@ -38,7 +38,7 @@ public class UserAuthenticator {
                     String role = parts[4].trim();
                     
                     if (username.equals(un) && password.equals(pw)) {
-                        User user = new User();
+                        User user = new User(id, username, password, department, role);
                         user.setID(id);
                         user.setUsername(un);
                         user.setPassword(pw);
