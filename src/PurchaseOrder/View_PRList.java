@@ -4,6 +4,8 @@
  */
 package PurchaseOrder;
 
+import auth.Session;
+import auth.User;
 import java.awt.Component;
 import java.util.Arrays;
 import java.util.List;
@@ -83,16 +85,18 @@ public class View_PRList extends javax.swing.JFrame {
             
     // ========== LOAD DATA INTO TABLE ========== //   
     public final void refreshTable() {
-        tablemodel.setRowCount(0); // Clear table
-
+        tablemodel.setRowCount(0); 
+        
+        User currentUser = Session.getInstance().getCurrentUser();
+        String currentID = currentUser.getID();
+        
         List<Object[]> data = POmanage.getTableData();
+        
         System.out.println("Data rows count: " + data.size());
-    
-        for (Object[] row : POmanage.getTableData()) {
-            System.out.println(Arrays.toString(row));
-            tablemodel.addRow(row);
-        }
-
+            for (Object[] row : POmanage.getTableData()) {
+                System.out.println(Arrays.toString(row));
+                tablemodel.addRow(row);
+            }
         applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
     }
     

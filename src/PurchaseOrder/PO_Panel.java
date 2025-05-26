@@ -133,6 +133,7 @@ public class PO_Panel extends javax.swing.JFrame {
         prTable.getColumnModel().getColumn(8).setPreferredWidth(90);   //-- "Status"
     }
     
+    
     private PROperation getSelectedPR(){
         int selectedRow = prTable.getSelectedRow();
         if(selectedRow == -1){
