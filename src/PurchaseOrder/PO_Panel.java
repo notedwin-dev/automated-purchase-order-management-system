@@ -59,9 +59,6 @@ public class PO_Panel extends javax.swing.JFrame {
                 evt.consume(); // prevent clicking on tabs
             }
         });
-        
-        //----- Link model to table -----//
-//        prTable.setModel(tmodel); 
 
         //----- Initialize manage -----//
         manage = new PO_GenerationManagement();
