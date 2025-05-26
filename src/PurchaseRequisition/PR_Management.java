@@ -23,7 +23,6 @@ import javax.swing.JOptionPane;
  *
  * @author user
  */
-
 public class PR_Management {
 
     private final List<PROperation> prlist;
@@ -72,6 +71,33 @@ public class PR_Management {
 
     public List<PROperation> getPrlist() {
         return prlist;
+    }
+
+    public String generateNextPRID() {
+        int maxID = 0;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/PurchaseRequisition/PR.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",\\s*");
+                if (parts.length > 0) {
+                    String currentPRID = parts[0].trim();
+
+                    // Assuming PRIDs are like "PR001", "PR002", etc.
+                    if (currentPRID.startsWith("PR")) {
+                        int numericPart = Integer.parseInt(currentPRID.substring(2));
+                        if (numericPart > maxID) {
+                            maxID = numericPart;
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading PR.txt: " + e.getMessage());
+        }
+
+        // Increment the max ID and return new PRID in format PR001, PR002, etc.
+        return String.format("PR%03d", maxID + 1);
     }
 
     public void add(PROperation newPr) {
