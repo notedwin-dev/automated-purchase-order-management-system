@@ -4,12 +4,12 @@
  */
 package auth;
 
+import PurchaseRequisition.PR_Management;
 import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -22,7 +22,8 @@ import roles.RoleFactory;
  */
 public class Register extends javax.swing.JFrame {
 
-    public User user = new User();
+    public User user;
+    User_Management userManager = new User_Management();
 
     int did;
     String id = "";
@@ -35,9 +36,10 @@ public class Register extends javax.swing.JFrame {
      * Creates new form Register
      */
     public Register() {
+        this.user = new User(id, username, password, department, role);
         initComponents();
         tableLoad();
-        
+
         ImageIcon addIcon = new ImageIcon(getClass().getResource("/resources/icons/Add.png"));
         Image scaled_add = addIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         ImageIcon resizedAdd = new ImageIcon(scaled_add);
@@ -314,17 +316,17 @@ public class Register extends javax.swing.JFrame {
         //Add Data Button
         try {
             getData();
-            user.add();
+            userManager.add(user);
             tableLoad();
             clear();
         } catch (Exception e) {
-            
+
         }
     }//GEN-LAST:event_add_ButtonActionPerformed
 
     private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
         //Delete Data Button
-        user.delete();
+        userManager.delete(id);
         tableLoad();
         clear();
     }//GEN-LAST:event_delete_ButtonActionPerformed
@@ -336,7 +338,7 @@ public class Register extends javax.swing.JFrame {
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
         getData();
-        user.update();
+        userManager.update(user);
         tableLoad();
         clear();
     }//GEN-LAST:event_update_ButtonActionPerformed
@@ -410,10 +412,10 @@ public class Register extends javax.swing.JFrame {
         model.setRowCount(0);
 //        String columName[] = {"Id" , "Name"};
 //        model = new DefaultTableModel(columName, 2);
-        
+
         String filePath = "src/auth/txtlogin.txt";
         File file = new File(filePath);
-        
+
         // Create the file if it doesn't exist
         if (!file.exists()) {
             try {
