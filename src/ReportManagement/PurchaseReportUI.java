@@ -11,7 +11,7 @@ package ReportManagement;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
+import java.io.File;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
@@ -25,15 +25,9 @@ import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.Date;
 import javax.swing.table.TableRowSorter;
-
-import org.apache.pdfbox.pdmodel.*;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import java.util.List;
+import java.util.ArrayList;
 import javax.swing.table.TableModel;
-import java.io.File;
-import java.io.IOException;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 
 
 public class PurchaseReportUI extends javax.swing.JFrame {
@@ -43,7 +37,7 @@ public class PurchaseReportUI extends javax.swing.JFrame {
 
     public PurchaseReportUI() {
         initComponents();
-
+        
         tModel = new DefaultTableModel(new Object[]{
             "Payment ID", "PO ID", "Item Code", "Item Name", "Company", "Supplier ID", "Quantity", "Unit Price", "Total Amount", "Payment Date"}, 0) {
                 
@@ -54,12 +48,19 @@ public class PurchaseReportUI extends javax.swing.JFrame {
         };
 
         PurchaseReportTable.setModel(tModel);
+        
+        PurchaseReportTable.getTableHeader().setReorderingAllowed(false);
+        PurchaseReportTable.getTableHeader().setResizingAllowed(false);
+        PurchaseReportTable.setRowSelectionAllowed(false);
+        PurchaseReportTable.setColumnSelectionAllowed(false);
+        PurchaseReportTable.setCellSelectionEnabled(false);
+        
         report_manage = new PurchaseReport_Management();
         
         // - - - - - ADD ACTION LISTENER AND CALL METHOD TO PASS SELECTED DATE - - - - - //
         filterDate.getDateEditor().addPropertyChangeListener(evt -> {
             if ("date".equals(evt.getPropertyName())) {
-                Date selectedDate = filterDate.getDate(); // java.util.Date
+                Date selectedDate = filterDate.getDate(); 
                 filterTableByWeek(selectedDate);
             }
         });
@@ -84,8 +85,6 @@ public class PurchaseReportUI extends javax.swing.JFrame {
         refreshTable();
         setColumnWidth();
         
-//        print_Button.addActionListener(e -> exportTableToPDF());
-
     }
 
     
@@ -138,8 +137,7 @@ public class PurchaseReportUI extends javax.swing.JFrame {
         List<Object[]> data = report_manage.getTableData();
         System.out.println("Data size: " + data.size());
         
-        for (Object[] row : report_manage.getTableData()) {
-            System.out.println(Arrays.toString(row));
+        for (Object[] row : data) {
             tModel.addRow(row);
         }
         
@@ -201,81 +199,6 @@ public class PurchaseReportUI extends javax.swing.JFrame {
         applyCustomRenderer();
         }
 
-    // ========== EXPORT PDF METHOD ========== //
-//    private void exportTableToPDF() {
-//        PDDocument document = new PDDocument();
-//        PDPage page = new PDPage(PDRectangle.A4);
-//        document.addPage(page);
-//
-//        try {
-//            PDPageContentStream contentStream = new PDPageContentStream(document, page);
-//            PDFont font = PDType1Font.HELVETICA;
-//
-//            float margin = 50;
-//            float yStart = page.getMediaBox().getHeight() - margin;
-//            float yPosition = yStart;
-//            float rowHeight = 20;
-//            float tableWidth = page.getMediaBox().getWidth() - 2 * margin;
-//
-//            TableModel model = PurchaseReportTable.getModel();
-//            int cols = model.getColumnCount();
-//            float colWidth = tableWidth / cols;
-//
-//            contentStream.setFont(font, 12);
-//            contentStream.beginText();
-//            contentStream.newLineAtOffset(margin, yPosition);
-//            contentStream.showText("Weekly Purchase Report");
-//            contentStream.endText();
-//
-//            yPosition -= rowHeight * 2;
-//
-//            // Header
-//            for (int col = 0; col < cols; col++) {
-//                String header = model.getColumnName(col);
-//                drawText(contentStream, font, 10, margin + col * colWidth, yPosition, header);
-//            }
-//
-//            yPosition -= rowHeight;
-//
-//            // Table rows
-//            for (int row = 0; row < PurchaseReportTable.getRowCount(); row++) {
-//                for (int col = 0; col < cols; col++) {
-//                    Object value = PurchaseReportTable.getValueAt(row, col);
-//                    drawText(contentStream, font, 10, margin + col * colWidth, yPosition, String.valueOf(value));
-//                }
-//                yPosition -= rowHeight;
-//
-//                if (yPosition < margin) {
-//                    contentStream.close();
-//                    page = new PDPage(PDRectangle.A4);
-//                    document.addPage(page);
-//                    contentStream = new PDPageContentStream(document, page);
-//                    yPosition = yStart;
-//                }
-//            }
-//
-//            contentStream.close();
-//            String fileName = "WeeklyPurchaseReport.pdf";
-//            document.save(new File(fileName));
-//            document.close();
-//
-//            JOptionPane.showMessageDialog(this, "Report exported to PDF:\n" + fileName);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(this, "Failed to export PDF: " + e.getMessage());
-//        }
-//    }
-//
-//    private void drawText(PDPageContentStream stream, PDFont font, int fontSize, float x, float y, String text) throws IOException {
-//        stream.beginText();
-//        stream.setFont(font, fontSize);
-//        stream.newLineAtOffset(x, y);
-//        stream.showText(text);
-//        stream.endText();
-//    }
-
-
 
 
 // ========================================================================================//
@@ -336,6 +259,11 @@ public class PurchaseReportUI extends javax.swing.JFrame {
         print_Button.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         print_Button.setForeground(new java.awt.Color(0, 0, 0));
         print_Button.setText("PRINT");
+        print_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                print_ButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -390,6 +318,33 @@ public class PurchaseReportUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void print_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_print_ButtonActionPerformed
+        Date selectedDate = filterDate.getDate();
+        if (selectedDate == null) {
+            JOptionPane.showMessageDialog(this, "Please select a date to generate the report.", "No Date Selected", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        if (PurchaseReportTable.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "No data found for the selected week. Cannot export.", "No Data", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save PDF");
+        fileChooser.setSelectedFile(new File("Weekly_Purchase_Report.pdf"));
+
+        int userSelection = fileChooser.showSaveDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            JTable yourTable = PurchaseReportTable; // reference to the JTable
+
+            PurchaseReport_Management manager = new PurchaseReport_Management();
+            manager.exportWeeklyReportToPDF(selectedDate, yourTable, selectedFile.getAbsolutePath());
+        }
+    }//GEN-LAST:event_print_ButtonActionPerformed
 
     /**
      * @param args the command line arguments

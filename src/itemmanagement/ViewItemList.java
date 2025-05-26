@@ -4,23 +4,58 @@
  */
 package itemmanagement;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
 /**
  *
  * @author nixon
  */
 public class ViewItemList extends javax.swing.JPanel {
-
+    
+    private ItemManagement itemManage; // ----- This is a field ----- //
+    private Map<String, String> supplierMap = new HashMap<>();
+    private DefaultTableModel model;
     /**
      * Creates new form ViewItemList
      */
     public ViewItemList() {
         initComponents();
-//        viewItemTable.setModel(ItemManagement.sharedModel);
-//        viewItemTable.setRowSelectionAllowed(false);
-//        viewItemTable.setCellSelectionEnabled(false);
-//        viewItemTable.setFocusable(false);
-//        viewItemTable.setEnabled(false); 
+        
+        model = new DefaultTableModel(
+            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", "Unit Price", "Retail Price", "Delivery Status"}, 0
+        );
+    
+        // - - - - -  SET MODEL - - - - - //
+        viewItemTable.setModel(model);
+ 
+        viewItemTable.setRowSelectionAllowed(false);
+        viewItemTable.setCellSelectionEnabled(false);
+        viewItemTable.setFocusable(false);
+        viewItemTable.setEnabled(false); 
+        
+        //----- Initialize ItemManagement with necessary components -----//
+        // ViewItemList.java
+//        itemManage = new ItemManagement(viewItemTable); // Now valid!
+        
+        // - - - - - LOAD DATA INTO TABLE (for itemTable)- - - - - //
+        itemManage.refresh();     
+        
+        // - - - - - DISABLE ROW SORTING - - - - - //
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(viewItemTable.getModel());
+            viewItemTable.setRowSorter(sorter);
+            for (int i = 0; i < viewItemTable.getColumnCount(); i++) {
+                sorter.setSortable(i, false);
+            }        
+       
     }
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
