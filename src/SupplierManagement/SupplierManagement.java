@@ -109,7 +109,7 @@ public class SupplierManagement implements SupplierOperations{
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
         String line;
         while ((line = br.readLine()) != null) {
-            String[] data = line.split(",", -1);
+            String[] data = splitLine(line);
             if (data.length == 6) {
                 Supplier supplier = new Supplier(
                     data[0].trim(),
@@ -128,7 +128,7 @@ public class SupplierManagement implements SupplierOperations{
                     supplier.getContact(),
                     supplier.getEmail(),
                     supplier.getAddress(),
-                    supplier.getItemDescription()
+                    removeBraces(supplier.getItemDescription())
                 });
             }
         }
@@ -147,7 +147,7 @@ public class SupplierManagement implements SupplierOperations{
         String contact = SupplierContact_TextField.getText().trim();
         String email = SupplierEmail_TextField.getText().trim();
         String address = SupplierAddress_TextField.getText().trim();
-        String itemDescription = SupplierItemDescription_TextField.getText().trim();
+        String itemDescription = wrapBraces(SupplierItemDescription_TextField.getText());
         
         if (id.isEmpty() || name.isEmpty() || contact.isEmpty()  || email == null || address == null || itemDescription.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Please fill up all fields before adding to table");
@@ -193,15 +193,17 @@ public class SupplierManagement implements SupplierOperations{
         String originalEmail = SupplierTable.getValueAt(selectedRow, 4).toString();
         String originalAddress = SupplierTable.getValueAt(selectedRow, 5).toString();
         String originalItem = SupplierTable.getValueAt(selectedRow, 6).toString();
+        
+        String originalItemInFile = "{" + originalItem + "}";
 
-        String originalLine = String.join(",", originalID, originalName, originalContact, originalEmail, originalAddress, originalItem);
+        String originalLine = String.join(",", originalID, originalName, originalContact, originalEmail, originalAddress, originalItemInFile);
 
         String updatedID = SupplierID_TextField.getText().trim();
         String updatedName = SupplierName_TextField.getText().trim();
         String updatedContact = SupplierContact_TextField.getText().trim();
         String updatedEmail = SupplierEmail_TextField.getText().trim();
         String updatedAddress = SupplierAddress_TextField.getText().trim();
-        String updatedItem = SupplierItemDescription_TextField.getText().trim();
+        String updatedItem = wrapBraces(SupplierItemDescription_TextField.getText().trim());
 
         String updatedLine = String.join(",", updatedID, updatedName, updatedContact, updatedEmail, updatedAddress, updatedItem);
 
@@ -246,7 +248,8 @@ public class SupplierManagement implements SupplierOperations{
         String contact = SupplierTable.getValueAt(selectedRow, 3).toString();
         String email = SupplierTable.getValueAt(selectedRow, 4).toString();
         String address = SupplierTable.getValueAt(selectedRow, 5).toString();
-        String itemDescription = SupplierTable.getValueAt(selectedRow, 6).toString();
+        String itemDescriptionRaw  = SupplierTable.getValueAt(selectedRow, 6).toString();
+        String itemDescription = "{" + itemDescriptionRaw + "}";
 
         String fullLine = String.join(",", supplierID, name, contact, email, address, itemDescription);
 
@@ -256,5 +259,64 @@ public class SupplierManagement implements SupplierOperations{
 
         refresh();
         clear();
+    }
+    
+    public void searchFunction(String keyword) {
+        DefaultTableModel model = (DefaultTableModel) SupplierTable.getModel();
+        model.setRowCount(0); // clear table
+
+        int index = 1;
+        for (Supplier s : supplierList) {
+            if (s.getSupplierName().toLowerCase().contains(keyword.toLowerCase()) ||
+                s.getEmail().toLowerCase().contains(keyword.toLowerCase())) {
+                model.addRow(new Object[]{ index++,
+                    s.getSupplierID(), s.getSupplierName(), s.getContact(),
+                    s.getEmail(), s.getAddress(), s.getItemDescription()
+                });
+            }
+        }
+    }
+    
+    private String[] splitLine(String line) {
+        List<String> fields = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean insideBraces = false;
+
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+
+            if (c == '{') {
+                insideBraces = true;
+            } else if (c == '}') {
+                insideBraces = false;
+            }
+
+            if (c == ',' && !insideBraces) {
+                fields.add(current.toString().trim());
+                current.setLength(0);
+            } else {
+                current.append(c);
+            }
+        }
+
+        // Add last field
+        fields.add(current.toString().trim());
+
+        return fields.toArray(new String[0]);
+    }
+    
+    private String removeBraces(String text) {
+        if (text != null && text.startsWith("{") && text.endsWith("}")) {
+            return text.substring(1, text.length() - 1);
+        }
+        return text;
+    }
+    
+    private String wrapBraces(String text) {
+        text = text.trim();
+        if (!text.startsWith("{") && !text.endsWith("}")) {
+            return "{" + text + "}";
+        }
+        return text;
     }
 }

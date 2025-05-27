@@ -132,6 +132,7 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        PurchaseOrderTable.getTableHeader().setReorderingAllowed(false);
         PurchaseOrderTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
@@ -140,7 +141,7 @@ public class PM_PO_List_UI extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No.", "Purchase Order ID", "Purchase Requisition ID", "Date", "Purchase Manager Name", "Purchase Manager ID", "Sales Manager Name", "Sales Manager ID", "Expected Delivery Date", "Supplier Name", "Supplier ID", "Item Name", "Item Code", "Quantity", "Purchase Order Status", "Finance Manager Name", "Finance Manager ID", "Payment Status"
+                "No.", "PO ID", "PR ID", "Date", "PM Name", "PM ID", "SM Name", "SM ID", "Expected Delivery Date", "Supplier Name", "Supplier ID", "Item Name", "Item Code", "Quantity", "Purchase Order Status", "Approved By", "Username", "Payment Status"
             }
         ));
         jScrollPane1.setViewportView(PurchaseOrderTable);

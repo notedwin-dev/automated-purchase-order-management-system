@@ -401,13 +401,16 @@ public class PO_GenerationManagement {
     
     public void updatePOStatus(String poID, String newStatus) {
         List<String> allLines = TextFile.readFile(POfile);
+        User currentUser = Session.getInstance().getCurrentUser();
 
         for (String line : allLines) {
             if (line.startsWith(poID + ",")) {
                 List<String> parts = smartSplit(line);
 
-                if (parts.size() > 13) {
-                    parts.set(13, newStatus); // status is column 14 (index 13)
+                if (parts.size() > 15) {
+                    parts.set(13, newStatus); 
+                    parts.set(14, currentUser.getUsername()); 
+                    parts.set(15, currentUser.getID());
                     String updatedLine = String.join(",", parts);
                     TextFile.replaceLine(POfile, line, updatedLine);
                 }
@@ -416,7 +419,7 @@ public class PO_GenerationManagement {
         }
 
         // If not found
-        TextFile.appendTo(POfile, poID + "," + newStatus);
+        TextFile.appendTo(POfile, poID + "," + newStatus+ "," + currentUser.getUsername() + "," + currentUser.getID());
     }
     
     private List<String> smartSplit(String line) {
