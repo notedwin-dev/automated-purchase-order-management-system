@@ -27,7 +27,6 @@ public class PO_Panel extends javax.swing.JFrame {
         ImageIcon resizedRefresh = new ImageIcon(scaled_refresh);
         refresh_Button.setIcon(resizedRefresh);
         
-        
         this.prmanagement = prmanagement;
         this.prmanagement.getPRfromtxtfile();
 
@@ -42,6 +41,9 @@ public class PO_Panel extends javax.swing.JFrame {
         };
         
         prTable.setModel(tmodel);
+        
+        prTable.getTableHeader().setReorderingAllowed(false);
+        prTable.getTableHeader().setResizingAllowed(false);
         
         // - - - - - HIDES THE TABS - - - - - //
         PO_TabbedPane.setUI(new javax.swing.plaf.basic.BasicTabbedPaneUI() {
@@ -256,10 +258,11 @@ public class PO_Panel extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(Title_lbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 554, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(31, 31, 31))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -287,12 +290,23 @@ public class PO_Panel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void generatePO_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePO_buttonActionPerformed
-        // TODO add your handling code here:
         PROperation selectedPR = getSelectedPR();
-        if(selectedPR != null){
+
+        if (selectedPR != null) {
+            String status = selectedPR.getStatus();  // Assuming you have a getStatus() method
+
+            if (status.equalsIgnoreCase("Approved") || status.equalsIgnoreCase("Rejected")) {
+                JOptionPane.showMessageDialog(this, 
+                    "PO cannot be generated for a PR that is already " + status + ".", 
+                    "Invalid Operation", 
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            // ----- Proceed to generate PO ----- //
             new PO_GenerationUI(selectedPR).setVisible(true);
             this.dispose();
-        }
+        } 
     }//GEN-LAST:event_generatePO_buttonActionPerformed
 
     private void prTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prTableMouseClicked

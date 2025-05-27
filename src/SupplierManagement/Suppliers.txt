@@ -1,6 +1,7 @@
-SP0001,Supplier 1,1111111111,supplier1@example.com,Address 1,Item 1
-SP0002,Supplier 2,22222222,supplier2@example.com,Address 2,Item 2
-SP0003,Supplier 3,333333333,supplier3@example.com,Address 3,Item 3
-SP0004,Supplier 4,444444444,supplier4@example.com,Address 4,Item 4
-SP0005,Supplier 5,5555555,supplier5@example.com,Address 5,Item 5
-SP0006,Supplier 6,666666,supplier6@gmail.com,address 6,item 6
+SP0001,Nicholas,1111111111,supplier1@example.com,Address 1,{apple, orange}
+SP0002,Supplier 2,22222222,supplier2@example.com,Address 2,{pineapple, grape}
+SP0003,Adam,333333333,supplier3@example.com,Address 3,{durian, mango, melon}
+SP0004,Supplier 4,444444444,supplier4@example.com,Address 4,{watermelon}
+SP0005,Penny,5555555,supplier5@example.com,Address 5,{Item 1}
+SP0006,Supplier 6,666666,supplier6@example.com,address 6,{Item 1}
+SP0008,dada,12131,dada@gmail.com,dada 1,{banana,orange,grape, pineapple,durian,mango}

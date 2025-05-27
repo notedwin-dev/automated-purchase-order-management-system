@@ -1,4 +1,4 @@
-    /*
+/*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
@@ -146,7 +146,7 @@ public class PO_List_UI extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No.", "Purchase Order ID", "Purchase Requisition ID", "Date", "Purchase Manager Name", "Purchase Manager ID", "Sales Manager Name", "Sales Manager ID", "Expected Delivery Date", "Supplier Name", "Supplier ID", "Item Name", "Item Code", "Quantity", "Purchase Order Status", "Finance Manager Name", "Finance Manager ID", "Payment Status"
+                "No.", "PO ID", "PR ID", "Date", "PM Name", "PM ID", "SM Name", "SM ID", "Expected Delivery Date", "Supplier Name", "Supplier ID", "Item Name", "Item Code", "Quantity", "Purchase Order Status", "Approved By", "Username", "Payment Status"
             }
         ) {
             Class[] types = new Class [] {
