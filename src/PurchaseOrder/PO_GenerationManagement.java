@@ -229,25 +229,30 @@ public class PO_GenerationManagement {
         }
     }
     
-    public void rejectPR(String PR_ID) {
+    public String rejectPR(String prID) {
         List<String> lines = TextFile.readFile(PRfile);
-        List<String> updatedLines = new ArrayList<>();
 
         for (String line : lines) {
-            if (line.startsWith(PR_ID + ",")) {
-                if (line.endsWith("PENDING")) {
-                    // Replace only the ending status
-                    line = line.substring(0, line.lastIndexOf("PENDING")) + "REJECTED";
+            if (line.startsWith(prID + ",")) {
+                int lastComma = line.lastIndexOf(",");
+                if (lastComma != -1) {
+                    String status = line.substring(lastComma + 1).trim();
+                    if (status.equalsIgnoreCase("PENDING")) {
+                        String newLine = line.substring(0, lastComma + 1) + " REJECTED";
+                        TextFile.replaceLine(PRfile, line, newLine);
+                        return "REJECTED";  
+                    } else if (status.equalsIgnoreCase("APPROVED")) {
+                        return "APPROVED";  
+                    } else {
+                        return "OTHER"; 
+                    }
                 }
             }
-            updatedLines.add(line);
         }
-
-        TextFile.overwriteFile(PRfile, updatedLines);
+        return "NOT_FOUND";  // PR not found
     }
 
-
-
+    
     private static PurchaseOrder parseLineToPO(String line) {
         List<String> parts = new ArrayList<>();
         StringBuilder currentPart = new StringBuilder();
