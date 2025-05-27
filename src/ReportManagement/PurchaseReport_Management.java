@@ -116,6 +116,7 @@ public class PurchaseReport_Management {
 
             PDPageContentStream contentStream = new PDPageContentStream(document, page);
             PDFont font = PDType1Font.HELVETICA;
+            PDFont font_bold = PDType1Font.HELVETICA_BOLD;
             float fontSize = 7.5f;
             float leading = 1.5f * fontSize;
             float margin = 50f;
@@ -131,6 +132,14 @@ public class PurchaseReport_Management {
             float rowHeight = 40f;
             float cellMargin = 3f;
 
+            // ----- Company Name (Omega Wholesale SDN BHD) ----- //
+            contentStream.beginText();
+            contentStream.setFont(font_bold, 16); // Slightly larger font for the company name
+            contentStream.newLineAtOffset(margin, yPosition);
+            contentStream.showText("Omega Wholesale SDN BHD");
+            contentStream.endText();
+            yPosition -= 20;
+        
             // ----- Title Section: Weekly Purchase Report Header ----- //
             contentStream.beginText();
             contentStream.setFont(font, 14);
@@ -141,7 +150,7 @@ public class PurchaseReport_Management {
 
             // ----- Date Range ----- //
             contentStream.beginText();
-            contentStream.setFont(font, 10);
+            contentStream.setFont(font, 8);
             contentStream.newLineAtOffset(margin, yPosition);
             SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy");
             contentStream.showText("Week: " + sdf.format(selectedDate));
@@ -150,7 +159,7 @@ public class PurchaseReport_Management {
 
             // ----- Generated On Date (current system date) ----- //
             contentStream.beginText();
-            contentStream.setFont(font, 10);
+            contentStream.setFont(font, 8);
             contentStream.newLineAtOffset(margin, yPosition);
             contentStream.showText("Generated on: " + sdf.format(new Date()));
             contentStream.endText();
@@ -211,6 +220,44 @@ public class PurchaseReport_Management {
                 }
             }
 
+            // ----- Calculate Grand Total for Total Amount ----- //
+            double grandTotal = 0.0;
+            for (int row = 0; row < table.getRowCount(); row++) {
+                Object valueObj = table.getValueAt(row, 8); // Column 8 = Total Amount
+                if (valueObj != null) {
+                    String valueStr = valueObj.toString().replace("RM", "").trim();
+                    try {
+                        grandTotal += Double.parseDouble(valueStr);
+                    } catch (NumberFormatException e) {
+                        // Ignore invalid/malformed entries
+                    }
+                }
+            }
+
+            // Prepare Grand Total text
+            String grandTotalText = "Grand Total:  RM " + String.format("%.2f", grandTotal);
+            float totalFontSize = 8f;
+
+            // Calculate position to place text in column 8
+            float totalColumnX = margin + getColumnX(colWidths, 8) + cellMargin - 53f;
+            float grandTotalY = yPosition - 15;
+
+            // Draw Grand Total text in bold
+            contentStream.beginText();
+            contentStream.setFont(font_bold, totalFontSize);
+            contentStream.newLineAtOffset(totalColumnX, grandTotalY);
+            contentStream.showText(grandTotalText);
+            contentStream.endText();
+
+            // Draw underline below the text
+            float textWidth = font_bold.getStringWidth(grandTotalText) / 1000 * totalFontSize;
+            float underlineY = grandTotalY - 2;
+            contentStream.setLineWidth(1.2f);
+            contentStream.moveTo(totalColumnX, underlineY);
+            contentStream.lineTo(totalColumnX + textWidth, underlineY);
+            contentStream.stroke();
+            
+            
             contentStream.close();
             document.save(fileToSave);
             JOptionPane.showMessageDialog(null, "PDF exported successfully!");
