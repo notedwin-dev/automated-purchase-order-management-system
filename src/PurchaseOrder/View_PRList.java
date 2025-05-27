@@ -4,9 +4,12 @@
  */
 package PurchaseOrder;
 
+import auth.Session;
+import auth.User;
 import java.awt.Component;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -83,18 +86,54 @@ public class View_PRList extends javax.swing.JFrame {
             
     // ========== LOAD DATA INTO TABLE ========== //   
     public final void refreshTable() {
-        tablemodel.setRowCount(0); // Clear table
+        tablemodel.setRowCount(0); // Clear existing rows
 
-        List<Object[]> data = POmanage.getTableData();
-        System.out.println("Data rows count: " + data.size());
-    
-        for (Object[] row : POmanage.getTableData()) {
-            System.out.println(Arrays.toString(row));
+        User currentUser = Session.getInstance().getCurrentUser();
+
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(null, "Error: No user session found. ", "Session Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        String currentID = currentUser.getID(); 
+
+        if (currentID == null || currentID.isEmpty() ) {
+            JOptionPane.showMessageDialog(null, "Error: Incomplete user information. Please log in again.", "User Info Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Optional: Debugging printout (for development)
+        System.out.println("User ID: " + currentID + ", User: " + currentUser);
+
+        List<Object[]> allData = POmanage.getTableData(); 
+
+        int no = 1;
+        for (Object[] row : allData) {
+            String prCreatedByID = row[4].toString(); 
+
+            // If the current user is not Admin and didn't create the PR, skip it
+            if (!currentUser.equals("Admin") && !prCreatedByID.equals(currentID)) {
+                continue;
+            }
+
+            row[0] = no++;
             tablemodel.addRow(row);
         }
 
-        applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
+        applyCustomRenderer(); // Make sure multi-line columns are rendered properly
     }
+    
+//    public final void refreshTable() {
+//        tablemodel.setRowCount(0); 
+//        
+//        List<Object[]> allData = POmanage.getTableData();
+//        
+//        System.out.println("Data rows count: " + allData.size());
+//            for (Object[] row : POmanage.getTableData()) {
+//                System.out.println(Arrays.toString(row));
+//                tablemodel.addRow(row);
+//            }
+//        applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
+//    }
     
     
     // ========== ADJUST TABLE COLUMN SIZE ========== //   

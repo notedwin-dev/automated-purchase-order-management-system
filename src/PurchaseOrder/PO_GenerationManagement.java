@@ -74,27 +74,9 @@ public class PO_GenerationManagement {
     }
     
     // ========== PUBLIC METHOD TO ACCESS PR TABLE DATA ========== //
-   public List<Object[]> getTableData() {
+    public List<Object[]> getTableData() {
         PRData prData = new PRData();
-        User currentUser = Session.getInstance().getCurrentUser();
-
-        if (currentUser == null) return Collections.emptyList();
-
-        String currentRole = currentUser.getRole();
-        String currentUserID = currentUser.getID();
-
-        // - - - - - Filter based on role - - - - - //
-        return prData.getTableData().stream()
-            .filter(row -> {
-                String creatorID = row[4].toString(); 
-                if ("Admin".equalsIgnoreCase(currentRole)) {
-                    return true; // Admin can see all
-                } else if ("Sales Manager".equalsIgnoreCase(currentRole)) {
-                    return creatorID.equals(currentUserID); // ----- Only can see their own PRs ----- //
-                }
-                return false; // Default deny
-            })
-            .collect(Collectors.toList());
+        return prData.getTableData();
     }
 
     
@@ -433,30 +415,30 @@ public class PO_GenerationManagement {
     }
     
     private List<String> smartSplit(String line) {
-    List<String> result = new ArrayList<>();
-    StringBuilder current = new StringBuilder();
-    boolean insideBraces = false;
+        List<String> result = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
+        boolean insideBraces = false;
 
-    for (int i = 0; i < line.length(); i++) {
-        char c = line.charAt(i);
-        if (c == '{') {
-            insideBraces = true;
-        } else if (c == '}') {
-            insideBraces = false;
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '{') {
+                insideBraces = true;
+            } else if (c == '}') {
+                insideBraces = false;
+            }
+
+            if (c == ',' && !insideBraces) {
+                result.add(current.toString());
+                current.setLength(0);
+            } else {
+                current.append(c);
+            }
         }
 
-        if (c == ',' && !insideBraces) {
-            result.add(current.toString());
-            current.setLength(0);
-        } else {
-            current.append(c);
-        }
+        // Add last field
+        result.add(current.toString());
+
+        return result;
     }
-
-    // Add last field
-    result.add(current.toString());
-
-    return result;
-}
     
 }
