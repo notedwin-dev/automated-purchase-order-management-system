@@ -26,6 +26,8 @@ import javax.swing.JOptionPane;
 public class PR_Management {
 
     private final List<PROperation> prlist;
+    // Add a temporary list for unsaved PRs
+    private final List<PROperation> tempPRList = new ArrayList<>();
 
     public PR_Management() {
         this.prlist = new ArrayList<>();
@@ -83,8 +85,8 @@ public class PR_Management {
                 if (parts.length > 0) {
                     String currentPRID = parts[0].trim();
 
-                    // Assuming PRIDs are like "PR001", "PR002", etc.
-                    if (currentPRID.startsWith("PR")) {
+                    // Match PR IDs like PR0001, PR0002, etc.
+                    if (currentPRID.matches("PR\\d{4}")) {
                         int numericPart = Integer.parseInt(currentPRID.substring(2));
                         if (numericPart > maxID) {
                             maxID = numericPart;
@@ -96,36 +98,43 @@ public class PR_Management {
             JOptionPane.showMessageDialog(null, "Error reading PR.txt: " + e.getMessage());
         }
 
-        // Increment the max ID and return new PRID in format PR001, PR002, etc.
-        return String.format("PR%03d", maxID + 1);
+        // Increment the max ID and return new PRID in format PR0001, PR0002, etc.
+        return String.format("PR%04d", maxID + 1);
     }
 
     public void add(PROperation newPr) {
-        // No need to read the file again here, just add the new PR object
-        // and then write it to the file.
-
+        // Save data in array as temporary (not immediately to file)
         if (newPr == null || newPr.getPRID() == null || newPr.getDate() == null || newPr.getPrCreatedByName() == null
                 || newPr.getPrCreatedByID() == null || newPr.getItemCode() == null || newPr.getQuantity() == null
                 || newPr.getExDate() == null || newPr.getStatus() == null) {
             JOptionPane.showMessageDialog(null, "All fields of the PR must be filled!");
             return;
         }
+        tempPRList.add(newPr);
+        prlist.add(newPr); // Optionally keep in main list for UI
+        JOptionPane.showMessageDialog(null, "PR added to temporary list. Click 'Save' to write to file.");
+    }
 
-        // Format the item codes and quantities back into {a,b} format for writing to file
-        String formattedItemCodes = "{" + newPr.getItemCode().replace("\n", ", ") + "}";
-        String formattedQuantities = "{" + newPr.getQuantity().replace("\n", ", ") + "}";
-
-        String record = newPr.getPRID() + ", " + newPr.getDate() + ", " + newPr.getPrCreatedByName() + ", "
-                + newPr.getPrCreatedByID() + ", " + formattedItemCodes + ", " + formattedQuantities + ", "
-                + newPr.getExDate() + ", " + newPr.getStatus();
-
-        try {
-            TextFile.appendTo("src/PurchaseRequisition/PR.txt", record);
-            this.prlist.add(newPr); // Add to the in-memory list as well
-            JOptionPane.showMessageDialog(null, "Data Added Successfully!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+    // Call this method from your "Save" button to persist all temporary PRs to file
+    public void saveAllTempPRsToFile() {
+        if (tempPRList.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No new PRs to save.");
+            return;
         }
+        for (PROperation pr : tempPRList) {
+            String formattedItemCodes = "{" + pr.getItemCode().replace("\n", ", ") + "}";
+            String formattedQuantities = "{" + pr.getQuantity().replace("\n", ", ") + "}";
+            String record = pr.getPRID() + ", " + pr.getDate() + ", " + pr.getPrCreatedByName() + ", "
+                    + pr.getPrCreatedByID() + ", " + formattedItemCodes + ", " + formattedQuantities + ", "
+                    + pr.getExDate() + ", " + pr.getStatus();
+            try {
+                TextFile.appendTo("src/PurchaseRequisition/PR.txt", record);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Error saving PR to file: " + e.getMessage());
+            }
+        }
+        tempPRList.clear();
+        JOptionPane.showMessageDialog(null, "All temporary PRs saved to file!");
     }
 
     public void delete(String prIDToDelete) {
