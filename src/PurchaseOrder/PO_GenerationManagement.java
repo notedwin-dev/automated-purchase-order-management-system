@@ -78,27 +78,6 @@ public class PO_GenerationManagement {
         PRData prData = new PRData();
         return prData.getTableData();
     }
-//   public List<Object[]> getTableData() {
-//        PRData prData = new PRData();
-//        User currentUser = Session.getInstance().getCurrentUser();
-//
-//        if (currentUser == null) return Collections.emptyList();
-//
-//        String currentRole = currentUser.getRole();
-//
-//        return prData.getTableData().stream()
-//            .filter(row -> {
-//                String creatorRole = row[4].toString(); 
-//
-//                if ("Admin".equalsIgnoreCase(currentRole)) {
-//                    return true; //----- Admin sees all
-//                } else {
-//                    return "Sales Manager".equalsIgnoreCase(creatorRole); //----- Others only see PRs created by Sales Managers
-//                }
-//            })
-//            .collect(Collectors.toList());
-//    }
-
 
     
     public Inventory getItemDetailsByCode(String itemCode) {
