@@ -14,43 +14,47 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * Navigation panel component that displays navigation options based on the user's role
+ * Navigation panel component that displays navigation options based on the
+ * user's role
+ *
  * @author Edwin
  * @author notedwin-dev
  */
 public class Navbar extends javax.swing.JPanel {
+
     // User session data
     private User currentUser;
-    
+
     // Interface for handling navigation clicks
     public interface NavigationListener {
+
         void onNavigate(String className);
     }
-    
+
     // Navigation listener
     private NavigationListener navigationListener;
-    
+
     // Selected menu item
     private JPanel selectedMenu;
     private final Color SELECTED_COLOR = new Color(204, 204, 255);
     private final Color DEFAULT_COLOR = new Color(255, 255, 204);
-    
+
     /**
      * Creates new form Navbar
      */
     public Navbar() {
         // Initialize user info panel first
         initUserInfoPanel();
-        
+
         // Then initialize components
         initComponents();
-        
+
         // - - - - - RESIZE ICON LOGO - - - - - //
         ImageIcon logoIcon = new ImageIcon(getClass().getResource("/resources/icons/Logo.png"));
         Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon resizedLogo = new ImageIcon(scaled_logo);
         Logo_lbl.setIcon(resizedLogo);
-        
+
         // Check if there's already a logged-in user in the session
         User sessionUser = Session.getInstance().getCurrentUser();
         if (sessionUser != null) {
@@ -58,40 +62,40 @@ public class Navbar extends javax.swing.JPanel {
             setupNavigationButtons();
         }
     }
-    
+
     /**
      * Creates new Navbar with a specified user
-     * 
+     *
      * @param user The logged-in user
      */
     public Navbar(User user) {
         // Initialize user info panel first
         initUserInfoPanel();
-        
+
         // Then initialize components
         initComponents();
-        
+
         this.currentUser = user;
-        
+
         // Store user in the session for application-wide access
         Session.getInstance().setCurrentUser(user);
-        
+
         // Set up navigation buttons
         setupNavigationButtons();
     }
-    
+
     /**
      * Sets the navigation listener
-     * 
+     *
      * @param listener The listener to handle navigation events
      */
     public void setNavigationListener(NavigationListener listener) {
         this.navigationListener = listener;
     }
-    
+
     /**
      * Sets the current user and refreshes navigation
-     * 
+     *
      * @param user The logged-in user
      */
     public void setCurrentUser(User user) {
@@ -100,40 +104,40 @@ public class Navbar extends javax.swing.JPanel {
         Session.getInstance().setCurrentUser(user);
         setupNavigationButtons();
     }
-    
+
     /**
      * Gets the current user
-     * 
+     *
      * @return The current user or null if not logged in
      */
     public User getCurrentUser() {
         return this.currentUser;
     }
-    
+
     /**
      * Sets up the navigation buttons based on the user's role permissions
      */
     private void setupNavigationButtons() {
         // Clear navigation panel except for the logo
         navButtonsPanel.removeAll();
-        
+
         // Check if there's a user in the session
         if (currentUser == null) {
             currentUser = Session.getInstance().getCurrentUser();
         }
-        
+
         // Update the user info label
         if (currentUser != null) {
             userInfoLabel.setText(currentUser.getUsername() + " (" + currentUser.getRole() + ")");
         } else {
             userInfoLabel.setText("Not logged in");
         }
-        
+
         // Add navigation buttons based on user permissions
         if (currentUser != null) {
             // Dashboard is always available
             addNavButton("Dashboard", "dashboard.Dashboard", true);
-            
+
             // Add feature-specific navigation
             addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
             addNavButtonIfPermitted(Feature.ITEM_LIST, "Item List", "itemmanagement.ViewItemList");
@@ -154,21 +158,21 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.SALES_REPORT, Feature.SALES_REPORT, "ReportManagement.SalesReportMain");
             addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "ReportManagement.Payment_UI");
             addNavButtonIfPermitted(Feature.PURCHASING_REPORT, Feature.PURCHASING_REPORT, "ReportManagement.PurchaseReportMain");
-            
+
             // Add logout button at the bottom
             addNavButton("Logout", "auth.Login", false);
         } else {
             // Not logged in, only show login
             addNavButton("Login", "auth.Login", true);
         }
-        
+
         navButtonsPanel.revalidate();
         navButtonsPanel.repaint();
     }
-    
+
     /**
      * Adds a navigation button if the user has permission to access it
-     * 
+     *
      * @param featureName The name of the feature
      * @param buttonText The text to display on the button
      * @param className The fully qualified class name to open when clicked
@@ -177,7 +181,7 @@ public class Navbar extends javax.swing.JPanel {
         if (currentUser != null && currentUser.hasAccess(featureName)) {
             JPanel menuItem = new JPanel();
             menuItem.setLayout(new BorderLayout());
-            
+
             // Set different colors based on permission level
             Color buttonColor;
             if (currentUser.canModify(featureName)) {
@@ -186,15 +190,15 @@ public class Navbar extends javax.swing.JPanel {
                 buttonColor = new Color(173, 216, 230); // Light blue for view only
             }
             menuItem.setBackground(buttonColor);
-            
+
             // Store feature name in the component to restore color later
             menuItem.setName("feature_" + featureName);
-            
+
             // Create label with text
             JLabel menuLabel = new JLabel(buttonText);
             menuLabel.setFont(new Font("Arial", Font.BOLD, 14));
             menuLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
-            
+
             // Add hover effect
             menuItem.addMouseListener(new MouseAdapter() {
                 @Override
@@ -203,58 +207,54 @@ public class Navbar extends javax.swing.JPanel {
                         menuItem.setBackground(buttonColor.darker());
                     }
                 }
-                
+
                 @Override
                 public void mouseExited(MouseEvent e) {
                     if (menuItem != selectedMenu) {
                         menuItem.setBackground(buttonColor);
                     }
                 }
-                
+
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     // Handle navigation
                     if (navigationListener != null) {
                         // Handle role-based redirections for Purchase Order features
-                        if (className.equals("PurchaseOrder.Main_PO") || 
-                            buttonText.equals(Feature.DISPLAY_REQUISITION)) {
-                                navigationListener.onNavigate("PurchaseOrder.Main_PO");
-                        } 
-                        // Handle Purchase Orders List with proper role-based redirections
-                        else if (className.equals("PurchaseOrder.PO_Panel") || 
-                                 buttonText.equals(Feature.PURCHASE_ORDERS_LIST)) {
+                        if (className.equals("PurchaseOrder.View_PRList")
+                                && buttonText.equals(Feature.DISPLAY_REQUISITION)) {
+                            navigationListener.onNavigate("PurchaseOrder.View_PRList");
+                        } // Handle Purchase Orders List with proper role-based redirections
+                        else if (className.equals("PurchaseOrder.PO_Panel")
+                                || buttonText.equals(Feature.PURCHASE_ORDERS_LIST)) {
                             String userRole = currentUser.getRole();
-                            
+
                             // For viewing Purchase Order lists (all roles have View Only except Admin)
                             if ("Purchase Manager".equals(userRole)) {
                                 navigationListener.onNavigate("PurchaseOrder.PM_View_PO");
                             } else if ("Finance Manager".equals(userRole)) {
                                 navigationListener.onNavigate("PurchaseOrder.FM_View_PO_Approval");
-                            } else if ("Administrator".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PM_PO_List_UI"); // Admin gets full access
-                            } else if ("Sales Manager".equals(userRole) || 
-                                      "Inventory Manager".equals(userRole)) {
+                            } else if ("Sales Manager".equals(userRole)
+                                    || "Inventory Manager".equals(userRole) || "Administrator".equals(userRole)) {
                                 navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI");
                             }
-                        }
-                        // Handle Purchase Order Generation
+                        } // Handle Purchase Order Generation
                         else if (buttonText.equals(Feature.GENERATE_PURCHASE_ORDER)) {
                             String userRole = currentUser.getRole();
-                            
+
                             // Admin and Purchase Manager should see the PR list to generate POs
                             if ("Purchase Manager".equals(userRole) || "Administrator".equals(userRole)) {
                                 navigationListener.onNavigate("PurchaseOrder.Main_PO");
                             } else if ("Finance Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.PO_Approval"); 
+                                navigationListener.onNavigate("PurchaseOrder.PO_Approval");
                             } else if ("Inventory Manager".equals(userRole)) {
-                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI"); 
+                                navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI");
                             }
                         } else {
                             // Regular navigation for other screens
                             navigationListener.onNavigate(className);
                         }
                     }
-                    
+
                     // Update selection
                     if (selectedMenu != null) {
                         // Reset previous selection color
@@ -275,27 +275,28 @@ public class Navbar extends javax.swing.JPanel {
                     selectedMenu.setBackground(SELECTED_COLOR);
                 }
             });
-            
+
             // Add to panel
             menuItem.add(menuLabel);
             navButtonsPanel.add(menuItem);
-            
+
             // Make menu item expand horizontally
             menuItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, menuItem.getPreferredSize().height));
         }
     }
-    
+
     /**
      * Adds a navigation button to the panel
-     * 
+     *
      * @param buttonText The text to display on the button
      * @param className The fully qualified class name to open when clicked
-     * @param isMenuItem True if this is a regular menu item, false for special items like logout
+     * @param isMenuItem True if this is a regular menu item, false for special
+     * items like logout
      */
     private void addNavButton(String buttonText, String className, final boolean isMenuItem) {
         JPanel menuItem = new JPanel();
         menuItem.setLayout(new BorderLayout());
-        
+
         // Set button colors based on type
         Color defaultButtonColor;
         if (buttonText.equals("Dashboard")) {
@@ -307,14 +308,14 @@ public class Navbar extends javax.swing.JPanel {
         } else {
             defaultButtonColor = DEFAULT_COLOR;
         }
-        
+
         menuItem.setBackground(defaultButtonColor);
-        
+
         // Create label with text
         JLabel menuLabel = new JLabel(buttonText);
         menuLabel.setFont(new Font("Arial", Font.BOLD, 14));
         menuLabel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
-        
+
         // Add hover effect
         menuItem.addMouseListener(new MouseAdapter() {
             @Override
@@ -323,21 +324,21 @@ public class Navbar extends javax.swing.JPanel {
                     menuItem.setBackground(defaultButtonColor.darker());
                 }
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 if (menuItem != selectedMenu) {
                     menuItem.setBackground(defaultButtonColor);
                 }
             }
-            
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Handle navigation
                 if (navigationListener != null) {
                     navigationListener.onNavigate(className);
                 }
-                
+
                 // Update selection (except for logout)
                 if (isMenuItem && !buttonText.equals("Logout")) {
                     if (selectedMenu != null) {
@@ -357,7 +358,7 @@ public class Navbar extends javax.swing.JPanel {
                     }
                     selectedMenu = menuItem;
                     selectedMenu.setBackground(SELECTED_COLOR);
-                    
+
                     // Handle logout separately - logout clears the session
                     if (buttonText.equals("Logout")) {
                         Session.getInstance().logout();
@@ -368,16 +369,16 @@ public class Navbar extends javax.swing.JPanel {
                 }
             }
         });
-        
+
         // Add to panel
         menuItem.add(menuLabel);
         navButtonsPanel.add(menuItem);
-        
+
         // Set name to identify type of button
         if (buttonText.equals("Dashboard")) {
             menuItem.setName("Dashboard");
         }
-        
+
         // Make menu item expand horizontally
         menuItem.setMaximumSize(new Dimension(Integer.MAX_VALUE, menuItem.getPreferredSize().height));
     }
@@ -445,11 +446,11 @@ public class Navbar extends javax.swing.JPanel {
         // Initialize user info panel
         userInfoPanel = new javax.swing.JPanel();
         userInfoLabel = new javax.swing.JLabel();
-        
+
         // Configure user info panel
         userInfoPanel.setBackground(new java.awt.Color(153, 153, 255));
         userInfoPanel.setLayout(new java.awt.BorderLayout());
-        
+
         userInfoLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
         userInfoLabel.setForeground(new java.awt.Color(255, 255, 255));
         userInfoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -463,7 +464,7 @@ public class Navbar extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel navButtonsPanel;
     // End of variables declaration//GEN-END:variables
-    
+
     // Custom components
     private javax.swing.JPanel userInfoPanel;
     private javax.swing.JLabel userInfoLabel;
