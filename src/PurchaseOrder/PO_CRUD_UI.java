@@ -303,6 +303,7 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
         UpdateRowButton = new javax.swing.JButton();
         jLabel14 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -368,6 +369,7 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
         ItemComcoBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         PurchaseOrderTableCRUD.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        PurchaseOrderTableCRUD.getTableHeader().setReorderingAllowed(false);
         PurchaseOrderTableCRUD.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null},
@@ -505,6 +507,9 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(jLabel14)
+                .addGap(68, 68, 68)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(74, 74, 74)
@@ -599,17 +604,13 @@ public class PO_CRUD_UI extends javax.swing.JFrame {
         // Close this window
         this.dispose();
 
-        // Open PO_List_UI window
-        PO_List_UI poListUI = new PO_List_UI();
-        poListUI.setVisible(true);
     }//GEN-LAST:event_CancelButtonActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
         // Save All
         saveNewData();
         this.dispose();
-        PO_List_UI poListUI = new PO_List_UI();
-        poListUI.setVisible(true);
+
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void UpdateRowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateRowButtonActionPerformed
