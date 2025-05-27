@@ -303,7 +303,7 @@ public class PO_Panel extends javax.swing.JFrame {
         // TODO add your handling code here:
         int selectedRow = prTable.getSelectedRow();
         if (selectedRow != -1) {
-            String prID = prTable.getValueAt(selectedRow, 0).toString(); 
+            String prID = prTable.getValueAt(selectedRow, 1).toString(); 
             int confirm = JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to reject PR " + prID + "?",
                     "Confirm Rejection",
@@ -311,9 +311,23 @@ public class PO_Panel extends javax.swing.JFrame {
 
             if (confirm == JOptionPane.YES_OPTION) {
                 PO_GenerationManagement manager = new PO_GenerationManagement();
-                manager.rejectPR(prID);
-                JOptionPane.showMessageDialog(this, "PR " + prID + " has been rejected.");
-                refreshTable(); 
+                String result = manager.rejectPR(prID);
+
+                switch (result) {
+                    case "REJECTED":
+                        JOptionPane.showMessageDialog(this, "PR " + prID + " has been rejected.");
+                        refreshTable(); 
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "PR " + prID + " is already APPROVED and cannot be rejected.");
+                        break;
+                    case "NOT_FOUND":
+                        JOptionPane.showMessageDialog(this, "PR " + prID + " not found.");
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(this, "Cannot reject PR " + prID + ". Current status does not allow rejection.");
+                        break;
+                }
             }
         } else {
             JOptionPane.showMessageDialog(this, "Please select a PR to reject.");
