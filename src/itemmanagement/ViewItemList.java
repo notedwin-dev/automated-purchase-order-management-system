@@ -1,27 +1,112 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package itemmanagement;
+
+import PurchaseOrder.PurchaseOrder;
+import auth.Session;
+import auth.User;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author nixon
  */
-public class ViewItemList extends javax.swing.JPanel {
+public class ViewItemList extends javax.swing.JFrame {
 
+    private static final String itemFile = "src/itemmanagement/items.txt";
+    private ItemManagement itemManage; // ----- This is a field ----- //
+    private DefaultTableModel model;
     /**
-     * Creates new form ViewItemList
+     * Creates new form ViewItem_List
      */
     public ViewItemList() {
         initComponents();
-//        viewItemTable.setModel(ItemManagement.sharedModel);
-//        viewItemTable.setRowSelectionAllowed(false);
-//        viewItemTable.setCellSelectionEnabled(false);
-//        viewItemTable.setFocusable(false);
-//        viewItemTable.setEnabled(false); 
+        
+        model = new DefaultTableModel(
+            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", "Unit Price", "Retail Price", "Delivery Status"}, 0
+        );
+    
+        // - - - - -  SET MODEL - - - - - //
+        viewItemTable.setModel(model);
+        
+        // ----- DISABLE FUNCTIONALITIES ----- //
+        viewItemTable.setRowSelectionAllowed(false);
+        viewItemTable.setCellSelectionEnabled(false);
+        viewItemTable.setFocusable(false);
+        viewItemTable.setEnabled(false); 
+        
+        //----- Initialize ItemManagement with necessary components -----//
+        User currentUser = Session.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(null, "Session expired or user not logged in.");
+            dispose(); // Close the window or redirect
+            return;
+        }
+        itemManage = new ItemManagement(viewItemTable, currentUser);
+
+        
+        // - - - - - LOAD DATA INTO TABLE (for itemTable)- - - - - //
+        refresh();     
+        
+        // - - - - - DISABLE ROW SORTING - - - - - //
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(viewItemTable.getModel());
+            viewItemTable.setRowSorter(sorter);
+            for (int i = 0; i < viewItemTable.getColumnCount(); i++) {
+                sorter.setSortable(i, false);
+            }
     }
 
+    
+    // ========== REFRESH TABLE ========== //
+    public void refresh() {
+        DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
+        model.setRowCount(0); 
+
+        User currentUser = Session.getInstance().getCurrentUser();
+        String currentID = currentUser.getID();
+
+        int no = 1;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(itemFile))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                if (data.length == 8) {
+                    if (currentUser.equals("Admin") && !data[3].equals(currentID)) {
+                        continue; 
+                    }
+
+                    model.addRow(new Object[]{
+                        no++,
+                        data[0],
+                        data[1],
+                        data[2],
+                        data[3],
+                        data[4],
+                        data[5],
+                        data[6],
+                        data[7]
+                    });
+                }
+            }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading item file: " + e.getMessage());
+        }
+    }
+
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,15 +116,19 @@ public class ViewItemList extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         itemTableScrollPane1 = new javax.swing.JScrollPane();
         viewItemTable = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1080, 720));
 
         jLabel2.setFont(new java.awt.Font("Arial", 1, 48)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel2.setText("Item List");
+        jLabel2.setText("View Item List");
 
         itemTableScrollPane1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -78,38 +167,92 @@ public class ViewItemList extends javax.swing.JPanel {
         viewItemTable.getTableHeader().setReorderingAllowed(false);
         itemTableScrollPane1.setViewportView(viewItemTable);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(380, 380, 380)
+                        .addComponent(jLabel2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 934, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(73, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(jLabel2)
+                .addGap(18, 18, 18)
+                .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(63, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(73, Short.MAX_VALUE)
-                .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 934, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(73, 73, 73))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(431, 431, 431)
-                .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(71, 71, 71))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void itemTableScrollPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemTableScrollPane1MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_itemTableScrollPane1MouseClicked
 
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(ViewItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(ViewItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(ViewItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(ViewItemList.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ViewItemList().setVisible(true);
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane itemTableScrollPane1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JTable viewItemTable;
     // End of variables declaration//GEN-END:variables
 }

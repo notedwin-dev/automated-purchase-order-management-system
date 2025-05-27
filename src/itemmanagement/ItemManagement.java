@@ -14,6 +14,8 @@ import javax.swing.table.*;
 import java.io.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import auth.Session;
+import auth.User;
 
 
 public class ItemManagement implements ItemOperations {
@@ -21,6 +23,8 @@ public class ItemManagement implements ItemOperations {
     private JTable itemTable;
     private JTextField itemName_textbox, itemCode_textbox, unitPrice_textbox, retailPrice_textbox, supplierName_textbox;
     private JComboBox supplierID_comboBox;
+    private User currentUser;
+    private static final String itemFile = "src/itemmanagement/items.txt";
 //    private TableRowSorter<DefaultTableModel> sorter;
 
     //----- As you can see this is a constructor -----//
@@ -40,6 +44,17 @@ public class ItemManagement implements ItemOperations {
         this.retailPrice_textbox = rprice;
     }
     
+    // Constructor for view-only mode (just need the table)
+    public ItemManagement(JTable table, User user) {
+        this.itemTable = table;
+        this.currentUser = user;
+
+        if (this.currentUser == null) {
+            JOptionPane.showMessageDialog(null, "Error: User session not found. Please log in again.");
+            throw new IllegalArgumentException("User object is required for role-based filtering.");
+        }
+    }
+
     // - - - - - - - - - - ADD FUNCTION - - - - - - - - - - //
     @Override //Acts like a "kastam" where it checks whether the method name, return type, and parameters are correctly used.
     public void add() {
@@ -237,7 +252,7 @@ public class ItemManagement implements ItemOperations {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
         model.setRowCount(0); //----- Clears the row to avoid data repeatation -----//
         
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/itemmanagement/items.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(itemFile))) {
             String line;
             int no = 1;
             

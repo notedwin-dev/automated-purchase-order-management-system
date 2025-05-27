@@ -21,6 +21,13 @@ public class PO_Panel extends javax.swing.JFrame {
     
     public PO_Panel(PR_Management prmanagement) {
         initComponents();
+        // - - - - - RESIZE ICON REFRESH - - - - - //
+        ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/resources/icons/Refresh.png"));
+        Image scaled_refresh = refreshIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon resizedRefresh = new ImageIcon(scaled_refresh);
+        refresh_Button.setIcon(resizedRefresh);
+        
+        
         this.prmanagement = prmanagement;
         this.prmanagement.getPRfromtxtfile();
 
@@ -59,9 +66,6 @@ public class PO_Panel extends javax.swing.JFrame {
                 evt.consume(); // prevent clicking on tabs
             }
         });
-        
-        //----- Link model to table -----//
-//        prTable.setModel(tmodel); 
 
         //----- Initialize manage -----//
         manage = new PO_GenerationManagement();
@@ -69,6 +73,7 @@ public class PO_Panel extends javax.swing.JFrame {
         refreshTable();
         setColumnWidth();
     }
+    
     
     // ========== APPLY CUSTOM RENDERER ========== // 
     public void applyCustomRenderer() {
@@ -108,7 +113,6 @@ public class PO_Panel extends javax.swing.JFrame {
             
     // ========== LOAD DATA INTO TABLE ========== //   
     public void refreshTable() {
-//        DefaultTableModel tmodel = (DefaultTableModel) prTable.getModel();
         tmodel.setRowCount(0); // Clear table
 
         List<Object[]> data = manage.getTableData();
@@ -121,9 +125,6 @@ public class PO_Panel extends javax.swing.JFrame {
 
         applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
     }
-    
-  
-
     
     
     // ========== ADJUST TABLE COLUMN SIZE ========== //   
@@ -138,6 +139,7 @@ public class PO_Panel extends javax.swing.JFrame {
         prTable.getColumnModel().getColumn(7).setPreferredWidth(130); //-- "Expected Delivery Date"
         prTable.getColumnModel().getColumn(8).setPreferredWidth(90);   //-- "Status"
     }
+    
     
     private PROperation getSelectedPR(){
         int selectedRow = prTable.getSelectedRow();
@@ -164,6 +166,8 @@ public class PO_Panel extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         prTable = new javax.swing.JTable();
         generatePO_button = new javax.swing.JButton();
+        rejectPO_btn = new javax.swing.JButton();
+        refresh_Button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -206,6 +210,23 @@ public class PO_Panel extends javax.swing.JFrame {
             }
         });
 
+        rejectPO_btn.setBackground(new java.awt.Color(255, 255, 204));
+        rejectPO_btn.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        rejectPO_btn.setText("Reject");
+        rejectPO_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rejectPO_btnActionPerformed(evt);
+            }
+        });
+
+        refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
+        refresh_Button.setBorder(null);
+        refresh_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refresh_ButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -216,8 +237,12 @@ public class PO_Panel extends javax.swing.JFrame {
                         .addGap(245, 245, 245)
                         .addComponent(Title_lbl))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(442, 442, 442)
-                        .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(389, 389, 389)
+                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(254, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -231,7 +256,10 @@ public class PO_Panel extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(Title_lbl)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 554, Short.MAX_VALUE)
-                .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -270,6 +298,45 @@ public class PO_Panel extends javax.swing.JFrame {
     private void prTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_prTableMouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_prTableMouseClicked
+
+    private void rejectPO_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rejectPO_btnActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = prTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String prID = prTable.getValueAt(selectedRow, 1).toString(); 
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to reject PR " + prID + "?",
+                    "Confirm Rejection",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                PO_GenerationManagement manager = new PO_GenerationManagement();
+                String result = manager.rejectPR(prID);
+
+                switch (result) {
+                    case "REJECTED":
+                        JOptionPane.showMessageDialog(this, "PR " + prID + " has been rejected.");
+                        refreshTable(); 
+                        break;
+                    case "APPROVED":
+                        JOptionPane.showMessageDialog(this, "PR " + prID + " is already APPROVED and cannot be rejected.");
+                        break;
+                    case "NOT_FOUND":
+                        JOptionPane.showMessageDialog(this, "PR " + prID + " not found.");
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(this, "Cannot reject PR " + prID + ". Current status does not allow rejection.");
+                        break;
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a PR to reject.");
+        }
+    }//GEN-LAST:event_rejectPO_btnActionPerformed
+
+    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
+        refreshTable();
+    }//GEN-LAST:event_refresh_ButtonActionPerformed
 
     
  
@@ -318,5 +385,7 @@ public class PO_Panel extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable prTable;
+    private javax.swing.JButton refresh_Button;
+    private javax.swing.JButton rejectPO_btn;
     // End of variables declaration//GEN-END:variables
 }

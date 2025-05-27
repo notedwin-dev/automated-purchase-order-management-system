@@ -1,4 +1,4 @@
-PO003,PR003,20-5-2025,PMName2,U0004,SMName2,SM002,27-6-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP001,SP002},{AppleKorean,AppleKorean,AppleJapan},{SP1AP,SP1AP,SP2AP},{20,30,40},Complete,FMName1,FM001,paid
-PO004,PR004,20-5-2025,PMName2,U0003,SMName2,SM002,27-6-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD},{SP001,SP001},{AppleKorean,AppleKorean},{SP1AP,SP1AP},{30,40},complete,FMName1,U0007,unpaid
-PO005,PR005,20-5-2025,PMName2,U0003,SMName2,SM002,27-6-2025,{ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP002},{AppleKorean,AppleJapan},{SP1AP,SP2AP},{30,40},pending,FMName1,FM001,unpaid
-PO006,PR006,20-5-2025,PMName2,U0004,SMName2,SM002,27-6-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD},{SP001,SP001},{AppleKorean,AppleKorean},{SP1AP,SP1AP},{20,30},Complete,FMName1,U0007,paid
+PO0001,PR0002,2025-05-24,JayChou,U0004,Sahur,SM0002,31-05-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD,ChingChoongSDNBHD},{SP001,SP001,SP001},{AppleKorean,BananaThailand,DeezNuts},{SP1AP,SP1BN,SP1DN},{200,100,150},Pending,FmName,FmID,Unpaid
+PO0002,PR0003,2025-05-26,JayChou,U0004,tungtung,SM0003,25-09-2025,{TungSahurSDNBHD,TungSahurSDNBHD},{SP002,SP002},{AppleJapan,BananaIraq},{SP2AP,SP2BN},{100,50},Pending,FmName,FmID,Unpaid
+PO0003,PR0004,2025-05-26,JayChou,U0004,tungtung,SM0003,21-08-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP001,SP002},{BananaThailand,DeezNuts,AppleJapan},{SP1BN,SP1DN,SP2AP},{1000,2000,150},Pending,FmName,FmID,Unpaid
+PO0004,PR0004,2025-05-27,JayChou,U0004,tungtung,SM0003,21-08-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD,TungSahurSDNBHD,ChingChoongSDNBHD},{SP001,SP001,SP002,SP001},{BananaThailand,DeezNuts,AppleJapan,AppleKorean},{SP1BN,SP1DN,SP2AP,SP1AP},{1000,2000,150,40},Pending,FmName,FmID,Unpaid
