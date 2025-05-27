@@ -60,15 +60,13 @@ public class Payment {
         String quantityField = parts.get(12);
         String status = parts.get(13);
 
-        // Save full quantity string (remove curly braces only for display)
         String quantityStr = quantityField.replace("{", "").replace("}", "");
         quantityMap.put(PO_ID, quantityStr);
         
         String FM_Name = parts.get(14);
         String FM_ID = parts.get(15);
         String paymentStatus = parts.get(16);
-        
-        // Parse only the first quantity as int
+
         int quantity = 0;
         try {
             if (quantityStr.contains(",")) {
@@ -126,7 +124,6 @@ public class Payment {
         List<PurchaseOrder> poList = getAllPurchaseOrders();
         for (PurchaseOrder po : poList) {
             if (po.getPO_ID().equals(poId)) {
-                // Remove {} from item codes string and return it
                 return po.getItemCode().replace("{", "").replace("}", "");
             }
         }
@@ -135,8 +132,8 @@ public class Payment {
 
     
     public static int getQuantityForItem(String poId, String itemCode) {
-        String itemCodesStr = getItemCodes(poId);     // e.g. "SP1AP,SP1BP"
-        String quantityStr = getOriginalQuantity(poId); // e.g. "20,30"
+        String itemCodesStr = getItemCodes(poId);  
+        String quantityStr = getOriginalQuantity(poId);
         if (itemCodesStr == null || quantityStr == null) return 0;
         String[] itemCodes = itemCodesStr.split(",");
         String[] quantities = quantityStr.split(",");
@@ -166,7 +163,7 @@ public class Payment {
             }
             // Match POID and update payment status
             if (fields.get(0).equals(poID)) {
-                fields.set(16, "paid"); 
+                fields.set(16, "Paid"); 
                 String newLine = String.join(",", fields);
                 lines.set(i, newLine);
                 updated = true;
@@ -188,8 +185,8 @@ public class Payment {
             String line = lines.get(i);
             List<String> fields = smartSplit(line);
 
-            if (fields.size() >= 19 && fields.get(1).equals(poID)) {
-                fields.set(18, "paid");
+            if (fields.size() >= 11 && fields.get(1).equals(poID)) {
+                fields.set(7, "paid");
                 String updatedLine = String.join(",", fields);
                 lines.set(i, updatedLine);
                 updated = true;
@@ -218,53 +215,21 @@ public class Payment {
 
             if (c == ',' && !insideBraces) {
                 result.add(current.toString());
-                current.setLength(0); // reset StringBuilder
+                current.setLength(0);
             } else {
                 current.append(c);
             }
         }
-        result.add(current.toString()); // add last field
+        result.add(current.toString()); 
         return result;
     }
-    
-    
-//    public static boolean appendPayment(String poID, List<String> rowData) {
-//        try {
-//            String paymentID = generatePaymentID();
-//            String paymentDate = getCurrentDate();
-//            
-//            rowData.add(0, paymentID);
-//            rowData.add(paymentDate);
-//            
-//            String itemCodesStr = getItemCodes(poID); // e.g., "SP1AP,SP1BP"
-//            String[] itemCodes = itemCodesStr.split(",");
-//            
-//            List<String> unitPrices = new ArrayList<>();
-//            for (String code : itemCodes) {
-//                double price = getUnitPrice(code.trim());
-//                unitPrices.add(String.valueOf(price));
-//            }
-//            // Format as {1.2,2.3,4.5}
-//            String unitPriceStr = "{" + String.join(",", unitPrices) + "}";
-//            rowData.add(14, unitPriceStr);
-//            String formattedLine = formatRowForPaymentTxt(rowData);
-//            TextFile.appendTo(PaymentFile, formattedLine);
-//            updatePaymentFileStatusToPaid(poID);
-//            updatePaymentStatusToPaid(poID);
-//            return true;
-//        } catch (Exception e) {
-//            System.out.println("Error processing payment: " + e.getMessage());
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
     
     public static boolean appendPayment(String poID, List<String> rowData) {
         try {
             String paymentID = generatePaymentID();
             String paymentDate = getCurrentDate();
 
-            String itemCodesStr = getItemCodes(poID); // e.g., "SP1AP,SP1BP"
+            String itemCodesStr = getItemCodes(poID); 
             String[] itemCodes = itemCodesStr.split(",");
 
             List<String> unitPrices = new ArrayList<>();
@@ -275,18 +240,18 @@ public class Payment {
             String unitPriceStr = "{" + String.join(",", unitPrices) + "}";
 
             List<String> filteredData = new ArrayList<>();
-            filteredData.add(paymentID);                // payment ID
-            filteredData.add(poID);                     // PO ID
+            filteredData.add(paymentID); 
+            filteredData.add(poID);  
 
-            filteredData.add(rowData.get(2));  // po status
-            filteredData.add(rowData.get(3));  // supplierName
-            filteredData.add(rowData.get(4));  // supplierID
-            filteredData.add(rowData.get(5));  // itemName
-            filteredData.add(rowData.get(6));  // itemCode
-            filteredData.add(rowData.get(7));  // quantity
-            filteredData.add(unitPriceStr);    // unitPrices (grouped)
-            filteredData.add(rowData.get(8));  // paymentStatus
-            filteredData.add(paymentDate);              // Payment date
+            filteredData.add(rowData.get(2));  
+            filteredData.add(rowData.get(3));  
+            filteredData.add(rowData.get(4)); 
+            filteredData.add(rowData.get(5)); 
+            filteredData.add(rowData.get(6)); 
+            filteredData.add(rowData.get(7)); 
+            filteredData.add(unitPriceStr);
+            filteredData.add(rowData.get(8)); 
+            filteredData.add(paymentDate);     
 
             // Format and write
             String formattedLine = formatRowForPaymentTxt(filteredData);
@@ -352,6 +317,6 @@ public class Payment {
     }
 
     private static String getCurrentDate() {
-        return java.time.LocalDate.now().toString(); // e.g., 2025-05-22
+        return java.time.LocalDate.now().toString();
     }
 }
