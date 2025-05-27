@@ -44,7 +44,14 @@ public class ViewItemList extends javax.swing.JFrame {
         viewItemTable.setEnabled(false); 
         
         //----- Initialize ItemManagement with necessary components -----//
-        itemManage = new ItemManagement(viewItemTable);
+        User currentUser = Session.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            JOptionPane.showMessageDialog(null, "Session expired or user not logged in.");
+            dispose(); // Close the window or redirect
+            return;
+        }
+        itemManage = new ItemManagement(viewItemTable, currentUser);
+
         
         // - - - - - LOAD DATA INTO TABLE (for itemTable)- - - - - //
         refresh();     
@@ -60,41 +67,44 @@ public class ViewItemList extends javax.swing.JFrame {
     
     // ========== REFRESH TABLE ========== //
     public void refresh() {
-//        DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
-        model.setRowCount(0); //----- Clears the row to avoid data repeatation -----//
-        
+        DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
+        model.setRowCount(0); 
+
         User currentUser = Session.getInstance().getCurrentUser();
         String currentID = currentUser.getID();
-        
-//        for (PurchaseOrder item : itemList) {
-//            if (!item.getPOApprovedByID().equals(currentID)) {
-//                continue;
-//            }
-            
-            try (BufferedReader reader = new BufferedReader(new FileReader(itemFile))) {
-                String line;
-                int no = 1;
 
-                while ((line = reader.readLine()) != null) {
-                    String[] data = line.split(",");
-                    if (data.length == 8) { 
-                        model.addRow(new Object[] {
-                            no++,       //----- No. 
-                            data[0],    
-                            data[1],
-                            data[2],
-                            data[3],
-                            data[4],
-                            data[5],
-                            data[6],
-                            data[7]     //----- DeliveryStatus
-                        });
+        int no = 1;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(itemFile))) {
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(",");
+
+                if (data.length == 8) {
+                    if (currentUser.equals("Admin") && !data[3].equals(currentID)) {
+                        continue; 
                     }
+
+                    model.addRow(new Object[]{
+                        no++,
+                        data[0],
+                        data[1],
+                        data[2],
+                        data[3],
+                        data[4],
+                        data[5],
+                        data[6],
+                        data[7]
+                    });
                 }
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Error while reading from this file: " + e.getMessage());
             }
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "Error reading item file: " + e.getMessage());
+        }
     }
+
     
     
     /**

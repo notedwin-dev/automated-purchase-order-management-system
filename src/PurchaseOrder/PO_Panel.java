@@ -21,6 +21,13 @@ public class PO_Panel extends javax.swing.JFrame {
     
     public PO_Panel(PR_Management prmanagement) {
         initComponents();
+        // - - - - - RESIZE ICON REFRESH - - - - - //
+        ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/resources/icons/Refresh.png"));
+        Image scaled_refresh = refreshIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        ImageIcon resizedRefresh = new ImageIcon(scaled_refresh);
+        refresh_Button.setIcon(resizedRefresh);
+        
+        
         this.prmanagement = prmanagement;
         this.prmanagement.getPRfromtxtfile();
 
@@ -160,6 +167,7 @@ public class PO_Panel extends javax.swing.JFrame {
         prTable = new javax.swing.JTable();
         generatePO_button = new javax.swing.JButton();
         rejectPO_btn = new javax.swing.JButton();
+        refresh_Button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -211,6 +219,14 @@ public class PO_Panel extends javax.swing.JFrame {
             }
         });
 
+        refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
+        refresh_Button.setBorder(null);
+        refresh_Button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refresh_ButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -221,7 +237,9 @@ public class PO_Panel extends javax.swing.JFrame {
                         .addGap(245, 245, 245)
                         .addComponent(Title_lbl))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(442, 442, 442)
+                        .addGap(389, 389, 389)
+                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -240,7 +258,8 @@ public class PO_Panel extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 554, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(generatePO_button, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(rejectPO_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(31, 31, 31))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -301,6 +320,10 @@ public class PO_Panel extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_rejectPO_btnActionPerformed
 
+    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
+        refreshTable();
+    }//GEN-LAST:event_refresh_ButtonActionPerformed
+
     
  
     
@@ -348,6 +371,7 @@ public class PO_Panel extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable prTable;
+    private javax.swing.JButton refresh_Button;
     private javax.swing.JButton rejectPO_btn;
     // End of variables declaration//GEN-END:variables
 }
