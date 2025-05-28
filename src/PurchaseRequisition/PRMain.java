@@ -790,17 +790,6 @@ public class PRMain extends javax.swing.JFrame {
         txtQuantity.setText(quantity);
     }
 
-    private void addToItemTable(String itemCode, String quantity) {
-        DefaultTableModel table = (DefaultTableModel) PRTable.getModel();
-
-        table.addRow(new Object[]{
-            itemCode,
-            quantity
-        }
-        );
-        PRTable.setModel(table);
-    }
-
     /**
      * @param args the command line arguments
      */

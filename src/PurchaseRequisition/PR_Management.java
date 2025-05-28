@@ -109,6 +109,7 @@ public class PR_Management {
 
             javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
             model.addRow(new Object[]{selectedItemCode, enteredQuantity});
+            table.setModel(model); // Ensure the table model is updated
             JOptionPane.showMessageDialog(parentComponent, "Items has been added to Items Table successfully!");
         } catch (Exception e) {
             e.printStackTrace();
