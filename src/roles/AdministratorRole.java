@@ -41,6 +41,7 @@ public class AdministratorRole extends Role {
         
         // Purchase Orders
         addPermission(Feature.PURCHASE_ORDERS_LIST, PermissionLevel.FULL_ACCESS);
+        addPermission(Feature.VIEW_PURCHASE_ORDER, PermissionLevel.FULL_ACCESS);
         addPermission(Feature.GENERATE_PURCHASE_ORDER, PermissionLevel.FULL_ACCESS);
         addPermission(Feature.APPROVE_PURCHASE_ORDER, PermissionLevel.FULL_ACCESS);
         

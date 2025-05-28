@@ -148,7 +148,8 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
             addNavButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.View_PRList"); //To be PR LIST
             addNavButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, Feature.GENERATE_PURCHASE_ORDER, "PurchaseOrder.Main_PO");
-            addNavButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, Feature.PURCHASE_ORDERS_LIST, "PurchaseOrder.PO_Panel");
+            addNavButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, "Purchase Order List", "PurchaseOrder.PO_Panel");
+            addNavButtonIfPermitted(Feature.VIEW_PURCHASE_ORDER, Feature.VIEW_PURCHASE_ORDER, "PurchaseOrder.View_All_PO_UI");
             addNavButtonIfPermitted(Feature.APPROVE_PURCHASE_ORDER, Feature.APPROVE_PURCHASE_ORDER, "PurchaseOrder.PO_Approval");
             addNavButtonIfPermitted(Feature.INVENTORY_MANAGEMENT, Feature.INVENTORY_MANAGEMENT, "InventoryManagement.InventoryUI");
             addNavButtonIfPermitted(Feature.INVENTORY_LIST, "Inventory List", "InventoryManagement.View_Inventory_List");

@@ -175,7 +175,7 @@ public class MainContainer extends javax.swing.JFrame {
             if (className.equals("PurchaseOrder.Main_PO") || 
                 className.equals("PurchaseOrder.PM_View_PO") || 
                 className.equals("PurchaseOrder.View_All_PO_UI") ||
-                className.equals("PurchaseOrder.FM_View_PO_Approval")) {
+                className.equals("PurchaseOrder.FM_View_PO_Approval") || className.equals("PurchaseOrder.PO_List_UI")) {
                 try {
                     // Check if already in cache
                     if (activePanels.containsKey(className)) {
@@ -199,6 +199,9 @@ public class MainContainer extends javax.swing.JFrame {
                     } else if (className.equals("PurchaseOrder.Main_PO")) {
                         // Main_PO should create a PO_Panel for generating POs from PRs
                         poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                    } else if (className.equals("PurchaseOrder.PO_List_UI")) {
+                        // Purchase Order List UI
+                        poPanel = new PurchaseOrder.PO_List_UI();
                     }
                     
                     // Use our method to preserve layout if poPanel was initialized
