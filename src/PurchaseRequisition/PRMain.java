@@ -260,6 +260,7 @@ public class PRMain extends javax.swing.JFrame {
     }
 
     private void clear() {
+        cbItemCode.setSelectedIndex(0);
         txtQuantity.setText("");
         txtExDate.setDate(null);
         cbStatus.setSelectedIndex(0);
