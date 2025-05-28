@@ -30,7 +30,7 @@ public class PO_Approval extends javax.swing.JFrame {
         displayPOTable();
     }
     
-    private void displayPOTable() {
+    public void displayPOTable() {
         model.setRowCount(0);
 
         List<PurchaseOrder> poList = PO_GenerationManagement.getAllPurchaseOrders(); 
@@ -86,11 +86,13 @@ public class PO_Approval extends javax.swing.JFrame {
         POApprovalTable = new javax.swing.JTable();
         ApprovalButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        RefreshButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
+        POApprovalTable.getTableHeader().setReorderingAllowed(false);
         POApprovalTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null},
@@ -99,7 +101,7 @@ public class PO_Approval extends javax.swing.JFrame {
                 {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "No.", "Purchase Order ID", "Purchase Requisition ID", "Date", "Sales Manager Name", "Sales Manager ID", "Purchase Manager Name", "Purchase Manager ID", "Item Code", "Item Name", "Supplier ID", "Supplier Name", "Quantity", "Expected Delivery Date", "Purchase Order Status"
+                "No.", "PO ID", "PR ID", "Date", "SM Name", "SM ID", "PM Name", "PM ID", "Item Code", "Item Name", "Supplier ID", "Supplier Name", "Quantity", "Expected Delivery Date", "Purchase Order Status"
             }
         ));
         jScrollPane1.setViewportView(POApprovalTable);
@@ -114,6 +116,13 @@ public class PO_Approval extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Arial", 0, 36)); // NOI18N
         jLabel1.setText("Purchase Order Approval List");
 
+        RefreshButton.setText("Refresh");
+        RefreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RefreshButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -121,9 +130,11 @@ public class PO_Approval extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(590, 590, 590)
+                        .addGap(493, 493, 493)
+                        .addComponent(RefreshButton)
+                        .addGap(18, 18, 18)
                         .addComponent(ApprovalButton)
-                        .addGap(0, 572, Short.MAX_VALUE))
+                        .addGap(0, 575, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jScrollPane1)))
@@ -141,7 +152,9 @@ public class PO_Approval extends javax.swing.JFrame {
                 .addGap(37, 37, 37)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(64, 64, 64)
-                .addComponent(ApprovalButton)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ApprovalButton)
+                    .addComponent(RefreshButton))
                 .addGap(51, 51, 51))
         );
 
@@ -187,6 +200,11 @@ public class PO_Approval extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_ApprovalButtonActionPerformed
 
+    private void RefreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RefreshButtonActionPerformed
+        // TODO add your handling code here:
+        displayPOTable();
+    }//GEN-LAST:event_RefreshButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -225,6 +243,7 @@ public class PO_Approval extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ApprovalButton;
     private javax.swing.JTable POApprovalTable;
+    private javax.swing.JButton RefreshButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

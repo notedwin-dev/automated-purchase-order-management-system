@@ -478,7 +478,7 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="PurchaseOrderTableCRUD">
               <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor" postCode="PurchaseOrderTableCRUD.getTableHeader().setReorderingAllowed(false);">
                   <Border info="org.netbeans.modules.form.compat2.border.LineBorderInfo">
                     <LineBorder/>
                   </Border>
