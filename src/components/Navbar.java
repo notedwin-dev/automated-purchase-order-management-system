@@ -234,8 +234,10 @@ public class Navbar extends javax.swing.JPanel {
                             } else if ("Finance Manager".equals(userRole)) {
                                 navigationListener.onNavigate("PurchaseOrder.FM_View_PO_Approval");
                             } else if ("Sales Manager".equals(userRole)
-                                    || "Inventory Manager".equals(userRole) || "Administrator".equals(userRole)) {
+                                    || "Inventory Manager".equals(userRole)) {
                                 navigationListener.onNavigate("PurchaseOrder.View_All_PO_UI");
+                            } else if ("Administrator".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseOrder.PO_List_UI");
                             }
                         } // Handle Purchase Order Generation
                         else if (buttonText.equals(Feature.GENERATE_PURCHASE_ORDER)) {
