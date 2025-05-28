@@ -27,6 +27,7 @@ public class Feature {
     public static final String DISPLAY_REQUISITION = "Display Requisition";
     
     // Purchase Orders
+    public static final String VIEW_PURCHASE_ORDER = "View Purchase Orders";
     public static final String PURCHASE_ORDERS_LIST = "Purchase Orders List";
     public static final String GENERATE_PURCHASE_ORDER = "Generate Purchase Order";
     public static final String APPROVE_PURCHASE_ORDER = "Approve Purchase Order";
