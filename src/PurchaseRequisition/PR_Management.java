@@ -103,36 +103,22 @@ public class PR_Management {
     }
 
     public void add(PROperation newPr) {
-        // Save data in array as temporary (not immediately to file)
-        if (newPr == null || newPr.getItemCode() == null || newPr.getQuantity() == null) {
-            JOptionPane.showMessageDialog(null, "All fields of the PR must be filled!");
-        } else {
-            tempPRList.add(newPr);
-            prlist.add(newPr); // Optionally keep in main list for UI
-            JOptionPane.showMessageDialog(null, "PR added to temporary list. Click 'Save' to write to file.");
-        }
-    }
-
-    // Call this method from your "Save" button to persist all temporary PRs to file
-    public void saveAllTempPRsToFile() {
-        if (tempPRList.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No new PRs to save.");
+        if (newPr == null) {
+            JOptionPane.showMessageDialog(null, "PR data is null!");
             return;
         }
-        for (PROperation pr : tempPRList) {
-            String formattedItemCodes = "{" + pr.getItemCode().replace("\n", ", ") + "}";
-            String formattedQuantities = "{" + pr.getQuantity().replace("\n", ", ") + "}";
-            String record = pr.getPRID() + ", " + pr.getDate() + ", " + pr.getPrCreatedByName() + ", "
-                    + pr.getPrCreatedByID() + ", " + formattedItemCodes + ", " + formattedQuantities + ", "
-                    + pr.getExDate() + ", " + pr.getStatus();
-            try {
-                TextFile.appendTo("src/PurchaseRequisition/PR.txt", record);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error saving PR to file: " + e.getMessage());
-            }
+        String formattedItemCodes = "{" + newPr.getItemCode().replace("\n", ", ") + "}";
+        String formattedQuantities = "{" + newPr.getQuantity().replace("\n", ", ") + "}";
+        String record = newPr.getPRID() + ", " + newPr.getDate() + ", " + newPr.getPrCreatedByName() + ", "
+                + newPr.getPrCreatedByID() + ", " + formattedItemCodes + ", " + formattedQuantities + ", "
+                + newPr.getExDate() + ", " + newPr.getStatus();
+        try {
+            TextFile.appendTo("src/PurchaseRequisition/PR.txt", record);
+            prlist.add(newPr);
+            JOptionPane.showMessageDialog(null, "PR added successfully!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error saving PR to file: " + e.getMessage());
         }
-        tempPRList.clear();
-        JOptionPane.showMessageDialog(null, "All temporary PRs saved to file!");
     }
 
     public void delete(String prIDToDelete) {

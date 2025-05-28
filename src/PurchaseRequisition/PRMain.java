@@ -70,13 +70,14 @@ public class PRMain extends javax.swing.JFrame {
         txtPRID.setEditable(false); // Prevents user from editing the PRID manually
 
         txtDate.setText(new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date()));
-        txtDate.setEditable(false); // Allow user to edit the date as text
+        txtDate.setEditable(false);
 
-        User currentUser = Session.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            txtSMName.setText(currentUser.getUsername());
-            txtSMID.setText(currentUser.getID());
-        }
+        // Only set user info if not already set (avoid setting to null after clear)
+//        User currentUser = Session.getInstance().getCurrentUser();
+//        if (currentUser != null) {
+//            txtSMName.setText(currentUser.getUsername());
+//            txtSMID.setText(currentUser.getID());
+//        }
         txtSMName.setEditable(false);
         txtSMID.setEditable(false);
 
@@ -260,11 +261,10 @@ public class PRMain extends javax.swing.JFrame {
 
     private void clear() {
         txtPRID.setText("PR");
-        txtDate.setText(""); // This line clears the JDateChooser for Date
-        txtSMName.setText("");
-        txtSMID.setText("SM");
+        txtDate.setText("");
+        // Do NOT reset txtSMName and txtSMID here, so user info remains
         txtQuantity.setText("");
-        txtExDate.setDate(null); // This line clears the JDateChooser for Expected Delivery Date
+        txtExDate.setDate(null);
         cbStatus.setSelectedIndex(0);
 
         // Set flag to indicate we're adding a new record
@@ -747,15 +747,16 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_cbStatusActionPerformed
 
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
-        //Add Data Button
         try {
             // First, grab Item Code and Quantity
             String selectedItemCode = cbItemCode.getSelectedItem().toString();
             String enteredQuantity = txtQuantity.getText();
 
-            //addToItemTable(selectedItemCode, enteredQuantity);
+            addToItemTable(selectedItemCode, enteredQuantity);
+
             JOptionPane.showMessageDialog(this, "Items has been added to Items Table successfully!");
         } catch (Exception e) {
+            e.printStackTrace(); // <-- Add this for debugging
             JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
         }
 
@@ -763,41 +764,48 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_add_ButtonActionPerformed
 
     private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
-        String prIDToDelete = txtPRID.getText(); // or get from table row
-        prManager.delete(prIDToDelete);
-        //tableLoad();
-        clear();
+        try {
+            String prIDToDelete = txtPRID.getText();
+            prManager.delete(prIDToDelete);
+            //tableLoad();
+            clear();
+        } catch (Exception e) {
+            e.printStackTrace(); // <-- Add this for debugging
+            JOptionPane.showMessageDialog(this, "Error deleting data: " + e.getMessage());
+        }
     }//GEN-LAST:event_delete_ButtonActionPerformed
 
     private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
-        clear();
-        JOptionPane.showMessageDialog(this, "TextBox Cleaned!");
+        try {
+            clear();
+            JOptionPane.showMessageDialog(this, "TextBox Cleaned!");
+        } catch (Exception e) {
+            e.printStackTrace(); // <-- Add this for debugging
+            JOptionPane.showMessageDialog(this, "Error cleaning: " + e.getMessage());
+        }
     }//GEN-LAST:event_clean_ButtonActionPerformed
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
-        // Make sure we're in "updating record" mode
-        isAddingNewRecord = false;
-
-        getData();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
-        String prID = txtPRID.getText();
-        String date = txtDate.getText(); // Get date from DateChooser
-        String smname = txtSMName.getText();
-        String smid = txtSMID.getText();
-        String itemcode = (String) cbItemCode.getSelectedItem();
-        String quantity = txtQuantity.getText();
-        String exdate = sdf.format(txtExDate.getDate()); // Get expected date from DateChooser
-        String status = (String) cbStatus.getSelectedItem();
-
-        PROperation updatedPR = new PROperation(prID, date, smname, smid, itemcode, quantity, exdate, status
-        );
-
-// Call the update method
-        prManager.update(updatedPR);
-
-//        tableLoad();
-        clear();
+        try {
+            isAddingNewRecord = false;
+            getData();
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            String prID = txtPRID.getText();
+            String date = txtDate.getText();
+            String smname = txtSMName.getText();
+            String smid = txtSMID.getText();
+            String itemcode = (String) cbItemCode.getSelectedItem();
+            String quantity = txtQuantity.getText();
+            String exdate = sdf.format(txtExDate.getDate());
+            String status = (String) cbStatus.getSelectedItem();
+            PROperation updatedPR = new PROperation(prID, date, smname, smid, itemcode, quantity, exdate, status);
+            prManager.update(updatedPR);
+            //tableLoad();
+            clear();
+        } catch (Exception e) {
+            e.printStackTrace(); // <-- Add this for debugging
+            JOptionPane.showMessageDialog(this, "Error updating: " + e.getMessage());
+        }
     }//GEN-LAST:event_update_ButtonActionPerformed
 
     private void cbItemCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCodeActionPerformed
@@ -810,40 +818,60 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDateActionPerformed
 
     private void GenerateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerateBtnActionPerformed
-        // TODO add your handling code here:
         try {
-            prManager.saveAllTempPRsToFile();
-            JOptionPane.showMessageDialog(null, "Generate PR successfully!");
+            // Auto-generate PRID and show it in the form
+            String prid = prManager.generateNextPRID();
+            txtPRID.setText(prid); // This updates the field (even though it's disabled for editing)
+
+            // Collect item codes and quantities from the table
+            DefaultTableModel tableModel = (DefaultTableModel) PRTable.getModel();
+            StringBuilder itemCodesBuilder = new StringBuilder("{");
+            StringBuilder quantitiesBuilder = new StringBuilder("{");
+
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                if (i > 0) {
+                    itemCodesBuilder.append(", ");
+                    quantitiesBuilder.append(", ");
+                }
+                itemCodesBuilder.append(tableModel.getValueAt(i, 0).toString());
+                quantitiesBuilder.append(tableModel.getValueAt(i, 1).toString());
+            }
+
+            itemCodesBuilder.append("}");
+            quantitiesBuilder.append("}");
+
+            // Set collected data
+            prop.setItemCode(itemCodesBuilder.toString());
+            prop.setQuantity(quantitiesBuilder.toString());
+            getData(); // Fetch other details like date, creator info, etc.
+
+            PROperation newPR = new PROperation(prid, date, prCreatedByName, prCreatedByID,
+                    prop.getItemCode(), prop.getQuantity(), exdate, status);
+
+            prManager.add(newPR);
+
+            JOptionPane.showMessageDialog(this, "Data added successfully!");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error saving PR: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
         }
+
 
     }//GEN-LAST:event_GenerateBtnActionPerformed
 
     private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
         int selectedRow = PRTable.getSelectedRow();
         if (selectedRow == -1) {
-            // No row selected, or selection cleared. This might happen with mouse clicks.
-            // You can simply return or clear relevant fields if needed.
+            // No row selected, or selection cleared.
             return;
         }
 
-        // Get the table model
+        // Only Item Code and Quantity columns exist
         DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-        model.setRowCount(0); // Clear existing rows
+        String itemCode = model.getValueAt(selectedRow, 0).toString();
+        String quantity = model.getValueAt(selectedRow, 1).toString();
 
-        for (PROperation pr : prManager.getPrlist()) {
-            model.addRow(new Object[]{
-                pr.getPRID(),
-                pr.getDate(),
-                pr.getPrCreatedByName(),
-                pr.getPrCreatedByID(),
-                pr.getItemCode().replace("\n", ", "),
-                pr.getQuantity().replace("\n", ", "),
-                pr.getExDate(),
-                pr.getStatus()
-            });
-        }
+        cbItemCode.setSelectedItem(itemCode);
+        txtQuantity.setText(quantity);
     }
 
     private void addToItemTable(String itemCode, String quantity) {
