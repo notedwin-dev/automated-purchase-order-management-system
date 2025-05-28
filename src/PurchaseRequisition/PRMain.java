@@ -72,12 +72,13 @@ public class PRMain extends javax.swing.JFrame {
         txtDate.setText(new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date()));
         txtDate.setEditable(false);
 
-        // Only set user info if not already set (avoid setting to null after clear)
+        // Set current user info for SM Name and SM ID
         User currentUser = Session.getInstance().getCurrentUser();
         if (currentUser != null) {
             txtSMName.setText(currentUser.getUsername());
             txtSMID.setText(currentUser.getID());
         }
+
         txtSMName.setEditable(false);
         txtSMID.setEditable(false);
 
@@ -260,6 +261,7 @@ public class PRMain extends javax.swing.JFrame {
     }
 
     private void clear() {
+        cbItemCode.setSelectedIndex(0);
         txtQuantity.setText("");
         txtExDate.setDate(null);
         cbStatus.setSelectedIndex(0);
