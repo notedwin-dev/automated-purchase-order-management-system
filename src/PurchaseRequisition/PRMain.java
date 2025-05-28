@@ -73,11 +73,11 @@ public class PRMain extends javax.swing.JFrame {
         txtDate.setEditable(false);
 
         // Only set user info if not already set (avoid setting to null after clear)
-//        User currentUser = Session.getInstance().getCurrentUser();
-//        if (currentUser != null) {
-//            txtSMName.setText(currentUser.getUsername());
-//            txtSMID.setText(currentUser.getID());
-//        }
+        User currentUser = Session.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            txtSMName.setText(currentUser.getUsername());
+            txtSMID.setText(currentUser.getID());
+        }
         txtSMName.setEditable(false);
         txtSMID.setEditable(false);
 
@@ -260,9 +260,6 @@ public class PRMain extends javax.swing.JFrame {
     }
 
     private void clear() {
-        txtPRID.setText("PR");
-        txtDate.setText("");
-        // Do NOT reset txtSMName and txtSMID here, so user info remains
         txtQuantity.setText("");
         txtExDate.setDate(null);
         cbStatus.setSelectedIndex(0);
@@ -352,22 +349,6 @@ public class PRMain extends javax.swing.JFrame {
                 }
             });
 
-            // --- END OF CORRECTED COMBO BOX POPULATION AND LISTENER MANAGEMENT ---
-            // --- DocumentListener for txtQuantity ---
-            // This part is correctly placed, but make sure it's not being added multiple times
-            // if loadItemsForNewRecord() is called frequently.
-            // A common pattern is to add this DocumentListener once in the constructor.
-            // If you are only calling loadItemsForNewRecord() on initial load and for a "new record" clear operation,
-            // then it might be fine to keep it here, assuming 'isAddingNewRecord' manages its behavior.
-            // However, if it's called multiple times, you might need to remove previous DocumentListeners too.
-            // For now, assuming it's okay as is, but be aware of potential duplicates.
-            // Remove previous DocumentListeners to avoid duplicates if this method can be called multiple times
-            // outside of initial setup. A cleaner approach for DocumentListener is often to add it ONCE
-            // in the constructor. But if it MUST be here, this is how you'd manage it:
-            // for (DocumentListener dl : ((AbstractDocument)txtQuantity.getDocument()).getDocumentListeners()) {
-            //     txtQuantity.getDocument().removeDocumentListener(dl);
-            // }
-            // txtQuantity.getDocument().addDocumentListener(...); // Add it after removing old ones if needed
             txtQuantity.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
                 @Override
                 public void insertUpdate(javax.swing.event.DocumentEvent e) {
@@ -747,33 +728,12 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_cbStatusActionPerformed
 
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
-        try {
-            // First, grab Item Code and Quantity
-            String selectedItemCode = cbItemCode.getSelectedItem().toString();
-            String enteredQuantity = txtQuantity.getText();
-
-            addToItemTable(selectedItemCode, enteredQuantity);
-
-            JOptionPane.showMessageDialog(this, "Items has been added to Items Table successfully!");
-        } catch (Exception e) {
-            e.printStackTrace(); // <-- Add this for debugging
-            JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
-        }
-
-
+        prManager.addRowToTable(PRTable, cbItemCode, txtQuantity, this);
     }//GEN-LAST:event_add_ButtonActionPerformed
 
     private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
-        try {
-            String prIDToDelete = txtPRID.getText();
-            prManager.delete(prIDToDelete);
-            //tableLoad();
-            clear();
-        } catch (Exception e) {
-            e.printStackTrace(); // <-- Add this for debugging
-            JOptionPane.showMessageDialog(this, "Error deleting data: " + e.getMessage());
-        }
-    }//GEN-LAST:event_delete_ButtonActionPerformed
+    prManager.deleteRowFromTable(PRTable, this);
+}//GEN-LAST:event_delete_ButtonActionPerformed
 
     private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
         try {
@@ -786,27 +746,8 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_clean_ButtonActionPerformed
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
-        try {
-            isAddingNewRecord = false;
-            getData();
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            String prID = txtPRID.getText();
-            String date = txtDate.getText();
-            String smname = txtSMName.getText();
-            String smid = txtSMID.getText();
-            String itemcode = (String) cbItemCode.getSelectedItem();
-            String quantity = txtQuantity.getText();
-            String exdate = sdf.format(txtExDate.getDate());
-            String status = (String) cbStatus.getSelectedItem();
-            PROperation updatedPR = new PROperation(prID, date, smname, smid, itemcode, quantity, exdate, status);
-            prManager.update(updatedPR);
-            //tableLoad();
-            clear();
-        } catch (Exception e) {
-            e.printStackTrace(); // <-- Add this for debugging
-            JOptionPane.showMessageDialog(this, "Error updating: " + e.getMessage());
-        }
-    }//GEN-LAST:event_update_ButtonActionPerformed
+    prManager.updateRowInTable(PRTable, cbItemCode, txtQuantity, this);
+}//GEN-LAST:event_update_ButtonActionPerformed
 
     private void cbItemCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCodeActionPerformed
         // TODO add your handling code here:
@@ -818,45 +759,18 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDateActionPerformed
 
     private void GenerateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerateBtnActionPerformed
-        try {
-            // Auto-generate PRID and show it in the form
-            String prid = prManager.generateNextPRID();
-            txtPRID.setText(prid); // This updates the field (even though it's disabled for editing)
-
-            // Collect item codes and quantities from the table
-            DefaultTableModel tableModel = (DefaultTableModel) PRTable.getModel();
-            StringBuilder itemCodesBuilder = new StringBuilder("{");
-            StringBuilder quantitiesBuilder = new StringBuilder("{");
-
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                if (i > 0) {
-                    itemCodesBuilder.append(", ");
-                    quantitiesBuilder.append(", ");
-                }
-                itemCodesBuilder.append(tableModel.getValueAt(i, 0).toString());
-                quantitiesBuilder.append(tableModel.getValueAt(i, 1).toString());
-            }
-
-            itemCodesBuilder.append("}");
-            quantitiesBuilder.append("}");
-
-            // Set collected data
-            prop.setItemCode(itemCodesBuilder.toString());
-            prop.setQuantity(quantitiesBuilder.toString());
-            getData(); // Fetch other details like date, creator info, etc.
-
-            PROperation newPR = new PROperation(prid, date, prCreatedByName, prCreatedByID,
-                    prop.getItemCode(), prop.getQuantity(), exdate, status);
-
-            prManager.add(newPR);
-
-            JOptionPane.showMessageDialog(this, "Data added successfully!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
-        }
-
-
-    }//GEN-LAST:event_GenerateBtnActionPerformed
+    prManager.savePRFromTable(
+        PRTable,
+        txtPRID,
+        txtDate,
+        txtSMName,
+        txtSMID,
+        cbStatus,
+        txtExDate,
+        this
+    );
+    clear();
+}//GEN-LAST:event_GenerateBtnActionPerformed
 
     private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
         int selectedRow = PRTable.getSelectedRow();
