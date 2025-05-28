@@ -259,8 +259,9 @@ public class PO_Approve extends javax.swing.JFrame {
 
         management.updatePO(selectedPO, quantitiesStr.toString());
 
-        JOptionPane.showMessageDialog(this, "Purchase order saved successfully!");
     }
+    
+    private boolean isSaved = false;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -315,7 +316,6 @@ public class PO_Approve extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        PurchaseOrderApproveTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         PurchaseOrderApproveTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -629,12 +629,23 @@ public class PO_Approve extends javax.swing.JFrame {
 
     private void UpdateRowButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateRowButtonActionPerformed
         // Update
-        updateRowFromFields();
+        int confirm = JOptionPane.showConfirmDialog(this,"Are you sure you want to update this row?","Confirm Update",JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            updateRowFromFields();  // Your function to update the row
+            JOptionPane.showMessageDialog(this, "Row updated successfully.");
+        }
     }//GEN-LAST:event_UpdateRowButtonActionPerformed
 
     private void SaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveButtonActionPerformed
         // Save All
-        saveNewData();
+        int confirm = JOptionPane.showConfirmDialog(this,"Save new data?","Confirm Save",JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            saveNewData();
+            JOptionPane.showMessageDialog(this, "Data saved successfully.");
+            CancelButton.setEnabled(false);
+        }
     }//GEN-LAST:event_SaveButtonActionPerformed
 
     private void ApproveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ApproveButtonActionPerformed
@@ -647,8 +658,8 @@ public class PO_Approve extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please enter a PO ID.");
         }
         this.dispose();
-        PO_Approval poApprovalUi = new PO_Approval();
-        poApprovalUi.setVisible(true);
+        PO_Approval poApproval = new PO_Approval();
+            poApproval.displayPOTable();
     }//GEN-LAST:event_ApproveButtonActionPerformed
 
     private void RejectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RejectButtonActionPerformed
@@ -661,8 +672,7 @@ public class PO_Approve extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please enter a PO ID.");
         }
         this.dispose();
-        PO_Approval poApprovalUi = new PO_Approval();
-        poApprovalUi.setVisible(true);
+
     }//GEN-LAST:event_RejectButtonActionPerformed
 
     private void FMName_TextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FMName_TextFieldActionPerformed

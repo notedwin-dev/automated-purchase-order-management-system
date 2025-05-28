@@ -227,7 +227,7 @@ public class DashboardPanel extends javax.swing.JPanel {
                             } else if ("Finance Manager".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.FM_View_PO_Approval";
                             } else if ("Administrator".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.PM_PO_List_UI";
+                                redirectClass = "PurchaseOrder.PO_List_UI";
                             } else if ("Sales Manager".equals(userRole) || 
                                       "Inventory Manager".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.View_All_PO_UI";
