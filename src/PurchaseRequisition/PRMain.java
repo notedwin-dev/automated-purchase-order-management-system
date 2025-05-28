@@ -62,16 +62,24 @@ public class PRMain extends javax.swing.JFrame {
      */
     public PRMain() {
         initComponents();
+        
+        this.prop = prop;
+        
+        txtPRID.setEditable(false); // Prevents user from editing the PRID manually
 
-        txtPRID.setEnabled(false); // Prevents user from editing the PRID manually
+        txtDate.setText(new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date()));
+        txtDate.setEditable(false); // Allow user to edit the date as text
 
-        RemoveItembtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-            }
-        });
+        txtSMName.setText(prop.getPrCreatedByName());
+        txtSMID.setText(prop.getPrCreatedByID());
+        txtSMName.setEditable(false);
+        txtSMID.setEditable(false);
+
+        String generatedPRID = prManager.generateNextPRID();
+        txtPRID.setText(generatedPRID);
 
         prop = new PROperation(prid, date, prCreatedByName, prCreatedByID, itemcode, quantity, exdate, status);
-        tableLoad();
+
         try {
             // Load Add icon
             java.net.URL addIconURL = getClass().getResource("/resources/icons/Add.png");
@@ -257,7 +265,7 @@ public class PRMain extends javax.swing.JFrame {
 
     private void clear() {
         txtPRID.setText("PR");
-        txtDate.setDate(null); // This line clears the JDateChooser for Date
+        txtDate.setText(""); // This line clears the JDateChooser for Date
         txtSMName.setText("");
         txtSMID.setText("SM");
         txtQuantity.setText("");
@@ -485,13 +493,12 @@ public class PRMain extends javax.swing.JFrame {
         delete_Button = new javax.swing.JButton();
         clean_Button = new javax.swing.JButton();
         update_Button = new javax.swing.JButton();
-        txtDate = new com.toedter.calendar.JDateChooser();
         jLabel6 = new javax.swing.JLabel();
         txtExDate = new com.toedter.calendar.JDateChooser();
         cbItemCode = new javax.swing.JComboBox<>();
-        AddItembtn = new javax.swing.JButton();
-        RemoveItembtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        GenerateBtn = new javax.swing.JButton();
+        txtDate = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -594,8 +601,6 @@ public class PRMain extends javax.swing.JFrame {
             }
         });
 
-        txtDate.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-
         jLabel6.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel6.setText("Expected Delivery");
 
@@ -607,54 +612,48 @@ public class PRMain extends javax.swing.JFrame {
             }
         });
 
-        AddItembtn.setText("Add Item");
-        AddItembtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddItembtnActionPerformed(evt);
-            }
-        });
-
-        RemoveItembtn.setText("Remove Item");
-        RemoveItembtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RemoveItembtnActionPerformed(evt);
-            }
-        });
-
         jLabel1.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel1.setText("PR Created By (Name)");
+
+        GenerateBtn.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        GenerateBtn.setText("Generate Purchase Requisition");
+        GenerateBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                GenerateBtnActionPerformed(evt);
+            }
+        });
+
+        txtDate.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        txtDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDateActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtPRID)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel3)
-                                                .addComponent(jLabel9)
-                                                .addComponent(jLabel7)
-                                                .addComponent(jLabel10)
-                                                .addComponent(jLabel6))
-                                            .addGap(120, 120, 120)))
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(cbStatus, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtExDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(txtQuantity, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(cbItemCode, javax.swing.GroupLayout.Alignment.LEADING, 0, 264, Short.MAX_VALUE)))
-                                .addGap(10, 10, 10)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(RemoveItembtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(AddItembtn, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(txtPRID)
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel3)
+                                        .addComponent(jLabel9)
+                                        .addComponent(jLabel7)
+                                        .addComponent(jLabel10)
+                                        .addComponent(jLabel6))
+                                    .addGap(120, 120, 120)))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(cbStatus, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtExDate, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtQuantity, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(cbItemCode, javax.swing.GroupLayout.Alignment.LEADING, 0, 264, Short.MAX_VALUE))
                             .addComponent(jLabel2)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addGap(136, 136, 136)
@@ -675,10 +674,18 @@ public class PRMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 790, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtDate)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 116, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 790, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(GenerateBtn)
+                        .addGap(243, 243, 243))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -691,50 +698,46 @@ public class PRMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel4)
                             .addComponent(jLabel5))
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addGap(97, 97, 97)
-                                .addComponent(AddItembtn)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(RemoveItembtn))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(txtSMName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSMID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel9)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtExDate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel10)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtSMName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSMID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbItemCode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtExDate, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(GenerateBtn)))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -751,7 +754,7 @@ public class PRMain extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(64, 64, 64)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
 
         setSize(new java.awt.Dimension(1294, 727));
@@ -830,7 +833,7 @@ public class PRMain extends javax.swing.JFrame {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
         String prID = txtPRID.getText();
-        String date = sdf.format(txtDate.getDate()); // Get date from DateChooser
+        String date = txtDate.getText(); // Get date from DateChooser
         String smname = txtSMName.getText();
         String smid = txtSMID.getText();
         String itemcode = (String) cbItemCode.getSelectedItem();
@@ -848,99 +851,25 @@ public class PRMain extends javax.swing.JFrame {
         clear();
     }//GEN-LAST:event_update_ButtonActionPerformed
 
-    private void AddItembtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItembtnActionPerformed
-        // TODO add your handling code here:
-        // Get the JTable's model
-        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-
-        String selectedItemCode = (String) cbItemCode.getSelectedItem();
-        String quantityText = txtQuantity.getText();
-
-        if (selectedItemCode == null || selectedItemCode.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select an Item Code.", "Input Error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        if (quantityText.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a Quantity.", "Input Error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        int quantity;
-        try {
-            quantity = Integer.parseInt(quantityText);
-            if (quantity <= 0) {
-                JOptionPane.showMessageDialog(this, "Quantity must be a positive number.", "Input Error", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Invalid quantity. Please enter a whole number.", "Input Error", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Check if the item already exists in the PRTable
-        boolean itemExists = false;
-        for (int i = 0; i < model.getRowCount(); i++) {
-            if (model.getValueAt(i, 0).equals(selectedItemCode)) {
-                // Item exists, update its quantity
-                int existingQuantity = Integer.parseInt(model.getValueAt(i, 1).toString());
-                model.setValueAt(String.valueOf(existingQuantity + quantity), i, 1);
-                itemExists = true;
-                break;
-            }
-        }
-
-        if (!itemExists) {
-            // If item doesn't exist, add a new row
-            model.addRow(new Object[]{selectedItemCode, quantityText});
-        }
-
-        // After adding/updating, you might want to clear the quantity field or reset for next entry
-        txtQuantity.setText("0"); // Or "" if you prefer it completely empty
-        cbItemCode.setSelectedIndex(0); // Reset to first item or keep current
-    }//GEN-LAST:event_AddItembtnActionPerformed
-
     private void cbItemCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCodeActionPerformed
         // TODO add your handling code here:
 
     }//GEN-LAST:event_cbItemCodeActionPerformed
 
-    private void RemoveItembtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveItembtnActionPerformed
+    private void txtDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDateActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-        int selectedRow = PRTable.getSelectedRow();
+    }//GEN-LAST:event_txtDateActionPerformed
 
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select a row to remove from the table.", "No Row Selected", JOptionPane.WARNING_MESSAGE);
-            return;
+    private void GenerateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerateBtnActionPerformed
+        // TODO add your handling code here:
+        try {
+            prManager.saveAllTempPRsToFile();
+            JOptionPane.showMessageDialog(null, "Generate PR successfully!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error saving PR: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to remove the selected item?",
-                "Confirm Removal",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                ignoreTableClick = true; // Set flag to ignore subsequent table selection events
-
-                model.removeRow(selectedRow);
-
-                JOptionPane.showMessageDialog(this, "Selected item removed successfully!", "Item Removed", JOptionPane.INFORMATION_MESSAGE);
-
-                // Clear the input fields after removal
-                cbItemCode.setSelectedIndex(0);
-                txtQuantity.setText("");
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error removing item: " + e.getMessage(), "Removal Error", JOptionPane.ERROR_MESSAGE);
-                e.printStackTrace();
-            } finally {
-                // Always reset the flag, even if an error occurred during removal
-                ignoreTableClick = false;
-            }
-        }
-    }//GEN-LAST:event_RemoveItembtnActionPerformed
+    }//GEN-LAST:event_GenerateBtnActionPerformed
 
     private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
         int selectedRow = PRTable.getSelectedRow();
@@ -1032,9 +961,8 @@ public class PRMain extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton AddItembtn;
+    private javax.swing.JButton GenerateBtn;
     private javax.swing.JTable PRTable;
-    private javax.swing.JButton RemoveItembtn;
     private javax.swing.JButton add_Button;
     private javax.swing.JComboBox<String> cbItemCode;
     private javax.swing.JComboBox<String> cbStatus;
@@ -1052,7 +980,7 @@ public class PRMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton refresh_Button;
-    private com.toedter.calendar.JDateChooser txtDate;
+    private javax.swing.JTextField txtDate;
     private com.toedter.calendar.JDateChooser txtExDate;
     private javax.swing.JTextField txtPRID;
     private javax.swing.JTextField txtQuantity;
