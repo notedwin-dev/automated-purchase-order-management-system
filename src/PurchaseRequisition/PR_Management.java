@@ -104,15 +104,13 @@ public class PR_Management {
 
     public void add(PROperation newPr) {
         // Save data in array as temporary (not immediately to file)
-        if (newPr == null || newPr.getPRID() == null || newPr.getDate() == null || newPr.getPrCreatedByName() == null
-                || newPr.getPrCreatedByID() == null || newPr.getItemCode() == null || newPr.getQuantity() == null
-                || newPr.getExDate() == null || newPr.getStatus() == null) {
+        if (newPr == null || newPr.getItemCode() == null || newPr.getQuantity() == null) {
             JOptionPane.showMessageDialog(null, "All fields of the PR must be filled!");
-            return;
+        } else {
+            tempPRList.add(newPr);
+            prlist.add(newPr); // Optionally keep in main list for UI
+            JOptionPane.showMessageDialog(null, "PR added to temporary list. Click 'Save' to write to file.");
         }
-        tempPRList.add(newPr);
-        prlist.add(newPr); // Optionally keep in main list for UI
-        JOptionPane.showMessageDialog(null, "PR added to temporary list. Click 'Save' to write to file.");
     }
 
     // Call this method from your "Save" button to persist all temporary PRs to file
