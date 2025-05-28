@@ -62,12 +62,16 @@ public class PRMain extends javax.swing.JFrame {
      */
     public PRMain() {
         initComponents();
-
+        
+        this.prop = prop;
+        
         txtPRID.setEditable(false); // Prevents user from editing the PRID manually
 
         txtDate.setText(new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date()));
         txtDate.setEditable(false); // Allow user to edit the date as text
 
+        txtSMName.setText(prop.getPrCreatedByName());
+        txtSMID.setText(prop.getPrCreatedByID());
         txtSMName.setEditable(false);
         txtSMID.setEditable(false);
 
