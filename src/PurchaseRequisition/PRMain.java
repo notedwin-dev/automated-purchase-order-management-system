@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -435,6 +434,10 @@ public class PRMain extends javax.swing.JFrame {
         }
     }
 
+    public static void displayMessage(String message, String title, int messageType) {
+        JOptionPane.showMessageDialog(null, message, title, messageType);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -728,18 +731,12 @@ public class PRMain extends javax.swing.JFrame {
 
     private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
         prManager.deleteRowFromTable(PRTable, this);
-        clear();
-}//GEN-LAST:event_delete_ButtonActionPerformed
+        prManager.clean(cbItemCode, txtQuantity, txtExDate, cbStatus);
+    }//GEN-LAST:event_delete_ButtonActionPerformed
 
     private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
-        try {
-            clear();
-            JOptionPane.showMessageDialog(this, "TextBox Cleaned!");
-        } catch (Exception e) {
-            e.printStackTrace(); // <-- Add this for debugging
-            JOptionPane.showMessageDialog(this, "Error cleaning: " + e.getMessage());
-        }
-    }//GEN-LAST:event_clean_ButtonActionPerformed
+        prManager.clean(cbItemCode, txtQuantity, txtExDate, cbStatus);
+}//GEN-LAST:event_clean_ButtonActionPerformed
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
         prManager.updateRowInTable(PRTable, cbItemCode, txtQuantity, this);
@@ -765,7 +762,7 @@ public class PRMain extends javax.swing.JFrame {
                 txtExDate,
                 this
         );
-        clear();
+        prManager.refresh(cbItemCode, txtQuantity, txtExDate, cbStatus);
 }//GEN-LAST:event_GenerateBtnActionPerformed
 
     private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
