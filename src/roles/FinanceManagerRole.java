@@ -5,7 +5,7 @@ package roles;
 
 /**
  * Represents the Finance Manager role in the system.
- * Finance Managers handle financial approvals, verify inventory updates, and process supplier payments.
+ * Finance Managers handle financial approvals, verify inventory updates, and process payments.
  * @author notedwin-dev
  */
 public class FinanceManagerRole extends Role {
