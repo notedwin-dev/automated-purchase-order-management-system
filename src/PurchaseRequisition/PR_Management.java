@@ -107,6 +107,14 @@ public class PR_Management {
         String selectedItemCode = cbItemCode.getSelectedItem().toString();
         String enteredQuantity = txtQuantity.getText();
 
+        // Check if the item code already exists in the table
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String codeInTable = model.getValueAt(i, 0).toString();
+            if (codeInTable.equals(selectedItemCode)) {
+                JOptionPane.showMessageDialog(parentComponent, "Item code already exists in the table. Please use the update function to modify its quantity.", "Duplicate Item", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        
         // Validate Quantity
         if (enteredQuantity.isEmpty() || !enteredQuantity.matches("\\d+") || enteredQuantity.startsWith("0") || Integer.parseInt(enteredQuantity) <= 0) {
             JOptionPane.showMessageDialog(parentComponent, "Quantity must be a numeric value greater than 0 and cannot start with 0.", "Invalid Quantity", JOptionPane.WARNING_MESSAGE);
