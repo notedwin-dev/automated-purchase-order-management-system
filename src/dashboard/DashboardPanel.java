@@ -132,7 +132,7 @@ public class DashboardPanel extends javax.swing.JPanel {
             addFeatureButtonIfPermitted(Feature.DAILY_SALES, Feature.DAILY_SALES, "DailySalesManagement.View_DailySales_List");
             addFeatureButtonIfPermitted(Feature.SALES_ENTRY, Feature.SALES_ENTRY, "DailySalesManagement.DailySalesUI");
             addFeatureButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
-            addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.PRMain"); //To be PR LIST
+            addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.View_PRList"); //To be PR LIST
             addFeatureButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, Feature.GENERATE_PURCHASE_ORDER, "PurchaseOrder.Main_PO");
             addFeatureButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, Feature.PURCHASE_ORDERS_LIST, "PurchaseOrder.PO_Panel");
             addFeatureButtonIfPermitted(Feature.APPROVE_PURCHASE_ORDER, Feature.APPROVE_PURCHASE_ORDER, "PurchaseOrder.PO_Approval");
@@ -195,27 +195,8 @@ public class DashboardPanel extends javax.swing.JPanel {
                         String redirectClass = className;
                         
                         // Handle Display Requisitions based on role
-                        if (className.equals("PurchaseOrder.Main_PO") || 
-                            featureName.equals(Feature.DISPLAY_REQUISITION)) {
-                            String userRole = currentUser.getRole();
-                            
-                            // For Admin, always use Main_PO which shows the PR list
-                            if ("Administrator".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.Main_PO";
-                            } 
-                            // For Purchase Manager, also show the PR list
-                            else if ("Purchase Manager".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.Main_PO";
-                            } 
-                            // For Finance Manager, also show PR list for generating POs from PRs
-                            else if ("Finance Manager".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.Main_PO";
-                            }
-                            // For other roles (Sales Manager, Inventory Manager), show View_All_PO_UI
-                            else if ("Sales Manager".equals(userRole) || 
-                                     "Inventory Manager".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.View_All_PO_UI";
-                            }
+                        if (featureName.equals(Feature.DISPLAY_REQUISITION)) {
+                            // use default className, no need to write any overwriting
                         } 
                         // Handle Purchase Orders List
                         else if (className.equals("PurchaseOrder.PO_Panel") || 
@@ -227,7 +208,7 @@ public class DashboardPanel extends javax.swing.JPanel {
                             } else if ("Finance Manager".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.FM_View_PO_Approval";
                             } else if ("Administrator".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.PM_PO_List_UI";
+                                redirectClass = "PurchaseOrder.PO_List_UI";
                             } else if ("Sales Manager".equals(userRole) || 
                                       "Inventory Manager".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.View_All_PO_UI";
