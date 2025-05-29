@@ -102,145 +102,65 @@ public class PR_Management {
         return String.format("PR%04d", maxID + 1);
     }
 
-    public void add(PROperation newPr) {
-        // Save data in array as temporary (not immediately to file)
-        if (newPr == null || newPr.getPRID() == null || newPr.getDate() == null || newPr.getPrCreatedByName() == null
-                || newPr.getPrCreatedByID() == null || newPr.getItemCode() == null || newPr.getQuantity() == null
-                || newPr.getExDate() == null || newPr.getStatus() == null) {
-            JOptionPane.showMessageDialog(null, "All fields of the PR must be filled!");
-            return;
-        }
-        tempPRList.add(newPr);
-        prlist.add(newPr); // Optionally keep in main list for UI
-        JOptionPane.showMessageDialog(null, "PR added to temporary list. Click 'Save' to write to file.");
-    }
+    public void addRowToTable(javax.swing.JTable table, javax.swing.JComboBox<String> cbItemCode, javax.swing.JTextField txtQuantity, java.awt.Component parentComponent) {
+        try {
+            String selectedItemCode = cbItemCode.getSelectedItem().toString();
+            String enteredQuantity = txtQuantity.getText();
 
-    // Call this method from your "Save" button to persist all temporary PRs to file
-    public void saveAllTempPRsToFile() {
-        if (tempPRList.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No new PRs to save.");
-            return;
-        }
-        for (PROperation pr : tempPRList) {
-            String formattedItemCodes = "{" + pr.getItemCode().replace("\n", ", ") + "}";
-            String formattedQuantities = "{" + pr.getQuantity().replace("\n", ", ") + "}";
-            String record = pr.getPRID() + ", " + pr.getDate() + ", " + pr.getPrCreatedByName() + ", "
-                    + pr.getPrCreatedByID() + ", " + formattedItemCodes + ", " + formattedQuantities + ", "
-                    + pr.getExDate() + ", " + pr.getStatus();
-            try {
-                TextFile.appendTo("src/PurchaseRequisition/PR.txt", record);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error saving PR to file: " + e.getMessage());
-            }
-        }
-        tempPRList.clear();
-        JOptionPane.showMessageDialog(null, "All temporary PRs saved to file!");
-    }
-
-    public void delete(String prIDToDelete) {
-        if (prIDToDelete == null || prIDToDelete.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Please enter a PR ID to delete!");
-            return;
-        }
-
-        int choice = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete PR ID: " + prIDToDelete + "?", "Confirmation", JOptionPane.YES_NO_OPTION);
-        if (choice == JOptionPane.YES_OPTION) {
-            try {
-                if (removeRecord(prIDToDelete)) { // Call the updated removeRecord
-                    // Remove from in-memory list
-                    Iterator<PROperation> iterator = prlist.iterator();
-                    while (iterator.hasNext()) {
-                        PROperation pr = iterator.next();
-                        if (pr.getPRID().equals(prIDToDelete)) {
-                            iterator.remove();
-                            break; // Assuming PR IDs are unique, can stop after finding
-                        }
-                    }
-                    JOptionPane.showMessageDialog(null, "Successfully Deleted PR ID: " + prIDToDelete);
-                } else {
-                    JOptionPane.showMessageDialog(null, "PR ID: " + prIDToDelete + " not found or an error occurred.");
-                }
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, "Error during delete operation: " + e.getMessage());
-            }
-        } else {
-            JOptionPane.showMessageDialog(null, "Delete operation cancelled");
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
+            model.addRow(new Object[]{selectedItemCode, enteredQuantity});
+            table.setModel(model); // Ensure the table model is updated
+            JOptionPane.showMessageDialog(parentComponent, "Items has been added to Items Table successfully!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentComponent, "Error adding data: " + e.getMessage());
         }
     }
 
-    public void update(PROperation updatedPr) {
-        // 1. Validate the input PROperation object
-        if (updatedPr == null || updatedPr.getPRID() == null || updatedPr.getPRID().trim().isEmpty()
-                || updatedPr.getDate() == null || updatedPr.getPrCreatedByName() == null
-                || updatedPr.getPrCreatedByID() == null || updatedPr.getItemCode() == null
-                || updatedPr.getQuantity() == null || updatedPr.getExDate() == null
-                || updatedPr.getStatus() == null) {
-            JOptionPane.showMessageDialog(null, "All fields of the updated PR must be filled!");
-            return;
-        }
-
-        String filePath = "src/PurchaseRequisition/PR.txt";
-        String tempFile = "src/PurchaseRequisition/PR_temp.txt"; // Use a distinct temp file name for updates
-        File inputFile = new File(filePath);
-        File outputFile = new File(tempFile);
-
-        boolean recordFound = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(inputFile)); BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile)); PrintWriter pw = new PrintWriter(writer)) {
-
-            String currentLine;
-            // Read and process lines
-            while ((currentLine = reader.readLine()) != null) {
-                // Use regex to properly split by commas outside of curly braces
-                String[] parts = currentLine.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)");
-                if (parts.length > 0 && parts[0].trim().equals(updatedPr.getPRID())) {
-                    // This is the record to update
-                    // Format the item codes and quantities back into {a,b} format for writing to file
-                    String formattedItemCodes = "{" + updatedPr.getItemCode().replace("\n", ", ") + "}";
-                    String formattedQuantities = "{" + updatedPr.getQuantity().replace("\n", ", ") + "}";
-
-                    String updatedRecord = updatedPr.getPRID() + ", " + updatedPr.getDate() + ", "
-                            + updatedPr.getPrCreatedByName() + ", " + updatedPr.getPrCreatedByID() + ", "
-                            + formattedItemCodes + ", " + formattedQuantities + ", "
-                            + updatedPr.getExDate() + ", " + updatedPr.getStatus();
-                    pw.println(updatedRecord);
-                    recordFound = true;
-                } else {
-                    // Write all other lines as they are
-                    pw.println(currentLine);
-                }
+    public void deleteRowFromTable(javax.swing.JTable table, java.awt.Component parentComponent) {
+        try {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(parentComponent, "Please select a row to delete.", "Delete Item", JOptionPane.INFORMATION_MESSAGE);
+                return;
             }
-            pw.flush();
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error during update operation: " + e.getMessage());
-            // If an error occurs, try to delete the temporary file to clean up
-            outputFile.delete();
-            return;
-        }
-
-        if (!recordFound) {
-            JOptionPane.showMessageDialog(null, "Record with PR ID " + updatedPr.getPRID() + " not found for update!");
-            outputFile.delete(); // Delete temp file as no update happened
-            return;
-        }
-
-        // Replace the original file with the updated temporary file
-        if (inputFile.delete()) {
-            if (!outputFile.renameTo(inputFile)) {
-                JOptionPane.showMessageDialog(null, "Error renaming temporary file to original file after update.");
+            int confirm = JOptionPane.showConfirmDialog(parentComponent, "Are you sure you want to delete the selected row?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
+                model.removeRow(selectedRow);
+                JOptionPane.showMessageDialog(parentComponent, "Row deleted successfully.", "Delete Item", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Update the in-memory list as well
-                for (int i = 0; i < prlist.size(); i++) {
-                    if (prlist.get(i).getPRID().equals(updatedPr.getPRID())) {
-                        prlist.set(i, updatedPr); // Replace the old object with the updated one
-                        break;
-                    }
-                }
-                JOptionPane.showMessageDialog(null, "Data Updated Successfully!");
+                JOptionPane.showMessageDialog(parentComponent, "Delete operation cancelled.", "Delete Item", JOptionPane.INFORMATION_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(null, "Error deleting original file during update. Check file permissions.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentComponent, "Error deleting row: " + e.getMessage());
+        }
+    }
+
+    public void updateRowInTable(javax.swing.JTable table, javax.swing.JComboBox<String> cbItemCode, javax.swing.JTextField txtQuantity, java.awt.Component parentComponent) {
+        try {
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(parentComponent, "Please select a row to update.", "Update Item", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            String newItemCode = cbItemCode.getSelectedItem() != null ? cbItemCode.getSelectedItem().toString() : "";
+            String newQuantity = txtQuantity.getText();
+
+            if (newItemCode.isEmpty() || newQuantity.isEmpty()) {
+                JOptionPane.showMessageDialog(parentComponent, "Item Code and Quantity cannot be empty.", "Update Item", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            model.setValueAt(newItemCode, selectedRow, 0);
+            model.setValueAt(newQuantity, selectedRow, 1);
+
+            JOptionPane.showMessageDialog(parentComponent, "Row updated successfully.", "Update Item", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentComponent, "Error updating row: " + e.getMessage());
         }
     }
 
@@ -283,5 +203,82 @@ public class PR_Management {
         }
 
         return recordFound;
+    }
+
+    // Add this method to allow saving a PROperation to PR.txt
+    public void add(PROperation newPr) {
+        if (newPr == null) {
+            JOptionPane.showMessageDialog(null, "PR data is null!");
+            return;
+        }
+        // Ensure the date is always saved in the correct format
+        String formattedDate = newPr.getDate();
+        if (formattedDate == null || formattedDate.isEmpty()) {
+            formattedDate = new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date());
+        }
+        String formattedItemCodes = "{" + newPr.getItemCode().replace("\n", ", ") + "}";
+        String formattedQuantities = "{" + newPr.getQuantity().replace("\n", ", ") + "}";
+        String record = newPr.getPRID() + ", " + formattedDate + ", " + newPr.getPrCreatedByName() + ", "
+                + newPr.getPrCreatedByID() + ", " + formattedItemCodes + ", " + formattedQuantities + ", "
+                + newPr.getExDate() + ", " + newPr.getStatus();
+        try {
+            TextFile.appendTo("src/PurchaseRequisition/PR.txt", record);
+            prlist.add(newPr);
+            JOptionPane.showMessageDialog(null, "PR added successfully!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error saving PR to file: " + e.getMessage());
+        }
+    }
+
+    public void savePRFromTable(
+        javax.swing.JTable table,
+        javax.swing.JTextField txtPRID,
+        javax.swing.JTextField txtDate,
+        javax.swing.JTextField txtSMName,
+        javax.swing.JTextField txtSMID,
+        javax.swing.JComboBox<String> cbStatus,
+        com.toedter.calendar.JDateChooser txtExDate,
+        java.awt.Component parentComponent
+    ) {
+        try {
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
+            int rowCount = model.getRowCount();
+            if (rowCount == 0) {
+                JOptionPane.showMessageDialog(parentComponent, "Please add at least one item to the table.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            String prID = txtPRID.getText().trim();
+            String date = txtDate.getText().trim();
+            String smName = txtSMName.getText().trim();
+            String smID = txtSMID.getText().trim();
+            String status = cbStatus.getSelectedItem() != null ? cbStatus.getSelectedItem().toString() : "PENDING";
+            String exDate = "";
+            if (txtExDate.getDate() != null) {
+                exDate = new java.text.SimpleDateFormat("dd-MM-yyyy").format(txtExDate.getDate());
+            }
+            java.util.List<String> itemCodes = new java.util.ArrayList<>();
+            java.util.List<String> quantities = new java.util.ArrayList<>();
+            for (int i = 0; i < rowCount; i++) {
+                String code = model.getValueAt(i, 0).toString().trim();
+                String qty = model.getValueAt(i, 1).toString().trim();
+                itemCodes.add(code);
+                quantities.add(qty);
+            }
+            PROperation pr = new PROperation(
+                prID,
+                date,
+                smName,
+                smID,
+                String.join("\n", itemCodes),
+                String.join("\n", quantities),
+                exDate,
+                status
+            );
+            add(pr);
+            JOptionPane.showMessageDialog(parentComponent, "Purchase Requisition generated and saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(parentComponent, "Error generating PR: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
