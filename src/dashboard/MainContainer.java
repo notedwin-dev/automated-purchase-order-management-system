@@ -8,7 +8,6 @@ import auth.Login;
 import auth.Session;
 import auth.User;
 import components.Navbar;
-import roles.Feature;
 
 import javax.swing.*;
 
@@ -175,7 +174,7 @@ public class MainContainer extends javax.swing.JFrame {
             if (className.equals("PurchaseOrder.Main_PO") || 
                 className.equals("PurchaseOrder.PM_View_PO") || 
                 className.equals("PurchaseOrder.View_All_PO_UI") ||
-                className.equals("PurchaseOrder.FM_View_PO_Approval")) {
+                className.equals("PurchaseOrder.FM_View_PO_Approval") || className.equals("PurchaseOrder.PO_List_UI")) {
                 try {
                     // Check if already in cache
                     if (activePanels.containsKey(className)) {
@@ -199,6 +198,9 @@ public class MainContainer extends javax.swing.JFrame {
                     } else if (className.equals("PurchaseOrder.Main_PO")) {
                         // Main_PO should create a PO_Panel for generating POs from PRs
                         poPanel = new PurchaseOrder.PO_Panel(prmanagement);
+                    } else if (className.equals("PurchaseOrder.PO_List_UI")) {
+                        // Purchase Order List UI
+                        poPanel = new PurchaseOrder.PO_List_UI();
                     }
                     
                     // Use our method to preserve layout if poPanel was initialized
@@ -490,18 +492,56 @@ public class MainContainer extends javax.swing.JFrame {
                 // Add to content wrapper with original bounds
                 contentWrapper.add(component);
                 component.setBounds(bounds);
+
+                // Special handling for containers with action components
+                if (component instanceof Container) {
+                    preserveInteractivity((Container)component);
+                }
             }
             
             // Add the content wrapper to the content panel
             contentPanel.add(contentWrapper, className);
             activePanels.put(className, contentWrapper);
             cardLayout.show(contentPanel, className);
+
+            // Don't dispose of the frame yet - we need to keep it for event handling
+            // Instead, store a reference and make it invisible
+            frame.setVisible(false);
+            activePanelFrames.put(className, frame);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error showing content: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
+
+    /**
+     * Ensures components within containers maintain their interactivity
+     * 
+     * @param container The container to process
+     */
+    private void preserveInteractivity(Container container) {
+        // Process all components in this container
+        for (Component component : container.getComponents()) {
+            // If this component is another container, process it recursively
+            if (component instanceof Container) {
+                preserveInteractivity((Container)component);
+            }
+            
+            // Make sure the component is enabled and focusable
+            component.setEnabled(true);
+            
+            // Special handling for buttons to ensure they respond to events
+            if (component instanceof JButton) {
+                JButton button = (JButton)component;
+                // Ensure the button retains focus capabilities
+                button.setFocusable(true);
+                button.setRequestFocusEnabled(true);
+            }
+        }
+    }
+
+    private Map<String, JFrame> activePanelFrames = new HashMap<>();
     
     /**
      * Logs out the current user and returns to the login screen

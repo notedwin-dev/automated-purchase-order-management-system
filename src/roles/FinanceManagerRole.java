@@ -45,7 +45,7 @@ public class FinanceManagerRole extends Role {
         addPermission(Feature.USER_MANAGEMENT, PermissionLevel.NO_ACCESS);
         
         // Inventory Management - Verify updates only
-        addPermission(Feature.INVENTORY_MANAGEMENT, PermissionLevel.VERIFY_ONLY);
+        addPermission(Feature.INVENTORY_LIST, PermissionLevel.VIEW_ONLY);
         addPermission(Feature.STOCK_REPORTS, PermissionLevel.VIEW_ONLY);
         
         // Financial Management - Full access

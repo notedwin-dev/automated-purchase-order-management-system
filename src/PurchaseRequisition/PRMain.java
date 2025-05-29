@@ -4,6 +4,8 @@
  */
 package PurchaseRequisition;
 
+import auth.Session;
+import auth.User;
 import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -62,16 +64,21 @@ public class PRMain extends javax.swing.JFrame {
      */
     public PRMain() {
         initComponents();
-        
+
         this.prop = prop;
-        
+
         txtPRID.setEditable(false); // Prevents user from editing the PRID manually
 
         txtDate.setText(new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date()));
-        txtDate.setEditable(false); // Allow user to edit the date as text
+        txtDate.setEditable(false);
 
-        txtSMName.setText(prop.getPrCreatedByName());
-        txtSMID.setText(prop.getPrCreatedByID());
+        // Set current user info for SM Name and SM ID
+        User currentUser = Session.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            txtSMName.setText(currentUser.getUsername());
+            txtSMID.setText(currentUser.getID());
+        }
+
         txtSMName.setEditable(false);
         txtSMID.setEditable(false);
 
@@ -109,16 +116,6 @@ public class PRMain extends javax.swing.JFrame {
                 update_Button.setIcon(new ImageIcon(scaled_update));
             } else {
                 System.err.println("Update icon not found. Using default icon.");
-            }
-
-            // Load Refresh icon
-            java.net.URL refreshIconURL = getClass().getResource("/resources/icons/Refresh.png");
-            if (refreshIconURL != null) {
-                ImageIcon refreshIcon = new ImageIcon(refreshIconURL);
-                Image scaled_refresh = refreshIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
-                refresh_Button.setIcon(new ImageIcon(scaled_refresh));
-            } else {
-                System.err.println("Refresh icon not found. Using default icon.");
             }
 
             // Load Clean icon
@@ -264,12 +261,9 @@ public class PRMain extends javax.swing.JFrame {
     }
 
     private void clear() {
-        txtPRID.setText("PR");
-        txtDate.setText(""); // This line clears the JDateChooser for Date
-        txtSMName.setText("");
-        txtSMID.setText("SM");
+        cbItemCode.setSelectedIndex(0);
         txtQuantity.setText("");
-        txtExDate.setDate(null); // This line clears the JDateChooser for Expected Delivery Date
+        txtExDate.setDate(null);
         cbStatus.setSelectedIndex(0);
 
         // Set flag to indicate we're adding a new record
@@ -278,13 +272,6 @@ public class PRMain extends javax.swing.JFrame {
         // Clear temporary lists
         tempItemCodes.clear();
         tempQuantities.clear();
-
-        // Load items for a new record
-        loadItemsForNewRecord();
-
-        // Clear the table
-        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-        model.setRowCount(0);
     }
 
     // Add method to load items from items.txt for a new record
@@ -357,22 +344,6 @@ public class PRMain extends javax.swing.JFrame {
                 }
             });
 
-            // --- END OF CORRECTED COMBO BOX POPULATION AND LISTENER MANAGEMENT ---
-            // --- DocumentListener for txtQuantity ---
-            // This part is correctly placed, but make sure it's not being added multiple times
-            // if loadItemsForNewRecord() is called frequently.
-            // A common pattern is to add this DocumentListener once in the constructor.
-            // If you are only calling loadItemsForNewRecord() on initial load and for a "new record" clear operation,
-            // then it might be fine to keep it here, assuming 'isAddingNewRecord' manages its behavior.
-            // However, if it's called multiple times, you might need to remove previous DocumentListeners too.
-            // For now, assuming it's okay as is, but be aware of potential duplicates.
-            // Remove previous DocumentListeners to avoid duplicates if this method can be called multiple times
-            // outside of initial setup. A cleaner approach for DocumentListener is often to add it ONCE
-            // in the constructor. But if it MUST be here, this is how you'd manage it:
-            // for (DocumentListener dl : ((AbstractDocument)txtQuantity.getDocument()).getDocumentListeners()) {
-            //     txtQuantity.getDocument().removeDocumentListener(dl);
-            // }
-            // txtQuantity.getDocument().addDocumentListener(...); // Add it after removing old ones if needed
             txtQuantity.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
                 @Override
                 public void insertUpdate(javax.swing.event.DocumentEvent e) {
@@ -488,7 +459,6 @@ public class PRMain extends javax.swing.JFrame {
         txtQuantity = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         cbStatus = new javax.swing.JComboBox<>();
-        refresh_Button = new javax.swing.JButton();
         add_Button = new javax.swing.JButton();
         delete_Button = new javax.swing.JButton();
         clean_Button = new javax.swing.JButton();
@@ -553,15 +523,6 @@ public class PRMain extends javax.swing.JFrame {
         cbStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbStatusActionPerformed(evt);
-            }
-        });
-
-        refresh_Button.setBackground(new java.awt.Color(216, 212, 213));
-        refresh_Button.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/icons/Refresh.png"))); // NOI18N
-        refresh_Button.setBorder(null);
-        refresh_Button.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                refresh_ButtonActionPerformed(evt);
             }
         });
 
@@ -672,8 +633,6 @@ public class PRMain extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
@@ -728,9 +687,7 @@ public class PRMain extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -765,91 +722,28 @@ public class PRMain extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_cbStatusActionPerformed
 
-    private void refresh_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_ButtonActionPerformed
-        tableLoad();
-        JOptionPane.showMessageDialog(this, "Table Refreshed!");
-    }//GEN-LAST:event_refresh_ButtonActionPerformed
-
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
-        //Add Data Button
-        try {
-            // Auto-generate PRID and show it in the form
-            String prid = prManager.generateNextPRID();
-            txtPRID.setText(prid); // This updates the field (even though it's disabled for editing)
-
-            // Collect item codes and quantities from the table
-            DefaultTableModel tableModel = (DefaultTableModel) PRTable.getModel();
-            StringBuilder itemCodesBuilder = new StringBuilder("{");
-            StringBuilder quantitiesBuilder = new StringBuilder("{");
-
-            for (int i = 0; i < tableModel.getRowCount(); i++) {
-                if (i > 0) {
-                    itemCodesBuilder.append(", ");
-                    quantitiesBuilder.append(", ");
-                }
-                itemCodesBuilder.append(tableModel.getValueAt(i, 0).toString());
-                quantitiesBuilder.append(tableModel.getValueAt(i, 1).toString());
-            }
-
-            itemCodesBuilder.append("}");
-            quantitiesBuilder.append("}");
-
-            // Set collected data
-            prop.setItemCode(itemCodesBuilder.toString());
-            prop.setQuantity(quantitiesBuilder.toString());
-            getData(); // Fetch other details like date, creator info, etc.
-
-            PROperation newPR = new PROperation(prid, date, prCreatedByName, prCreatedByID,
-                    prop.getItemCode(), prop.getQuantity(), exdate, status);
-
-            prManager.add(newPR);
-
-            tableLoad();
-            clear();
-            JOptionPane.showMessageDialog(this, "Data added successfully!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error adding data: " + e.getMessage());
-        }
-
+        prManager.addRowToTable(PRTable, cbItemCode, txtQuantity, this);
     }//GEN-LAST:event_add_ButtonActionPerformed
 
     private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
-        String prIDToDelete = txtPRID.getText(); // or get from table row
-        prManager.delete(prIDToDelete);
-        tableLoad();
+        prManager.deleteRowFromTable(PRTable, this);
         clear();
-    }//GEN-LAST:event_delete_ButtonActionPerformed
+}//GEN-LAST:event_delete_ButtonActionPerformed
 
     private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
-        clear();
-        JOptionPane.showMessageDialog(this, "TextBox Cleaned!");
+        try {
+            clear();
+            JOptionPane.showMessageDialog(this, "TextBox Cleaned!");
+        } catch (Exception e) {
+            e.printStackTrace(); // <-- Add this for debugging
+            JOptionPane.showMessageDialog(this, "Error cleaning: " + e.getMessage());
+        }
     }//GEN-LAST:event_clean_ButtonActionPerformed
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
-        // Make sure we're in "updating record" mode
-        isAddingNewRecord = false;
-
-        getData();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
-        String prID = txtPRID.getText();
-        String date = txtDate.getText(); // Get date from DateChooser
-        String smname = txtSMName.getText();
-        String smid = txtSMID.getText();
-        String itemcode = (String) cbItemCode.getSelectedItem();
-        String quantity = txtQuantity.getText();
-        String exdate = sdf.format(txtExDate.getDate()); // Get expected date from DateChooser
-        String status = (String) cbStatus.getSelectedItem();
-
-        PROperation updatedPR = new PROperation(prID, date, smname, smid, itemcode, quantity, exdate, status
-        );
-
-// Call the update method
-        prManager.update(updatedPR);
-
-        tableLoad();
-        clear();
-    }//GEN-LAST:event_update_ButtonActionPerformed
+        prManager.updateRowInTable(PRTable, cbItemCode, txtQuantity, this);
+}//GEN-LAST:event_update_ButtonActionPerformed
 
     private void cbItemCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCodeActionPerformed
         // TODO add your handling code here:
@@ -861,68 +755,33 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDateActionPerformed
 
     private void GenerateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerateBtnActionPerformed
-        // TODO add your handling code here:
-        try {
-            prManager.saveAllTempPRsToFile();
-            JOptionPane.showMessageDialog(null, "Generate PR successfully!");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error saving PR: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-    }//GEN-LAST:event_GenerateBtnActionPerformed
+        prManager.savePRFromTable(
+                PRTable,
+                txtPRID,
+                txtDate,
+                txtSMName,
+                txtSMID,
+                cbStatus,
+                txtExDate,
+                this
+        );
+        clear();
+}//GEN-LAST:event_GenerateBtnActionPerformed
 
     private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
         int selectedRow = PRTable.getSelectedRow();
         if (selectedRow == -1) {
-            // No row selected, or selection cleared. This might happen with mouse clicks.
-            // You can simply return or clear relevant fields if needed.
+            // No row selected, or selection cleared.
             return;
         }
 
-        // Get the table model
+        // Only Item Code and Quantity columns exist
         DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-        model.setRowCount(0); // Clear existing rows
+        String itemCode = model.getValueAt(selectedRow, 0).toString();
+        String quantity = model.getValueAt(selectedRow, 1).toString();
 
-        for (PROperation pr : prManager.getPrlist()) {
-            model.addRow(new Object[]{
-                pr.getPRID(),
-                pr.getDate(),
-                pr.getPrCreatedByName(),
-                pr.getPrCreatedByID(),
-                pr.getItemCode().replace("\n", ", "),
-                pr.getQuantity().replace("\n", ", "),
-                pr.getExDate(),
-                pr.getStatus()
-            });
-        }
-    }
-
-    private void tableLoad() {
-        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-        model.setRowCount(0);
-
-        String filePath = "src/itemmanagement/items.txt"; // Ensure this path is correct based on your project structure
-        File file = new File(filePath);
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String headerLine = br.readLine(); // Assuming there's a header line to skip
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                // Split the line by comma
-                String[] dataRow = line.split(",");
-
-                // Check if there are enough columns to get item code (index 1) and quantity (index 4)
-                if (dataRow.length >= 5) {
-                    String itemCode = dataRow[1].trim(); // Item Code is at index 1 [cite: 1]
-                    String quantity = dataRow[4].trim(); // Quantity is at index 4 [cite: 1]
-
-                    model.addRow(new Object[]{itemCode, quantity});
-                }
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error loading table: " + e.getMessage());
-        }
+        cbItemCode.setSelectedItem(itemCode);
+        txtQuantity.setText(quantity);
     }
 
     /**
@@ -979,7 +838,6 @@ public class PRMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton refresh_Button;
     private javax.swing.JTextField txtDate;
     private com.toedter.calendar.JDateChooser txtExDate;
     private javax.swing.JTextField txtPRID;
