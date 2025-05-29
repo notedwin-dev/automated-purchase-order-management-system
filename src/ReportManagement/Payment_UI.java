@@ -4,6 +4,7 @@
  */
 package ReportManagement;
 
+import InventoryManagement.InventoryManager;
 import PurchaseOrder.PurchaseOrder;
 import java.util.ArrayList;
 import java.util.List;
@@ -222,6 +223,7 @@ public class Payment_UI extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Failed Payment.");
             }
         }
+        InventoryManager.resetDeliveryStatusWhenPOsPaid();
     }//GEN-LAST:event_PayButtonActionPerformed
 
     /**

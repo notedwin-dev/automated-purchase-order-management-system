@@ -5,6 +5,7 @@
 package ReportManagement;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -67,12 +68,7 @@ public class Payment_List_UI extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         PaymentTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null}
-            },
+            new Object [][] {},
             new String [] {
                 "No.", "Payment ID", "PO ID", "Supplier Name", "Supplier ID", "Item Name", "Item Code", "Quantity", "Unit Price", "Total Amount", "Payment Status", "Payment Date"
             }
@@ -80,10 +76,14 @@ public class Payment_List_UI extends javax.swing.JFrame {
         jScrollPane1.setViewportView(PaymentTable);
 
         jLabel1.setFont(new java.awt.Font("Arial", 1, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Paid Purchase Order List");
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Generate Receipt");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -107,7 +107,7 @@ public class Payment_List_UI extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(61, 61, 61)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 77, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 102, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addGap(21, 21, 21))
         );
@@ -125,6 +125,19 @@ public class Payment_List_UI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = PaymentTable.getSelectedRow();
+        if(selectedRow == -1){
+            JOptionPane.showMessageDialog(null, "Please select a PO from the list.");
+            return;
+        }
+        
+        String poID = PaymentTable.getValueAt(selectedRow, 2).toString();
+        Receipt_UI receiptUI = new Receipt_UI(poID);
+        receiptUI.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
