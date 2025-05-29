@@ -522,7 +522,7 @@ public class PRMain extends javax.swing.JFrame {
         jLabel10.setText("Status");
 
         cbStatus.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
-        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PENDING", "APPROVED", "COMPLETED" }));
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "PENDING" }));
         cbStatus.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbStatusActionPerformed(evt);
