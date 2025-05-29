@@ -103,27 +103,25 @@ public class PR_Management {
     }
 
     public void addRowToTable(javax.swing.JTable table, javax.swing.JComboBox<String> cbItemCode, javax.swing.JTextField txtQuantity, java.awt.Component parentComponent) {
-        try {
-            String selectedItemCode = cbItemCode.getSelectedItem().toString();
-            String enteredQuantity = txtQuantity.getText();
+    try {
+        String selectedItemCode = cbItemCode.getSelectedItem().toString();
+        String enteredQuantity = txtQuantity.getText();
 
-            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
-
-            // Check if the item code already exists in the table
-            for (int i = 0; i < model.getRowCount(); i++) {
-                String codeInTable = model.getValueAt(i, 0).toString();
-                if (codeInTable.equals(selectedItemCode)) {
-                    JOptionPane.showMessageDialog(parentComponent, "Item code already exists in the table. Please use the update function to modify its quantity.", "Duplicate Item", JOptionPane.WARNING_MESSAGE);
-                    return;
-                }
-            }
-            model.addRow(new Object[]{selectedItemCode, enteredQuantity});
-            JOptionPane.showMessageDialog(parentComponent, "Item has been added to Items Table successfully!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(parentComponent, "Error adding data: " + e.getMessage());
+        // Validate Quantity
+        if (enteredQuantity.isEmpty() || !enteredQuantity.matches("\\d+") || enteredQuantity.startsWith("0") || Integer.parseInt(enteredQuantity) <= 0) {
+            JOptionPane.showMessageDialog(parentComponent, "Quantity must be a numeric value greater than 0 and cannot start with 0.", "Invalid Quantity", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
+        model.addRow(new Object[]{selectedItemCode, enteredQuantity});
+        table.setModel(model); // Ensure the table model is updated
+        JOptionPane.showMessageDialog(parentComponent, "Item has been added to Items Table successfully!");
+    } catch (Exception e) {
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(parentComponent, "Error adding data: " + e.getMessage());
     }
+}
 
     public void deleteRowFromTable(javax.swing.JTable table, java.awt.Component parentComponent) {
         try {

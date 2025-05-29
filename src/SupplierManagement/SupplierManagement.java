@@ -24,7 +24,6 @@ public class SupplierManagement implements SupplierOperations{
     
     
     private List<Supplier> supplierList = new ArrayList<>();
-    private int selectedIndex = -1;
     
     public SupplierManagement(
         JTable SupplierTable,
