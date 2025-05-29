@@ -8,7 +8,6 @@ import auth.Login;
 import auth.Session;
 import auth.User;
 import components.Navbar;
-import roles.Feature;
 
 import javax.swing.*;
 
@@ -493,18 +492,56 @@ public class MainContainer extends javax.swing.JFrame {
                 // Add to content wrapper with original bounds
                 contentWrapper.add(component);
                 component.setBounds(bounds);
+
+                // Special handling for containers with action components
+                if (component instanceof Container) {
+                    preserveInteractivity((Container)component);
+                }
             }
             
             // Add the content wrapper to the content panel
             contentPanel.add(contentWrapper, className);
             activePanels.put(className, contentWrapper);
             cardLayout.show(contentPanel, className);
+
+            // Don't dispose of the frame yet - we need to keep it for event handling
+            // Instead, store a reference and make it invisible
+            frame.setVisible(false);
+            activePanelFrames.put(className, frame);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error showing content: " + e.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
+
+    /**
+     * Ensures components within containers maintain their interactivity
+     * 
+     * @param container The container to process
+     */
+    private void preserveInteractivity(Container container) {
+        // Process all components in this container
+        for (Component component : container.getComponents()) {
+            // If this component is another container, process it recursively
+            if (component instanceof Container) {
+                preserveInteractivity((Container)component);
+            }
+            
+            // Make sure the component is enabled and focusable
+            component.setEnabled(true);
+            
+            // Special handling for buttons to ensure they respond to events
+            if (component instanceof JButton) {
+                JButton button = (JButton)component;
+                // Ensure the button retains focus capabilities
+                button.setFocusable(true);
+                button.setRequestFocusEnabled(true);
+            }
+        }
+    }
+
+    private Map<String, JFrame> activePanelFrames = new HashMap<>();
     
     /**
      * Logs out the current user and returns to the login screen
