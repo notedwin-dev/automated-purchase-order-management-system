@@ -26,10 +26,9 @@ public class PurchaseManagerRole extends Role {
         addPermission(Feature.ITEM_LIST, PermissionLevel.VIEW_ONLY);
         addPermission(Feature.SUPPLIER_LIST, PermissionLevel.VIEW_ONLY);
         
-        // Sales Management - No access to daily operations, view only for reports
+        // Sales Management - No access to daily operations
         addPermission(Feature.DAILY_SALES, PermissionLevel.NO_ACCESS);
         addPermission(Feature.SALES_ENTRY, PermissionLevel.NO_ACCESS);
-        addPermission(Feature.SALES_REPORT, PermissionLevel.VIEW_ONLY);
         
         // Purchase Requisition - View only
         addPermission(Feature.DISPLAY_REQUISITION, PermissionLevel.VIEW_ONLY);
