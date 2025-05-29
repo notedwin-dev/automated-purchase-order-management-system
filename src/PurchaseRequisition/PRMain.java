@@ -72,12 +72,13 @@ public class PRMain extends javax.swing.JFrame {
         txtDate.setText(new java.text.SimpleDateFormat("dd-MM-yyyy").format(new java.util.Date()));
         txtDate.setEditable(false);
 
-        // Only set user info if not already set (avoid setting to null after clear)
+        // Set current user info for SM Name and SM ID
         User currentUser = Session.getInstance().getCurrentUser();
         if (currentUser != null) {
             txtSMName.setText(currentUser.getUsername());
             txtSMID.setText(currentUser.getID());
         }
+
         txtSMName.setEditable(false);
         txtSMID.setEditable(false);
 
@@ -271,13 +272,6 @@ public class PRMain extends javax.swing.JFrame {
         // Clear temporary lists
         tempItemCodes.clear();
         tempQuantities.clear();
-
-        // Load items for a new record
-        loadItemsForNewRecord();
-
-        // Clear the table
-        DefaultTableModel model = (DefaultTableModel) PRTable.getModel();
-        model.setRowCount(0);
     }
 
     // Add method to load items from items.txt for a new record
@@ -733,7 +727,8 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_add_ButtonActionPerformed
 
     private void delete_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delete_ButtonActionPerformed
-    prManager.deleteRowFromTable(PRTable, this);
+        prManager.deleteRowFromTable(PRTable, this);
+        clear();
 }//GEN-LAST:event_delete_ButtonActionPerformed
 
     private void clean_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clean_ButtonActionPerformed
@@ -747,7 +742,7 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_clean_ButtonActionPerformed
 
     private void update_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_update_ButtonActionPerformed
-    prManager.updateRowInTable(PRTable, cbItemCode, txtQuantity, this);
+        prManager.updateRowInTable(PRTable, cbItemCode, txtQuantity, this);
 }//GEN-LAST:event_update_ButtonActionPerformed
 
     private void cbItemCodeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbItemCodeActionPerformed
@@ -760,17 +755,17 @@ public class PRMain extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDateActionPerformed
 
     private void GenerateBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GenerateBtnActionPerformed
-    prManager.savePRFromTable(
-        PRTable,
-        txtPRID,
-        txtDate,
-        txtSMName,
-        txtSMID,
-        cbStatus,
-        txtExDate,
-        this
-    );
-    clear();
+        prManager.savePRFromTable(
+                PRTable,
+                txtPRID,
+                txtDate,
+                txtSMName,
+                txtSMID,
+                cbStatus,
+                txtExDate,
+                this
+        );
+        clear();
 }//GEN-LAST:event_GenerateBtnActionPerformed
 
     private void PRTableMouseClicked(java.awt.event.MouseEvent evt) {
@@ -787,17 +782,6 @@ public class PRMain extends javax.swing.JFrame {
 
         cbItemCode.setSelectedItem(itemCode);
         txtQuantity.setText(quantity);
-    }
-
-    private void addToItemTable(String itemCode, String quantity) {
-        DefaultTableModel table = (DefaultTableModel) PRTable.getModel();
-
-        table.addRow(new Object[]{
-            itemCode,
-            quantity
-        }
-        );
-        PRTable.setModel(table);
     }
 
     /**
