@@ -319,4 +319,59 @@ public class Payment {
     private static String getCurrentDate() {
         return java.time.LocalDate.now().toString();
     }
+    
+    public static List<Payment_Encapsulation> getAllPayments() {
+        List<String> lines = TextFile.readFile(PaymentFile);
+        List<Payment_Encapsulation> paymentList = new ArrayList<>();
+
+        for (String line : lines) {
+            Payment_Encapsulation payment = parseLineToPayment(line);
+            if (payment != null) {
+                paymentList.add(payment);
+            }
+        }
+        return paymentList;
+    }
+    
+    private static Payment_Encapsulation parseLineToPayment(String line) {
+        List<String> parts = new ArrayList<>();
+        StringBuilder currentPart = new StringBuilder();
+        int braceCount = 0;
+
+        for (char c : line.toCharArray()) {
+            if (c == '{') braceCount++;
+            else if (c == '}') braceCount--;
+
+            if (c == ',' && braceCount == 0) {
+                parts.add(currentPart.toString().trim());
+                currentPart = new StringBuilder();
+            } else {
+                currentPart.append(c);
+            }
+        }
+        parts.add(currentPart.toString().trim());
+
+        // Your payment.txt line has 11 fields expected (adjust if needed)
+        if (parts.size() < 11) {
+            System.out.println("Invalid line (missing fields): " + line);
+            return null;
+        }
+
+        // Extract fields based on your payment.txt format:
+        String paymentID = parts.get(0);
+        String poID = parts.get(1);
+        String supplierName = parts.get(2).replace("{", "").replace("}", "");
+        String supplierID = parts.get(3).replace("{", "").replace("}", "");
+        String itemName = parts.get(4).replace("{", "").replace("}", "");
+        String itemCodes = parts.get(5).replace("{", "").replace("}", "");
+        String quantities = parts.get(6).replace("{", "").replace("}", "");
+        String paymentStatus = parts.get(7);
+        String unitPrice = parts.get(8).replace("{", "").replace("}", "");
+        String totalAmount = parts.get(9);
+        String paymentDate = parts.get(10);
+
+        return new Payment_Encapsulation(paymentID, poID, supplierName, supplierID, itemName,
+                                         itemCodes, quantities, unitPrice, totalAmount, paymentStatus,
+                                         paymentDate);
+    }
 }

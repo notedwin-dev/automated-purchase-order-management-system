@@ -4,4 +4,4 @@ SP0003,Adam,333333333,supplier3@example.com,Address 3,{durian, mango, melon}
 SP0004,Supplier 4,444444444,supplier4@example.com,Address 4,{watermelon}
 SP0005,Penny,5555555,supplier5@example.com,Address 5,{Item 1}
 SP0006,Supplier 6,666666,supplier6@example.com,address 6,{Item 1}
-SP0008,dada,12131,dada@gmail.com,dada 1,{banana,orange,grape, pineapple,durian,mango}
+SP0008,dadada,12131,dada@gmail.com,dada 1,{banana,orange,grape, pineapple,durian,mango}
