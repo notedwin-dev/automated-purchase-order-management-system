@@ -213,4 +213,23 @@ public class User_Management {
 
         JOptionPane.showMessageDialog(null, "User updated successfully!");
     }
+
+    public String generateUserID() {
+        List<String> userLines = TextFile.readFile("src/auth/txtlogin.txt");
+        int maxId = 0;
+
+        for (String line : userLines) {
+            String[] parts = line.split(",");
+            if (parts.length > 0 && parts[0].startsWith("U")) {
+                try {
+                    int idNumber = Integer.parseInt(parts[0].substring(1));
+                    maxId = Math.max(maxId, idNumber);
+                } catch (NumberFormatException e) {
+                    // Ignore invalid IDs
+                }
+            }
+        }
+
+        return String.format("U%04d", maxId + 1);
+    }
 }
