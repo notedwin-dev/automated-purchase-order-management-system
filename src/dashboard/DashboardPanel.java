@@ -125,7 +125,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         }
         
         // Add feature-specific navigation
-            addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
+            addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.ItemList");
             addFeatureButtonIfPermitted(Feature.ITEM_LIST, "Item List", "itemmanagement.ViewItemList");
             addFeatureButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
             addFeatureButtonIfPermitted(Feature.SUPPLIER_LIST, "Supplier List", "SupplierManagement.View_Supplier_UI");
@@ -221,10 +221,6 @@ public class DashboardPanel extends javax.swing.JPanel {
                             // For Admin and Purchase Manager, use Main_PO which shows PR list
                             if ("Purchase Manager".equals(userRole) || "Administrator".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.Main_PO";
-                            }
-                            // For Finance Manager, show the PO approval UI
-                            else if ("Finance Manager".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.PO_Approval"; 
                             }
                             // For Inventory Manager, show view-only PO list
                             else if ("Inventory Manager".equals(userRole)) {
