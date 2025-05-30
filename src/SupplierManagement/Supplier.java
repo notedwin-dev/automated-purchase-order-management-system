@@ -18,7 +18,6 @@ public class Supplier {
         this.email = email;
         this.address = address;
         this.itemDescription = itemDescription;
-    
     }
     
     //Getters & Setters

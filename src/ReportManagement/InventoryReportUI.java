@@ -235,6 +235,11 @@ public class InventoryReportUI extends javax.swing.JFrame {
 
         printbtn.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         printbtn.setText("Print");
+        printbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                printbtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -261,6 +266,10 @@ public class InventoryReportUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void printbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printbtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_printbtnActionPerformed
 
     /**
      * @param args the command line arguments

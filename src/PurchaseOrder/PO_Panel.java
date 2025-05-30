@@ -4,8 +4,8 @@
  */
 package PurchaseOrder;
 
-import PurchaseRequisition.PROperation;
-import PurchaseRequisition.PR_Management;
+import PurchaseRequisition.PurchaseRequisition;
+import PurchaseRequisition.PurchaseRequisitionManagement;
 import java.awt.*;
 import java.util.Arrays;
 import javax.swing.table.*;
@@ -17,9 +17,9 @@ public class PO_Panel extends javax.swing.JFrame {
 
     private DefaultTableModel tmodel;
     private PO_GenerationManagement manage;
-    private PR_Management prmanagement;
+    private PurchaseRequisitionManagement prmanagement;
     
-    public PO_Panel(PR_Management prmanagement) {
+    public PO_Panel(PurchaseRequisitionManagement prmanagement) {
         initComponents();
         // - - - - - RESIZE ICON REFRESH - - - - - //
         ImageIcon refreshIcon = new ImageIcon(getClass().getResource("/resources/icons/Refresh.png"));
@@ -143,16 +143,32 @@ public class PO_Panel extends javax.swing.JFrame {
     }
     
     
-    private PROperation getSelectedPR(){
-        int selectedRow = prTable.getSelectedRow();
-        if(selectedRow == -1){
-            JOptionPane.showMessageDialog(null, "Please select a row" , "Selection Error", JOptionPane.ERROR_MESSAGE);
-            return null;
-        }
-        String prid = prTable.getValueAt(selectedRow, 1).toString(); // PR ID is at col 1
-        return prmanagement.findprid(prid);
+//    private PurchaseRequisition getSelectedPR(){
+//        int selectedRow = prTable.getSelectedRow();
+//        if(selectedRow == -1){
+//            JOptionPane.showMessageDialog(null, "Please select a row" , "Selection Error", JOptionPane.ERROR_MESSAGE);
+//            return null;
+//        }
+//        String prid = prTable.getValueAt(selectedRow, 1).toString(); // PR ID is at col 1
+//        return prmanagement.findprid(prid);
+//    }
+    private PurchaseRequisition getSelectedPR() {
+    int selectedRow = prTable.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(null, "Please select a row", "Selection Error", JOptionPane.ERROR_MESSAGE);
+        return null;
     }
-    
+
+    String prid = prTable.getValueAt(selectedRow, 1).toString(); // PR ID at column 1
+    System.out.println("Selected PR ID from table: " + prid);  // Debug
+
+    PurchaseRequisition pr = prmanagement.findprid(prid);
+    if (pr == null) {
+        System.out.println("PR not found for ID: " + prid);  // Debug
+    }
+    return pr;
+}
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -290,10 +306,14 @@ public class PO_Panel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void generatePO_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePO_buttonActionPerformed
-        PROperation selectedPR = getSelectedPR();
+        prmanagement.getPRfromtxtfile();
+        PurchaseRequisition selectedPR = getSelectedPR();
+        System.out.println("Selected PR: " + selectedPR);
 
         if (selectedPR != null) {
             String status = selectedPR.getStatus();  // Assuming you have a getStatus() method
+            System.out.println("PR Status: " + status); // DEBUG
+
 
             if (status.equalsIgnoreCase("Approved") || status.equalsIgnoreCase("Rejected")) {
                 JOptionPane.showMessageDialog(this, 
@@ -302,8 +322,8 @@ public class PO_Panel extends javax.swing.JFrame {
                     JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
             // ----- Proceed to generate PO ----- //
+            System.out.println("Generating PO UI for PR: " + selectedPR.getPrid());
             new PO_GenerationUI(selectedPR).setVisible(true);
             this.dispose();
         } 
@@ -318,6 +338,17 @@ public class PO_Panel extends javax.swing.JFrame {
         int selectedRow = prTable.getSelectedRow();
         if (selectedRow != -1) {
             String prID = prTable.getValueAt(selectedRow, 1).toString(); 
+            String status = prTable.getValueAt(selectedRow, 8).toString();
+            
+            // ----- Cannot reject once status is APPROVED ----- //
+             if (status.equalsIgnoreCase("APPROVED")) {
+                JOptionPane.showMessageDialog(this, 
+                    "You cannot reject PR " + prID + " because it is already APPROVED.",
+                    "Action Denied",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+             
             int confirm = JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to reject PR " + prID + "?",
                     "Confirm Rejection",

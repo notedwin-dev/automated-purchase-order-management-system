@@ -125,13 +125,13 @@ public class DashboardPanel extends javax.swing.JPanel {
         }
         
         // Add feature-specific navigation
-            addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
+            addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.ItemList");
             addFeatureButtonIfPermitted(Feature.ITEM_LIST, "Item List", "itemmanagement.ViewItemList");
             addFeatureButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
             addFeatureButtonIfPermitted(Feature.SUPPLIER_LIST, "Supplier List", "SupplierManagement.View_Supplier_UI");
             addFeatureButtonIfPermitted(Feature.DAILY_SALES, Feature.DAILY_SALES, "DailySalesManagement.View_DailySales_List");
             addFeatureButtonIfPermitted(Feature.SALES_ENTRY, Feature.SALES_ENTRY, "DailySalesManagement.DailySalesUI");
-            addFeatureButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
+            addFeatureButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PurchaseRequisitionGenerationUI");
             addFeatureButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.View_PRList"); //To be PR LIST
             addFeatureButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, Feature.GENERATE_PURCHASE_ORDER, "PurchaseOrder.Main_PO");
             addFeatureButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, Feature.PURCHASE_ORDERS_LIST, "PurchaseOrder.PO_Panel");
@@ -193,15 +193,21 @@ public class DashboardPanel extends javax.swing.JPanel {
                         
                         // Role-based redirection
                         String redirectClass = className;
+                        String userRole = currentUser.getRole();
                         
                         // Handle Display Requisitions based on role
                         if (featureName.equals(Feature.DISPLAY_REQUISITION)) {
-                            // use default className, no need to write any overwriting
+                            
+                            if ("Administrator".equals(userRole) || "Sales Manager".equals(userRole)) {
+                                redirectClass = "PurchaseRequisition.PurchaseRequisitionList";
+                            } else {
+                                redirectClass = "PurchaseOrder.View_PRList";
+                            }
                         } 
                         // Handle Purchase Orders List
                         else if (className.equals("PurchaseOrder.PO_Panel") || 
                                  featureName.equals(Feature.PURCHASE_ORDERS_LIST)) {
-                            String userRole = currentUser.getRole();
+                            
                             
                             if ("Purchase Manager".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.PM_View_PO";
@@ -216,7 +222,6 @@ public class DashboardPanel extends javax.swing.JPanel {
                         }
                         // Handle Purchase Order Generation - Fixed to use Main_PO
                         else if (featureName.equals(Feature.GENERATE_PURCHASE_ORDER)) {
-                            String userRole = currentUser.getRole();
                             
                             // For Admin and Purchase Manager, use Main_PO which shows PR list
                             if ("Purchase Manager".equals(userRole) || "Administrator".equals(userRole)) {

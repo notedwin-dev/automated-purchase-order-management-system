@@ -218,17 +218,22 @@ public class Navbar extends javax.swing.JPanel {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
+                    String userRole = currentUser.getRole();
+                    
                     // Handle navigation
                     if (navigationListener != null) {
                         // Handle role-based redirections for Purchase Order features
-                        if (className.equals("PurchaseOrder.View_PRList")
-                                && buttonText.equals(Feature.DISPLAY_REQUISITION)) {
+                        if (buttonText.equals(Feature.DISPLAY_REQUISITION)) {
+                            if ("Administrator".equals(userRole) || "Sales Manager".equals(userRole)) {
+                                navigationListener.onNavigate("PurchaseRequisition.PurchaseRequisitionList");
+                            } else {
+                                
                             navigationListener.onNavigate("PurchaseOrder.View_PRList");
+                            }
                         } // Handle Purchase Orders List with proper role-based redirections
                         else if (className.equals("PurchaseOrder.PO_Panel")
                                 || buttonText.equals(Feature.PURCHASE_ORDERS_LIST)) {
-                            String userRole = currentUser.getRole();
-
+                            
                             // For viewing Purchase Order lists (all roles have View Only except Admin)
                             if ("Purchase Manager".equals(userRole)) {
                                 navigationListener.onNavigate("PurchaseOrder.PM_View_PO");
@@ -242,7 +247,6 @@ public class Navbar extends javax.swing.JPanel {
                             }
                         } // Handle Purchase Order Generation
                         else if (buttonText.equals(Feature.GENERATE_PURCHASE_ORDER)) {
-                            String userRole = currentUser.getRole();
 
                             // Admin and Purchase Manager should see the PR list to generate POs
                             if ("Purchase Manager".equals(userRole) || "Administrator".equals(userRole)) {

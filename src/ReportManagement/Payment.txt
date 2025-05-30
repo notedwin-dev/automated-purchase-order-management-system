@@ -1,2 +1,2 @@
-
 PAY001,PO0002,{ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP002},{AppleKorean,AppleJapan},{SP1AP,SP2AP},{100,50},paid,{1.2,2.2},RM 230.00,2025-05-29
+PAY002,PO0006,{ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP002},{AppleKorean,AppleJapan},{SP1AP,SP2AP},{30,30},paid,{1.2,2.2},RM 102.00,2025-05-30
