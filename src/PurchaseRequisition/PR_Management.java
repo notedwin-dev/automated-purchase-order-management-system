@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -95,7 +96,7 @@ public class PR_Management {
                 }
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error reading PR.txt: " + e.getMessage());
+            PRMain.displayMessage("Error reading PR.txt: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         // Increment the max ID and return new PRID in format PR0001, PR0002, etc.
@@ -103,38 +104,53 @@ public class PR_Management {
     }
 
     public void addRowToTable(javax.swing.JTable table, javax.swing.JComboBox<String> cbItemCode, javax.swing.JTextField txtQuantity, java.awt.Component parentComponent) {
-        try {
-            String selectedItemCode = cbItemCode.getSelectedItem().toString();
-            String enteredQuantity = txtQuantity.getText();
+    try {
+        String selectedItemCode = cbItemCode.getSelectedItem().toString();
+        String enteredQuantity = txtQuantity.getText();
 
-            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
-            model.addRow(new Object[]{selectedItemCode, enteredQuantity});
-            table.setModel(model); // Ensure the table model is updated
-            JOptionPane.showMessageDialog(parentComponent, "Items has been added to Items Table successfully!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(parentComponent, "Error adding data: " + e.getMessage());
+        // Check if the item code already exists in the table
+        for (int i = 0; i < table.getRowCount(); i++) {
+            String codeInTable = table.getValueAt(i, 0).toString();
+            if (codeInTable.equals(selectedItemCode)) {
+                PRMain.displayMessage("Item code already exists in the table. Please use the update function to modify its quantity.", "Duplicate Item", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
         }
+        // Validate Quantity
+        if (enteredQuantity.isEmpty() || !enteredQuantity.matches("\\d+") || enteredQuantity.startsWith("0") || Integer.parseInt(enteredQuantity) <= 0) {
+            PRMain.displayMessage("Quantity must be a numeric value greater than 0 and cannot start with 0.", "Invalid Quantity", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
+        model.addRow(new Object[]{selectedItemCode, enteredQuantity});
+        table.setModel(model); // Ensure the table model is updated
+        PRMain.displayMessage("Item has been added to Items Table successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    } catch (Exception e) {
+        e.printStackTrace();
+        PRMain.displayMessage("Error adding data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
+}
 
     public void deleteRowFromTable(javax.swing.JTable table, java.awt.Component parentComponent) {
         try {
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(parentComponent, "Please select a row to delete.", "Delete Item", JOptionPane.INFORMATION_MESSAGE);
+                SwingUtilities.invokeLater(() -> 
+                    PRMain.displayMessage("Please select a row to delete.", "Delete Item", JOptionPane.INFORMATION_MESSAGE)
+                );
                 return;
             }
-            int confirm = JOptionPane.showConfirmDialog(parentComponent, "Are you sure you want to delete the selected row?", "Confirm Delete", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
-                model.removeRow(selectedRow);
-                JOptionPane.showMessageDialog(parentComponent, "Row deleted successfully.", "Delete Item", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(parentComponent, "Delete operation cancelled.", "Delete Item", JOptionPane.INFORMATION_MESSAGE);
-            }
+            javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
+            model.removeRow(selectedRow);
+            SwingUtilities.invokeLater(() -> 
+                PRMain.displayMessage("Row deleted successfully.", "Delete Item", JOptionPane.INFORMATION_MESSAGE)
+            );
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(parentComponent, "Error deleting row: " + e.getMessage());
+            SwingUtilities.invokeLater(() -> 
+                PRMain.displayMessage("Error deleting row: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE)
+            );
         }
     }
 
@@ -143,24 +159,32 @@ public class PR_Management {
             javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
-                JOptionPane.showMessageDialog(parentComponent, "Please select a row to update.", "Update Item", JOptionPane.INFORMATION_MESSAGE);
+                SwingUtilities.invokeLater(() -> 
+                    PRMain.displayMessage("Please select a row to update.", "Update Item", JOptionPane.INFORMATION_MESSAGE)
+                );
                 return;
             }
             String newItemCode = cbItemCode.getSelectedItem() != null ? cbItemCode.getSelectedItem().toString() : "";
             String newQuantity = txtQuantity.getText();
 
             if (newItemCode.isEmpty() || newQuantity.isEmpty()) {
-                JOptionPane.showMessageDialog(parentComponent, "Item Code and Quantity cannot be empty.", "Update Item", JOptionPane.WARNING_MESSAGE);
+                SwingUtilities.invokeLater(() -> 
+                    PRMain.displayMessage("Item Code and Quantity cannot be empty.", "Update Item", JOptionPane.WARNING_MESSAGE)
+                );
                 return;
             }
 
             model.setValueAt(newItemCode, selectedRow, 0);
             model.setValueAt(newQuantity, selectedRow, 1);
 
-            JOptionPane.showMessageDialog(parentComponent, "Row updated successfully.", "Update Item", JOptionPane.INFORMATION_MESSAGE);
+            SwingUtilities.invokeLater(() -> 
+                PRMain.displayMessage("Row updated successfully.", "Update Item", JOptionPane.INFORMATION_MESSAGE)
+            );
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(parentComponent, "Error updating row: " + e.getMessage());
+            SwingUtilities.invokeLater(() -> 
+                PRMain.displayMessage("Error updating row: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE)
+            );
         }
     }
 
@@ -188,17 +212,17 @@ public class PR_Management {
             pw.flush();
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error in removeRecord: " + e.getMessage());
+            PRMain.displayMessage("Error in removeRecord: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             return false; // Indicate failure
         }
 
         if (oldFile.delete()) {
             if (!newFile.renameTo(oldFile)) {
-                JOptionPane.showMessageDialog(null, "Could not rename temporary file to original file.");
+                PRMain.displayMessage("Could not rename temporary file to original file.", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         } else {
-            JOptionPane.showMessageDialog(null, "Could not delete original file.");
+            PRMain.displayMessage("Could not delete original file.", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -208,7 +232,6 @@ public class PR_Management {
     // Add this method to allow saving a PROperation to PR.txt
     public void add(PROperation newPr) {
         if (newPr == null) {
-            JOptionPane.showMessageDialog(null, "PR data is null!");
             return;
         }
         // Ensure the date is always saved in the correct format
@@ -224,9 +247,8 @@ public class PR_Management {
         try {
             TextFile.appendTo("src/PurchaseRequisition/PR.txt", record);
             prlist.add(newPr);
-            JOptionPane.showMessageDialog(null, "PR added successfully!");
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error saving PR to file: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -244,7 +266,7 @@ public class PR_Management {
             javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) table.getModel();
             int rowCount = model.getRowCount();
             if (rowCount == 0) {
-                JOptionPane.showMessageDialog(parentComponent, "Please add at least one item to the table.", "Error", JOptionPane.ERROR_MESSAGE);
+                PRMain.displayMessage("Please add at least one item to the table.", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             String prID = txtPRID.getText().trim();
@@ -275,10 +297,22 @@ public class PR_Management {
                 status
             );
             add(pr);
-            JOptionPane.showMessageDialog(parentComponent, "Purchase Requisition generated and saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            PRMain.displayMessage("Purchase Requisition generated and saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(parentComponent, "Error generating PR: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            PRMain.displayMessage("Error generating PR: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    public void refresh(javax.swing.JComboBox<String> cbItemCode, javax.swing.JTextField txtQuantity, com.toedter.calendar.JDateChooser txtExDate, javax.swing.JComboBox<String> cbStatus) {
+        cbItemCode.setSelectedIndex(0);
+        txtQuantity.setText("");
+        txtExDate.setDate(null);
+        cbStatus.setSelectedIndex(0);
+    }
+
+    public void clean(javax.swing.JComboBox<String> cbItemCode, javax.swing.JTextField txtQuantity, com.toedter.calendar.JDateChooser txtExDate, javax.swing.JComboBox<String> cbStatus) {
+        refresh(cbItemCode, txtQuantity, txtExDate, cbStatus);
+        PRMain.displayMessage("Fields have been successfully cleaned!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 }

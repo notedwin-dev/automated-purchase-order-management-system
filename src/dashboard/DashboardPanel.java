@@ -222,10 +222,6 @@ public class DashboardPanel extends javax.swing.JPanel {
                             if ("Purchase Manager".equals(userRole) || "Administrator".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.Main_PO";
                             }
-                            // For Finance Manager, show the PO approval UI
-                            else if ("Finance Manager".equals(userRole)) {
-                                redirectClass = "PurchaseOrder.PO_Approval"; 
-                            }
                             // For Inventory Manager, show view-only PO list
                             else if ("Inventory Manager".equals(userRole)) {
                                 redirectClass = "PurchaseOrder.View_All_PO_UI"; 

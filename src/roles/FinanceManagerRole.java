@@ -5,7 +5,7 @@ package roles;
 
 /**
  * Represents the Finance Manager role in the system.
- * Finance Managers handle financial approvals, verify inventory updates, and process supplier payments.
+ * Finance Managers handle financial approvals, verify inventory updates, and process payments.
  * @author notedwin-dev
  */
 public class FinanceManagerRole extends Role {
@@ -37,7 +37,6 @@ public class FinanceManagerRole extends Role {
         
         // Purchase Orders - Approve only for generate, view only for list
         addPermission(Feature.PURCHASE_ORDERS_LIST, PermissionLevel.VIEW_ONLY);
-        addPermission(Feature.GENERATE_PURCHASE_ORDER, PermissionLevel.APPROVE_ONLY);
         addPermission(Feature.PURCHASING_REPORT, PermissionLevel.GENERATE_REPORTS);
         addPermission(Feature.APPROVE_PURCHASE_ORDER, PermissionLevel.APPROVE_ONLY);
         
@@ -45,7 +44,7 @@ public class FinanceManagerRole extends Role {
         addPermission(Feature.USER_MANAGEMENT, PermissionLevel.NO_ACCESS);
         
         // Inventory Management - Verify updates only
-        addPermission(Feature.INVENTORY_MANAGEMENT, PermissionLevel.VERIFY_ONLY);
+        addPermission(Feature.INVENTORY_LIST, PermissionLevel.VIEW_ONLY);
         addPermission(Feature.STOCK_REPORTS, PermissionLevel.VIEW_ONLY);
         
         // Financial Management - Full access

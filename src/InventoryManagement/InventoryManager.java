@@ -6,14 +6,18 @@ package InventoryManagement;
 
 import TextFile_Handler.TextFile;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author user
  */
 public class InventoryManager {
-    private static final String ItemFile = "src/InventoryManagement/Items.txt"; //<-Please tukar
+    private static final String ItemFile = "src/itemmanagement/items.txt"; 
+    private static final String POFile = "src/PurchaseOrder/PO.txt";
     
     public static List<Inventory> getAllInventory(){
         List<Inventory> inventoryList = new ArrayList<>();
@@ -103,5 +107,59 @@ public class InventoryManager {
             }
         }
         return filteredList;
+    }
+    
+    public static void resetDeliveryStatusWhenPOsPaid(){
+        List<String> poData = TextFile.readFile(POFile);
+        List<String> poIDs = new ArrayList<>();
+        List<List<String>> poItemCodes = new ArrayList<>();
+        Set<String> paidItemCode = new HashSet<>();
+        
+        for(String line : poData){
+            String[] data = line.split(",(?=(?:[^{}]*\\{[^}]*\\})*[^}]*$)");
+            if(data.length >= 17){
+                String paymentStatus = data[16].trim();
+                if(paymentStatus.equalsIgnoreCase("Paid")){
+                    String poID = data[0].trim();
+                    String itemCodeArray = data[11].trim();
+                    itemCodeArray = itemCodeArray.replaceAll("[{}]", "");
+                    String[] itemCodes = itemCodeArray.split(",");
+                    List<String> itemList = new ArrayList<>();
+                    
+                    for(String code : itemCodes){
+                        String trimmed = code.trim();
+                        paidItemCode.add(trimmed);
+                        itemList.add(trimmed);
+                    }
+                    poIDs.add(poID);
+                    poItemCodes.add(itemList);
+                }
+            }
+        }
+        List<String> itemData = TextFile.readFile(ItemFile);
+        List<String> updatedItems = new ArrayList<>();
+        for(String itemLine : itemData){
+            String[] data = itemLine.split(",");
+            if(data.length >= 8){
+                String itemCode = data[1].trim();
+                if(paidItemCode.contains(itemCode)){
+                   data[7] = "false";
+                }
+                updatedItems.add(String.join(",", data));
+            }else{
+                updatedItems.add(itemLine);
+            }
+        }
+        TextFile.overwriteFile(ItemFile, updatedItems);
+        StringBuilder notification = new StringBuilder();
+        for(int i = 0; i < poIDs.size(); i++){
+            String poID = poIDs.get(i);
+            List<String> itemCodes = poItemCodes.get(i);
+            notification.append("PO ").append(poID).append(" has been paid.\nDelivery status reset for items: ")
+                    .append(String.join(", ", itemCodes)).append("\n\n");
+        }
+        if(!notification.isEmpty()){
+            JOptionPane.showMessageDialog(null, notification.toString(), "Paid PO Info", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }
