@@ -125,7 +125,7 @@ public class DashboardPanel extends javax.swing.JPanel {
         }
         
         // Add feature-specific navigation
-            addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
+            addFeatureButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.ItemList");
             addFeatureButtonIfPermitted(Feature.ITEM_LIST, "Item List", "itemmanagement.ViewItemList");
             addFeatureButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
             addFeatureButtonIfPermitted(Feature.SUPPLIER_LIST, "Supplier List", "SupplierManagement.View_Supplier_UI");
