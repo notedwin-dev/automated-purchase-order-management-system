@@ -139,7 +139,7 @@ public class Navbar extends javax.swing.JPanel {
             addNavButton("Dashboard", "dashboard.Dashboard", true);
 
             // Add feature-specific navigation
-            addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
+            addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.ItemList");
             addNavButtonIfPermitted(Feature.ITEM_LIST, "Item List", "itemmanagement.ViewItemList");
             addNavButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
             addNavButtonIfPermitted(Feature.SUPPLIER_LIST, "Supplier List", "SupplierManagement.View_Supplier_UI");
