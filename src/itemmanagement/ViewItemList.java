@@ -5,10 +5,7 @@
 package itemmanagement;
 
 import TextFile_Handler.TextFile;
-import auth.Session;
-import auth.User;
 import java.util.List;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -29,7 +26,7 @@ public class ViewItemList extends javax.swing.JFrame {
         initComponents();
         
         model = new DefaultTableModel(
-            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Item Description", "Supplier Name", "Quantity", 
+            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", 
                                 "Unit Price", "Retail Price", "Delivery Status"}, 0
         );
     
@@ -41,15 +38,6 @@ public class ViewItemList extends javax.swing.JFrame {
         viewItemTable.setCellSelectionEnabled(false);
         viewItemTable.setFocusable(false);
         viewItemTable.setEnabled(false); 
-        
-        //----- Initialize ItemManagement with necessary components -----//
-//        User currentUser = Session.getInstance().getCurrentUser();
-//        if (currentUser == null) {
-//            JOptionPane.showMessageDialog(null, "Session expired or user not logged in.");
-//            dispose(); // Close the window or redirect
-//            return;
-//        }
-//        itemManage = new ItemManagement(viewItemTable, currentUser);
 
         
         // - - - - - LOAD DATA INTO TABLE (for itemTable)- - - - - //
@@ -69,23 +57,6 @@ public class ViewItemList extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
         model.setRowCount(0); 
 
-        User currentUser = Session.getInstance().getCurrentUser();
-
-        if (currentUser == null) {
-            JOptionPane.showMessageDialog(null, "Error: No user session found. ", "Session Error", JOptionPane.ERROR_MESSAGE);
-        }
-        
-        String currentID = currentUser.getID(); 
-        String role = currentUser.getRole();
-
-        if (currentID == null || currentID.isEmpty() ) {
-            JOptionPane.showMessageDialog(null, "Error: Incomplete user information. Please log in again.", "User Info Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Optional: Debugging printout (for development)
-        System.out.println("User ID: " + currentID + ", User: " + role);
-
         int no = 1;
 
         List<String> lines = TextFile.readFile(itemFile);
@@ -93,10 +64,7 @@ public class ViewItemList extends javax.swing.JFrame {
          for (String line : lines) {
             String[] data = line.split(",");
 
-            if (data.length == 9) {
-                if (!role.equalsIgnoreCase("Administrator") && !data[3].equals(currentID)) {
-                    System.out.println("User ID: " + currentUser.getID());
-                    System.out.println("User Role: " + currentUser.getRole());
+            if (data.length < 8) {
                     continue; 
                 }
 
@@ -109,10 +77,8 @@ public class ViewItemList extends javax.swing.JFrame {
                     data[4],
                     data[5],
                     data[6],
-                    data[7],
-                    data[8]
+                    data[7]
                 });
-            }
         }
     }
 
