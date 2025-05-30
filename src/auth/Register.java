@@ -4,7 +4,6 @@
  */
 package auth;
 
-import PurchaseRequisition.PR_Management;
 import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.File;

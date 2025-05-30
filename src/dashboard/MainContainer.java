@@ -11,7 +11,7 @@ import components.Navbar;
 
 import javax.swing.*;
 
-import PurchaseRequisition.PR_Management;
+import PurchaseRequisition.PurchaseRequisitionManagement;
 
 import java.awt.*;
 import java.lang.reflect.Constructor;
@@ -142,7 +142,7 @@ public class MainContainer extends javax.swing.JFrame {
                 cardLayout.show(contentPanel, "dashboard.DashboardPanel");
                 return;
             }
-            
+                    
             // Special handling for DailySalesManagement.View_DailySales_List
             if (className.equals("DailySalesManagement.View_DailySales_List")) {
                 try {
@@ -184,7 +184,7 @@ public class MainContainer extends javax.swing.JFrame {
                     
                     // Create instance of appropriate class based on role
                     JFrame poPanel = null;
-                    PR_Management prmanagement = new PR_Management();
+                    PurchaseRequisitionManagement prmanagement = new PurchaseRequisitionManagement();
                     
                     if (className.equals("PurchaseOrder.PM_View_PO")) {
                         // Purchase Manager view
@@ -240,7 +240,7 @@ public class MainContainer extends javax.swing.JFrame {
                         JOptionPane.showMessageDialog(this, "Please select a Purchase Order to edit");
                         return;
                     } else if (className.equals("PurchaseOrder.PO_GenerationUI")) {
-                        PR_Management prManagement = new PR_Management();
+                        PurchaseRequisitionManagement prManagement = new PurchaseRequisitionManagement();
                         poPanel = new PurchaseOrder.PO_Panel(prManagement);
                     } else if (className.equals("PurchaseOrder.PO_Approval")) {
                         poPanel = new PurchaseOrder.PO_Approval();

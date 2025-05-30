@@ -5,8 +5,8 @@
 package PurchaseOrder;
 
 import InventoryManagement.Inventory;
-import PurchaseRequisition.PROperation;
-import PurchaseRequisition.PR_Management;
+import PurchaseRequisition.PurchaseRequisition;
+
 import auth.Session;
 import auth.User;
 import java.awt.Image;
@@ -36,9 +36,9 @@ public class PO_GenerationUI extends javax.swing.JFrame {
      */
     private PO_GenerationManagement management;
     private DefaultTableModel tableModel;
-    private PROperation existingPR;
+    private PurchaseRequisition existingPR;
     
-    public PO_GenerationUI(PROperation existingPR) {
+    public PO_GenerationUI(PurchaseRequisition existingPR) {
         initComponents();
          // - - - - - RESIZE ICON ADD - - - - - //
         ImageIcon addIcon = new ImageIcon(getClass().getResource("/resources/icons/Add.png"));
@@ -96,6 +96,7 @@ public class PO_GenerationUI extends javax.swing.JFrame {
         ItemNametxt.setText(""); 
         SupplierNametxt.setText("");
         quantitytxt.setText("");
+        System.out.println("PO_GenerationUI created with PR ID: " + existingPR.getPrid());
     }
     
     
@@ -103,7 +104,7 @@ public class PO_GenerationUI extends javax.swing.JFrame {
     
     private void displayPRDetails(){
         POIDtxt.setText(management.generatePO_ID());
-        PRIDtxt.setText(existingPR.getPRID());
+        PRIDtxt.setText(existingPR.getPrid());
         Datetxt.setText(new SimpleDateFormat("dd-MM-yyyy").format(new Date()));
         SMNAMEtxt.setText(existingPR.getPrCreatedByName());
         SMIDtxt.setText(existingPR.getPrCreatedByID());
@@ -114,9 +115,9 @@ public class PO_GenerationUI extends javax.swing.JFrame {
         }
         
         try {
-            if (existingPR.getExDate() != null && !existingPR.getExDate().isEmpty()) {
+            if (existingPR.getExdate() != null && !existingPR.getExdate().isEmpty()) {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                Date expectedDate = sdf.parse(existingPR.getExDate());
+                Date expectedDate = sdf.parse(existingPR.getExdate());
                 expectedDatetxt.setDate(expectedDate);
             } else {
                 System.out.println("Expected delivery date is empty!");
@@ -126,29 +127,22 @@ public class PO_GenerationUI extends javax.swing.JFrame {
         }
         
 
-        String[] itemCodes = existingPR.getItemCode().split("\\r?\\n");
-        String[] quantities = existingPR.getQuantity().split("\\r?\\n");
+        String itemCode = existingPR.getItemcode().trim();
+        int quantity = existingPR.getQuantity(); 
 
         int no = 1;
-        for (int i = 0; i < itemCodes.length; i++) {
-            String code = itemCodes[i].trim();
-            String qty = (i < quantities.length) ? quantities[i].trim() : "";
-            
-            System.out.println("Looking up item: [" + code + "]");
-
-            Inventory item = management.getItemDetailsByCode(code);
-            if (item != null) {
-                tableModel.addRow(new Object[]{
-                    no++,
-                    item.getItemName(),
-                    item.getItemCode(),
-                    item.getSupplierName(),
-                    item.getSupplierID(),
-                    qty
-                });
-            } else {
-                System.out.println("Item not found: " + code);
-            }
+        Inventory item = management.getItemDetailsByCode(itemCode);
+        if (item != null) {
+            tableModel.addRow(new Object[]{
+                no++,
+                item.getItemName(),
+                item.getItemCode(),
+                item.getSupplierName(),
+                item.getSupplierID(),
+                String.valueOf(quantity)
+            });
+        } else {
+            System.out.println("Item not found: " + itemCode);
         }
     }
     
