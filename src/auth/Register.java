@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import roles.RoleFactory;
 
@@ -23,6 +24,7 @@ public class Register extends javax.swing.JFrame {
 
     public User user;
     User_Management userManager = new User_Management();
+    String newUserID = userManager.generateUserID();
 
     int did;
     String id = "";
@@ -64,6 +66,10 @@ public class Register extends javax.swing.JFrame {
         ImageIcon resizedClean = new ImageIcon(scaled_clean);
         clean_Button.setIcon(resizedClean);
 
+        // Pre-fill the User ID field in the registration form
+        JTextField userIDField = new JTextField(newUserID);
+        txtID.setText(newUserID);
+        txtID.setEditable(false); // Make the ID field non-editable
     }
 
     private void getData() {

@@ -495,6 +495,7 @@ public class ItemList extends javax.swing.JFrame {
      // - - - - - - - - - - ADD FUNCTION - - - - - - - - - - //
     private void add_ButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_add_ButtonActionPerformed
         itemOps.add();
+        itemOps.refresh();
     }//GEN-LAST:event_add_ButtonActionPerformed
 
 

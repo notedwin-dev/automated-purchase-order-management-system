@@ -1,7 +1,5 @@
-SP001,ChingChoongSDNBHD,1111111111,supplier1@example.com,Bukit Jalil,{apple, orange}
-SP002,TungSahurSDNBHD,22222222,supplier2@example.com,Subang Jaya,{pineapple, grape}
-SP003,Adam,333333333,supplier3@example.com,Address 3,{durian, mango, melon}
-SP004,Supplier 4,444444444,supplier4@example.com,Address 4,{watermelon}
-SP005,Penny,5555555,supplier5@example.com,Address 5,{Item 1}
-SP006,Supplier 6,666666,supplier6@example.com,address 6,{Item 1}
-SP008,dadada,12131,dada@gmail.com,dada 1,{banana,orange,grape, pineapple,durian,mango}
+
+SP0001,LDN_Company,0192730918,ldn@gmail.com,address 1,{apple, orange}
+SP0002,knn_company sdn bhd,019371921,knn@gmail.com,asgfhasokhojhp,{banana, kiwi}
+SP0003,cids_company sdn bhd,012910291,cids@gmail.com,ugawefuiuoqgogh,{apple, mango}
+SP0004,oiawehfoiaw,42354235,sergserg,segseg,{segrseges}

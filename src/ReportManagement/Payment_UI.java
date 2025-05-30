@@ -224,6 +224,7 @@ public class Payment_UI extends javax.swing.JFrame {
             }
         }
         InventoryManager.resetDeliveryStatusWhenPOsPaid();
+        displayPOTable();
     }//GEN-LAST:event_PayButtonActionPerformed
 
     /**
