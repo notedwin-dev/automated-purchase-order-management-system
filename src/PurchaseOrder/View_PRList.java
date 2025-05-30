@@ -23,7 +23,6 @@ import javax.swing.table.TableCellRenderer;
 public class View_PRList extends javax.swing.JFrame {
     
     private DefaultTableModel tablemodel;
-    private JTable viewprtable;
     private PO_GenerationManagement POmanage;
     /**
      * Creates new form View_PRList
@@ -95,6 +94,7 @@ public class View_PRList extends javax.swing.JFrame {
         }
         
         String currentID = currentUser.getID(); 
+        String role = currentUser.getRole();
 
         if (currentID == null || currentID.isEmpty() ) {
             JOptionPane.showMessageDialog(null, "Error: Incomplete user information. Please log in again.", "User Info Error", JOptionPane.ERROR_MESSAGE);
@@ -102,16 +102,18 @@ public class View_PRList extends javax.swing.JFrame {
         }
 
         // Optional: Debugging printout (for development)
-        System.out.println("User ID: " + currentID + ", User: " + currentUser);
+        System.out.println("User ID: " + currentID + ", User: " + role);
 
         List<Object[]> allData = POmanage.getTableData(); 
+
+        System.out.println("Loaded rows: " + allData.size());
 
         int no = 1;
         for (Object[] row : allData) {
             String prCreatedByID = row[4].toString(); 
 
             // If the current user is not Admin and didn't create the PR, skip it
-            if (!currentUser.equals("Admin") && !prCreatedByID.equals(currentID)) {
+            if (!role.equalsIgnoreCase("Administrator") && !prCreatedByID.equals(currentID)) {
                 continue;
             }
 
@@ -121,19 +123,6 @@ public class View_PRList extends javax.swing.JFrame {
 
         applyCustomRenderer(); // Make sure multi-line columns are rendered properly
     }
-    
-//    public final void refreshTable() {
-//        tablemodel.setRowCount(0); 
-//        
-//        List<Object[]> allData = POmanage.getTableData();
-//        
-//        System.out.println("Data rows count: " + allData.size());
-//            for (Object[] row : POmanage.getTableData()) {
-//                System.out.println(Arrays.toString(row));
-//                tablemodel.addRow(row);
-//            }
-//        applyCustomRenderer(); // ----- Call method to ensure Item Code and Quantity are rendered as multiline -----//
-//    }
     
     
     // ========== ADJUST TABLE COLUMN SIZE ========== //   

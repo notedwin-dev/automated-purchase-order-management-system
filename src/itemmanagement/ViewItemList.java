@@ -4,13 +4,8 @@
  */
 package itemmanagement;
 
-import PurchaseOrder.PurchaseOrder;
-import auth.Session;
-import auth.User;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import javax.swing.JOptionPane;
+import TextFile_Handler.TextFile;
+import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -22,7 +17,7 @@ import javax.swing.table.TableRowSorter;
 public class ViewItemList extends javax.swing.JFrame {
 
     private static final String itemFile = "src/itemmanagement/items.txt";
-    private ItemManagement itemManage; // ----- This is a field ----- //
+//    private ItemManagement itemManage; // ----- This is a field ----- //
     private DefaultTableModel model;
     /**
      * Creates new form ViewItem_List
@@ -31,7 +26,8 @@ public class ViewItemList extends javax.swing.JFrame {
         initComponents();
         
         model = new DefaultTableModel(
-            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", "Unit Price", "Retail Price", "Delivery Status"}, 0
+            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", 
+                                "Unit Price", "Retail Price", "Delivery Status"}, 0
         );
     
         // - - - - -  SET MODEL - - - - - //
@@ -42,15 +38,6 @@ public class ViewItemList extends javax.swing.JFrame {
         viewItemTable.setCellSelectionEnabled(false);
         viewItemTable.setFocusable(false);
         viewItemTable.setEnabled(false); 
-        
-        //----- Initialize ItemManagement with necessary components -----//
-        User currentUser = Session.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            JOptionPane.showMessageDialog(null, "Session expired or user not logged in.");
-            dispose(); // Close the window or redirect
-            return;
-        }
-        itemManage = new ItemManagement(viewItemTable, currentUser);
 
         
         // - - - - - LOAD DATA INTO TABLE (for itemTable)- - - - - //
@@ -66,42 +53,32 @@ public class ViewItemList extends javax.swing.JFrame {
 
     
     // ========== REFRESH TABLE ========== //
-    public void refresh() {
+    public final void refresh() {
         DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
         model.setRowCount(0); 
 
-        User currentUser = Session.getInstance().getCurrentUser();
-        String currentID = currentUser.getID();
-
         int no = 1;
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(itemFile))) {
-            String line;
+        List<String> lines = TextFile.readFile(itemFile);
 
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
+         for (String line : lines) {
+            String[] data = line.split(",");
 
-                if (data.length == 8) {
-                    if (currentUser.equals("Admin") && !data[3].equals(currentID)) {
-                        continue; 
-                    }
-
-                    model.addRow(new Object[]{
-                        no++,
-                        data[0],
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        data[5],
-                        data[6],
-                        data[7]
-                    });
+            if (data.length < 8) {
+                    continue; 
                 }
-            }
 
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error reading item file: " + e.getMessage());
+                model.addRow(new Object[]{
+                    no++,
+                    data[0],
+                    data[1],
+                    data[2],
+                    data[3],
+                    data[4],
+                    data[5],
+                    data[6],
+                    data[7]
+                });
         }
     }
 
@@ -146,14 +123,14 @@ public class ViewItemList extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Retail Price", "Delivery Status"
+                "No.", "Item Name", "Item Code", "Item Description", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Retail Price", "Delivery Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, true
+                false, false, false, true, false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -174,12 +151,12 @@ public class ViewItemList extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(380, 380, 380)
-                        .addComponent(jLabel2))
+                        .addGap(34, 34, 34)
+                        .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1060, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(73, 73, 73)
-                        .addComponent(itemTableScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 934, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(73, Short.MAX_VALUE))
+                        .addGap(365, 365, 365)
+                        .addComponent(jLabel2)))
+                .addContainerGap(106, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,9 +172,7 @@ public class ViewItemList extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1200, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

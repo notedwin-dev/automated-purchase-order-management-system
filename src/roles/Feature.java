@@ -42,5 +42,5 @@ public class Feature {
     public static final String STOCK_REPORTS = "Stock Reports";
     
     // Financial Management
-    public static final String SUPPLIER_PAYMENTS = "Supplier Payments";
+    public static final String SUPPLIER_PAYMENTS = "Process Payment";
 }

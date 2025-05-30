@@ -30,6 +30,7 @@ public class InventoryUI extends javax.swing.JFrame {
     
     public InventoryUI() {
         initComponents();
+        InventoryManager.resetDeliveryStatusWhenPOsPaid();
          // - - - - - RESIZE ICON UPDATE - - - - - //
         ImageIcon updateIcon = new ImageIcon(getClass().getResource("/resources/icons/Update.png"));
         Image scaled_update = updateIcon.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
@@ -155,6 +156,7 @@ public class InventoryUI extends javax.swing.JFrame {
             }
             JOptionPane.showMessageDialog(this, alertMessage.toString(), "Low Stock Alert", JOptionPane.WARNING_MESSAGE);
         }
+       
     }
     
     
