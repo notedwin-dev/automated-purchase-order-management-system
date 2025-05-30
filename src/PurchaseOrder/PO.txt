@@ -1,5 +1,2 @@
-PO0002,PR0003,2025-05-26,JayChou,U0004,tungtung,SM0003,25-9-2025,{ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP002},{AppleKorean,AppleJapan},{SP1AP,SP2AP},{100,50},Complete,finance,U0007,Paid
-PO0003,PR0004,2025-05-26,JayChou,U0004,tungtung,SM0003,21-08-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP001,SP002},{BananaThailand,DeezNuts,AppleJapan},{SP1BN,SP1DN,SP2AP},{1000,2000,150},Rejected,finance,U0007,Unpaid
-PO0004,PR0005,2025-05-27,sdf,U0005,tungtung,SM0003,21-8-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD,TungSahurSDNBHD,TungSahurSDNBHD},{SP001,SP001,SP002,SP002},{BananaThailand,DeezNuts,AppleJapan,AppleJapan},{SP1BN,SP1DN,SP2AP,SP2AP},{1000,2000,150,40},Complete,finance,U0007,Paid
-PO0005,PR0002,2025-05-28,Admin,U0000,Sahur,SM0002,31-05-2025,{ChingChoongSDNBHD,ChingChoongSDNBHD,ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP001,SP001,SP002},{AppleKorean,BananaThailand,DeezNuts,AppleJapan},{SP1AP,SP1BN,SP1DN,SP2AP},{200,100,150,20},Complete,finance,U0007,Unpaid
-PO0006,PR0005,2025-05-30,Admin,U0000,Admin,U0000,31-05-2025,{ChingChoongSDNBHD,TungSahurSDNBHD},{SP001,SP002},{AppleKorean,AppleJapan},{SP1AP,SP2AP},{30,30},Complete,Admin,U0000,Paid
+PO0001,PR001,2025-05-31,PurchaseManager,U0002,SalesManager,U0001,3-6-2025,{cids_company sdn bhd,LDN_Company},{SP0003,SP0001},{Apple,orange},{SP3AP,SP1OR},{50,35},Complete,FinanceManager,U0004,Paid
+PO0002,PR001,2025-05-31,PurchaseManager,U0003,SalesManager,U0001,03-06-2025,{LDN_Company,LDN_Company},{SP0001,SP0001},{Apple,orange},{SP1AP,SP1OR},{40,30},Rejected,FinanceManager,U0004,Unpaid

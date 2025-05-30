@@ -15,7 +15,7 @@ import java.util.Map;
 import javax.swing.JTable;
 
 public class Payment {
-    private static final String ItemFile = "src/InventoryManagement/Items.txt";
+    private static final String ItemFile = "src/itemmanagement/Items.txt";
     private static final String POfile = "src/PurchaseOrder/PO.txt";
     private static final String PaymentFile = "src/ReportManagement/Payment.txt";
     private static Map<String, String> quantityMap = new HashMap<>();
