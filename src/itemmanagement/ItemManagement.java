@@ -9,6 +9,7 @@ package itemmanagement;
  * @author nixon
  */    
 //----- Implements with ItemOperations, handles item logic and file saving -----//
+import TextFile_Handler.TextFile;
 import javax.swing.*;
 import javax.swing.table.*;
 import java.io.*;
@@ -16,6 +17,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import auth.Session;
 import auth.User;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ItemManagement implements ItemOperations {
@@ -23,6 +26,7 @@ public class ItemManagement implements ItemOperations {
     private JTable itemTable;
     private JTextField itemName_textbox, itemCode_textbox, unitPrice_textbox, retailPrice_textbox, supplierName_textbox;
     private JComboBox supplierID_comboBox;
+    private JTextArea itemDesc_textarea;
     private User currentUser;
     private static final String itemFile = "src/itemmanagement/items.txt";
 //    private TableRowSorter<DefaultTableModel> sorter;
@@ -31,6 +35,7 @@ public class ItemManagement implements ItemOperations {
     public ItemManagement( JTable table, 
                                             JTextField name, 
                                             JTextField code, 
+                                            JTextArea itemDesc,
                                             JComboBox supID, 
                                             JTextField supName, 
                                             JTextField price, 
@@ -38,6 +43,7 @@ public class ItemManagement implements ItemOperations {
         this.itemTable = table;
         this.itemName_textbox = name;
         this.itemCode_textbox = code;
+        this.itemDesc_textarea = itemDesc;
         this.supplierID_comboBox = supID;
         this.supplierName_textbox = supName;
         this.unitPrice_textbox = price;
@@ -166,26 +172,23 @@ public class ItemManagement implements ItemOperations {
     
     
     // - - - - - Save the table to items.txt - - - - - //
-        public void saveTableToFile() {
-        DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        File file = new File("src/itemmanagement/items.txt");
+    public void saveTableToFile() {
+      DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
+      List<String> newLines = new ArrayList<>();
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
-            for (int i = 0; i < model.getRowCount(); i++) {
-                StringBuilder sb = new StringBuilder();
-                for (int j = 1; j < model.getColumnCount(); j++) { //----- Skip index 0 (row number) -----//
-                    sb.append(model.getValueAt(i, j));
-                    if (j < model.getColumnCount() - 1) {
-                        sb.append(",");
-                    }
-                }
-                writer.write(sb.toString());
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error while saving file: " + e.getMessage());
-        }
-    }
+      for (int i = 0; i < model.getRowCount(); i++) {
+          StringBuilder sb = new StringBuilder();
+          for (int j = 1; j < model.getColumnCount(); j++) { // ----- Skip index 0 (row number) ----- //
+              sb.append(model.getValueAt(i, j));
+              if (j < model.getColumnCount() - 1) {
+                  sb.append(",");
+              }
+          }
+          newLines.add(sb.toString());
+      }
+
+      TextFile.overwriteFile(itemFile, newLines);
+  }
 
 
     //----- Double click the table row to add the data to the textBox / comboBox -----//
@@ -213,6 +216,7 @@ public class ItemManagement implements ItemOperations {
     public void clean() {
         itemName_textbox.setText("");
         itemCode_textbox.setText("");
+        itemDesc_textarea.setText("");
         supplierID_comboBox.setSelectedIndex(-1);
         supplierName_textbox.setText("");
         unitPrice_textbox.setText("");
@@ -250,31 +254,31 @@ public class ItemManagement implements ItemOperations {
     @Override
     public void refresh() {
         DefaultTableModel model = (DefaultTableModel) itemTable.getModel();
-        model.setRowCount(0); //----- Clears the row to avoid data repeatation -----//
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader(itemFile))) {
-            String line;
-            int no = 1;
-            
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length == 8) { 
-                    model.addRow(new Object[] {
-                        no++,       //----- No. 
-                        data[0],    
-                        data[1],
-                        data[2],
-                        data[3],
-                        data[4],
-                        data[5],
-                        data[6],
-                        data[7]     //----- DeliveryStatus
-                    });
-                }
+        model.setRowCount(0); 
+
+        List<String> lines = TextFile.readFile(itemFile);
+        int no = 1;
+
+        for (String line : lines) {
+            String[] data = line.split(",");
+
+            if (data.length == 8) { 
+                model.addRow(new Object[]{
+                    no++,       // No.
+                    data[0],    // Item Code
+                    data[1],    // Item Name
+                    data[2],    // Category
+                    data[3],    // Quantity
+                    data[4],    // Supplier ID
+                    data[5],    // Price
+                    data[6],    // Delivery Date
+                    data[7]     // Delivery Status
+                });
+            } else {
+                System.out.println("Skipping malformed line: " + line);
             }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error while reading from this file: " + e.getMessage());
         }
     }
+
     
 }
