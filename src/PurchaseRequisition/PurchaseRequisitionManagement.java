@@ -7,9 +7,11 @@ package PurchaseRequisition;
 import InventoryManagement.Inventory;
 import TextFile_Handler.TextFile;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -19,6 +21,63 @@ public class PurchaseRequisitionManagement {
     private static final String ItemFile = "src/itemManagement/Items.txt"; 
     private static final String PRfile = "src/PurchaseRequisition/PR.txt" ;
     private static final Map<String, String> quantityMap = new HashMap<>();
+    private final List<PurchaseRequisition> prlist;
+
+    public PurchaseRequisitionManagement() {
+        this.prlist = new ArrayList<>();
+    }
+    
+    public void getPRfromtxtfile() {
+        this.prlist.clear(); 
+        List<String> lines = TextFile.readFile(PRfile);
+
+        for (String line : lines) {
+            // Skip header or invalid lines
+            if (line.trim().startsWith("PR ID") || line.trim().isEmpty()) {
+                continue;
+            }
+
+            String[] parts = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)"); // handles {a,b} properly
+
+            if (parts.length == 8) {
+                String prID = parts[0].trim();
+                String date = parts[1].trim();
+                String prCreatedByName = parts[2].trim();
+                String prCreatedByID = parts[3].trim();
+
+                String[] itemCodes = parts[4].replace("{", "").replace("}", "").split(",");
+                String[] quantities = parts[5].replace("{", "").replace("}", "").split(",");
+
+                String expectedDate = parts[6].trim();
+                String status = parts[7].trim();
+
+                for (int i = 0; i < itemCodes.length && i < quantities.length; i++) {
+                    String itemCode = itemCodes[i].trim();
+                    try {
+                        int quantity = Integer.parseInt(quantities[i].trim());
+
+                        PurchaseRequisition pr = new PurchaseRequisition(
+                            prID, date, prCreatedByName, prCreatedByID,
+                            itemCode, quantity, expectedDate, status
+                        );
+                        prlist.add(pr);
+                    } catch (NumberFormatException e) {
+                        System.err.println("Invalid quantity: " + quantities[i].trim() + " in line: " + line);
+                    }
+                }
+            }
+        }
+    }
+
+    public PurchaseRequisition findprid(String prid) {
+        for (PurchaseRequisition pr : prlist) {
+            if (pr.getPrid().equals(prid)) {
+                return pr;
+            }
+        }
+        return null;
+    }
+
     
     
     public static String generatePRID() {
