@@ -1,9 +1,6 @@
 ID , Username , Password , Department , Role
-U0000,Admin,admin,Admintrative,Administrator
-U0001,2,1,1,Sales Manager
-U0002,qd,qwe,wqr,Sales Manager
-U0003,asd,as,ae,Inventory Manager
-U0004,JayChou,jay,asdd,Purchase Manager
-U0005,sdf,s,df,Purchase Manager
-U0006,dsf,sdsd,dsfij,Finance Manager
-U0007,finance,finance,asas,Finance Manager
+U0000,Admin,admin,Administrative,Administrator
+U0001,SalesManager,sales,sales,Sales Manager
+U0002,PurchaseManager,purchase,Purchasing,Purchase Manager
+U0003,InventoryManager,inventory,Inventory,Inventory Manager
+U0004,FinanceManager,finance,Finance,Finance Manager
