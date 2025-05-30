@@ -139,13 +139,13 @@ public class Navbar extends javax.swing.JPanel {
             addNavButton("Dashboard", "dashboard.Dashboard", true);
 
             // Add feature-specific navigation
-            addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
+            addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.ItemList");
             addNavButtonIfPermitted(Feature.ITEM_LIST, "Item List", "itemmanagement.ViewItemList");
             addNavButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
             addNavButtonIfPermitted(Feature.SUPPLIER_LIST, "Supplier List", "SupplierManagement.View_Supplier_UI");
             addNavButtonIfPermitted(Feature.DAILY_SALES, Feature.DAILY_SALES, "DailySalesManagement.View_DailySales_List");
             addNavButtonIfPermitted(Feature.SALES_ENTRY, Feature.SALES_ENTRY, "DailySalesManagement.DailySalesUI");
-            addNavButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
+            addNavButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PurchaseRequisitionGenerationUI");
             addNavButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.View_PRList"); //To be PR LIST
             addNavButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, Feature.GENERATE_PURCHASE_ORDER, "PurchaseOrder.Main_PO");
             addNavButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, "Purchase Order List", "PurchaseOrder.PO_Panel");
