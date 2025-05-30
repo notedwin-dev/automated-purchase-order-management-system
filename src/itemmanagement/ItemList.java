@@ -4,14 +4,13 @@
  */
 package itemmanagement;
 
+import TextFile_Handler.TextFile;
 import itemmanagement.ItemManagement;
 import javax.swing.table.*;
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 
 /**
@@ -23,6 +22,7 @@ public class ItemList extends javax.swing.JFrame {
     private ItemManagement itemOps; // ----- This is a field ----- //
     private Map<String, String> supplierMap = new HashMap<>();
     private DefaultTableModel model;
+    private static final String supplierFile = "src/SupplierManagement/Suppliers.txt";
 
     public ItemList() {
         initComponents();
@@ -54,7 +54,7 @@ public class ItemList extends javax.swing.JFrame {
         
 
         model = new DefaultTableModel(
-            new Object[]{"No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Quantity", "Unit Price", "Retail Price", "Delivery Status"}, 0
+            new Object[]{"No.", "Item Name", "Item Code", "Item Description", "Supplier ID", "Supplier Name", "Quantity", "Unit Price", "Retail Price", "Delivery Status"}, 0
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -97,6 +97,7 @@ public class ItemList extends javax.swing.JFrame {
             itemTable,
             itemName_textbox,
             itemCode_textbox,
+            itemDesc_textbox,
             supplierID_comboBox,
             supplierName_textbox,
             unitPrice_textbox,
@@ -141,19 +142,25 @@ public class ItemList extends javax.swing.JFrame {
 
     // - - - - - Read supplier.txt - - - - - //
     private void loadSupplierData() {
-        try (BufferedReader br = new BufferedReader(new FileReader("src/SupplierManagement/Suppliers.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 2) {
-                    supplierMap.put(parts[0], parts[1]); // ID → Name
-                    supplierID_comboBox.addItem(parts[0]); // Only IDs go in comboBox
+        supplierMap.clear(); // Optional: clear existing entries
+        supplierID_comboBox.removeAllItems(); // Optional: clear combo box
+
+        List<String> lines = TextFile.readFile(supplierFile);
+
+        for (String line : lines) {
+            String[] parts = line.split(",");
+            if (parts.length >= 2) {
+                String id = parts[0].trim();
+                String name = parts[1].trim();
+
+                if (!supplierMap.containsKey(id)) {
+                    supplierMap.put(id, name);
+                    supplierID_comboBox.addItem(id);
                 }
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -185,6 +192,8 @@ public class ItemList extends javax.swing.JFrame {
         itemName_textbox = new javax.swing.JTextField();
         itemCode_lbl = new javax.swing.JLabel();
         supplierName_textbox = new javax.swing.JTextField();
+        itemDescription_lbl = new javax.swing.JLabel();
+        itemDesc_textbox = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -262,14 +271,14 @@ public class ItemList extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Item Name", "Item Code", "Supplier ID", "Supplier Name", "Category", "Unit Price", "Retail Price", "Delivery Status"
+                "No.", "Item Name", "Item Code", "Supplier ID", "Item Description", "Supplier Name", "Category", "Unit Price", "Retail Price", "Delivery Status"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Boolean.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, true
+                false, false, false, false, false, false, false, false, false, true
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -295,57 +304,62 @@ public class ItemList extends javax.swing.JFrame {
         itemCode_lbl.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         itemCode_lbl.setText("Item Code");
 
+        itemDescription_lbl.setText("Item Description");
+
         javax.swing.GroupLayout ItemEntryLayout = new javax.swing.GroupLayout(ItemEntry);
         ItemEntry.setLayout(ItemEntryLayout);
         ItemEntryLayout.setHorizontalGroup(
             ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ItemEntryLayout.createSequentialGroup()
-                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ItemEntryLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(25, 25, 25)
+                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(ItemEntryLayout.createSequentialGroup()
                         .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(supplierName_lbl)
-                            .addComponent(supplierID_lbl)
-                            .addComponent(itemCode_lbl)
-                            .addComponent(itemName_lbl))
+                            .addComponent(unitPrice_lbl)
+                            .addComponent(retailPrice_lbl))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(itemCode_textbox, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(supplierID_comboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 113, Short.MAX_VALUE)
-                            .addComponent(supplierName_textbox, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(itemName_textbox)))
+                            .addComponent(unitPrice_textbox)
+                            .addComponent(retailPrice_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(ItemEntryLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
                         .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(ItemEntryLayout.createSequentialGroup()
-                                .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(ItemEntryLayout.createSequentialGroup()
-                                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(unitPrice_lbl)
-                                    .addComponent(retailPrice_lbl))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(unitPrice_textbox)
-                                    .addComponent(retailPrice_textbox, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE))))))
+                            .addComponent(supplierName_lbl)
+                            .addComponent(supplierID_lbl))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(supplierID_comboBox, javax.swing.GroupLayout.Alignment.TRAILING, 0, 113, Short.MAX_VALUE)
+                            .addComponent(supplierName_textbox, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(ItemEntryLayout.createSequentialGroup()
+                        .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(itemCode_lbl)
+                            .addComponent(itemName_lbl)
+                            .addComponent(itemDescription_lbl))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(itemCode_textbox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+                            .addComponent(itemName_textbox)
+                            .addComponent(itemDesc_textbox)))
+                    .addGroup(ItemEntryLayout.createSequentialGroup()
+                        .addComponent(add_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(update_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(delete_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(refresh_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(clean_Button, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(817, 817, 817))
             .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(ItemEntryLayout.createSequentialGroup()
                     .addGap(266, 266, 266)
-                    .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 777, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(33, Short.MAX_VALUE)))
+                    .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 943, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(71, Short.MAX_VALUE)))
         );
         ItemEntryLayout.setVerticalGroup(
             ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ItemEntryLayout.createSequentialGroup()
-                .addContainerGap(211, Short.MAX_VALUE)
+                .addContainerGap(179, Short.MAX_VALUE)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(itemName_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(itemName_lbl))
@@ -353,6 +367,10 @@ public class ItemList extends javax.swing.JFrame {
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(itemCode_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(itemCode_lbl))
+                .addGap(28, 28, 28)
+                .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(itemDesc_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(itemDescription_lbl))
                 .addGap(18, 18, 18)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(supplierID_lbl)
@@ -361,7 +379,7 @@ public class ItemList extends javax.swing.JFrame {
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(supplierName_lbl)
                     .addComponent(supplierName_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(unitPrice_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(unitPrice_lbl))
@@ -369,7 +387,7 @@ public class ItemList extends javax.swing.JFrame {
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(retailPrice_textbox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(retailPrice_lbl))
-                .addGap(83, 83, 83)
+                .addGap(45, 45, 45)
                 .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(refresh_Button, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -382,7 +400,7 @@ public class ItemList extends javax.swing.JFrame {
                 .addGroup(ItemEntryLayout.createSequentialGroup()
                     .addGap(39, 39, 39)
                     .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(60, Short.MAX_VALUE)))
+                    .addContainerGap(46, Short.MAX_VALUE)))
         );
 
         JTabbedPane.addTab("Item Entry", ItemEntry);
@@ -391,10 +409,7 @@ public class ItemList extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(JTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1076, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(JTabbedPane, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -491,6 +506,8 @@ public class ItemList extends javax.swing.JFrame {
     private javax.swing.JButton delete_Button;
     private javax.swing.JLabel itemCode_lbl;
     private javax.swing.JTextField itemCode_textbox;
+    private javax.swing.JTextField itemDesc_textbox;
+    private javax.swing.JLabel itemDescription_lbl;
     private javax.swing.JLabel itemName_lbl;
     private javax.swing.JTextField itemName_textbox;
     private javax.swing.JTable itemTable;

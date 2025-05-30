@@ -318,6 +318,17 @@ public class PO_Panel extends javax.swing.JFrame {
         int selectedRow = prTable.getSelectedRow();
         if (selectedRow != -1) {
             String prID = prTable.getValueAt(selectedRow, 1).toString(); 
+            String status = prTable.getValueAt(selectedRow, 8).toString();
+            
+            // ----- Cannot reject once status is APPROVED ----- //
+             if (status.equalsIgnoreCase("APPROVED")) {
+                JOptionPane.showMessageDialog(this, 
+                    "You cannot reject PR " + prID + " because it is already APPROVED.",
+                    "Action Denied",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+             
             int confirm = JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to reject PR " + prID + "?",
                     "Confirm Rejection",
