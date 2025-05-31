@@ -49,5 +49,6 @@ public class FinanceManagerRole extends Role {
         
         // Financial Management - Full access
         addPermission(Feature.SUPPLIER_PAYMENTS, PermissionLevel.PROCESS_PAYMENTS);
+        addPermission(Feature.VIEW_PROCESSED_PAYMENTS, PermissionLevel.VIEW_ONLY);
     }
 }
