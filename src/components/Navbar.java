@@ -9,6 +9,9 @@ import auth.Session;
 import roles.Feature;
 
 import javax.swing.*;
+
+import ReportManagement.Payment_List_UI;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -158,6 +161,7 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "ReportManagement.InventoryReportMain");
             addNavButtonIfPermitted(Feature.SALES_REPORT, Feature.SALES_REPORT, "ReportManagement.SalesReportMain");
             addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "ReportManagement.Payment_UI");
+            addNavButtonIfPermitted(Feature.VIEW_PROCESSED_PAYMENTS, Feature.VIEW_PROCESSED_PAYMENTS, "ReportManagement.Payment_List_UI");
             addNavButtonIfPermitted(Feature.PURCHASING_REPORT, Feature.PURCHASING_REPORT, "ReportManagement.PurchaseReportMain");
 
             // Add logout button at the bottom

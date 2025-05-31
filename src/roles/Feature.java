@@ -43,4 +43,5 @@ public class Feature {
     
     // Financial Management
     public static final String SUPPLIER_PAYMENTS = "Process Payment";
+    public static final String VIEW_PROCESSED_PAYMENTS = "View Processed Payments";
 }

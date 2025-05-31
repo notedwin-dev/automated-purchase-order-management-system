@@ -1,4 +1,4 @@
-Apple,SP1AP,SP0001,LDN_Company,990,2.2,3.3,false
+Apple,SP1AP,SP0002,knn_company sdn bhd,990,2.2,3.3,false
 orange,SP1OR,SP0001,LDN_Company,1000,1.1,2.2,false
 Banana,SP2BN,SP0002,knn_company sdn bhd,1000,2.2,3.2,false
 Kiwi,SP2KW,SP0002,knn_company sdn bhd,1000,1.2,3.4,false

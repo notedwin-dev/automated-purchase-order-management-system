@@ -55,5 +55,6 @@ public class AdministratorRole extends Role {
         
         // Financial Management
         addPermission(Feature.SUPPLIER_PAYMENTS, PermissionLevel.FULL_ACCESS);
+        addPermission(Feature.VIEW_PROCESSED_PAYMENTS, PermissionLevel.FULL_ACCESS);
     }
 }
