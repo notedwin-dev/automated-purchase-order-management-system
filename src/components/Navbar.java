@@ -57,7 +57,7 @@ public class Navbar extends javax.swing.JPanel {
         Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon resizedLogo = new ImageIcon(scaled_logo);
         Logo_lbl.setIcon(resizedLogo);
-
+        
         // Check if there's already a logged-in user in the session
         User sessionUser = Session.getInstance().getCurrentUser();
         if (sessionUser != null) {
@@ -77,6 +77,12 @@ public class Navbar extends javax.swing.JPanel {
 
         // Then initialize components
         initComponents();
+
+        // - - - - - RESIZE ICON LOGO - - - - - //
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/resources/icons/Logo.png"));
+        Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        ImageIcon resizedLogo = new ImageIcon(scaled_logo);
+        Logo_lbl.setIcon(resizedLogo);
 
         this.currentUser = user;
 
