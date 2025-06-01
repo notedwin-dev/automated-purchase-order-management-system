@@ -9,6 +9,9 @@ import auth.Session;
 import roles.Feature;
 
 import javax.swing.*;
+
+import ReportManagement.Payment_List_UI;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -54,7 +57,7 @@ public class Navbar extends javax.swing.JPanel {
         Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         ImageIcon resizedLogo = new ImageIcon(scaled_logo);
         Logo_lbl.setIcon(resizedLogo);
-
+        
         // Check if there's already a logged-in user in the session
         User sessionUser = Session.getInstance().getCurrentUser();
         if (sessionUser != null) {
@@ -74,6 +77,12 @@ public class Navbar extends javax.swing.JPanel {
 
         // Then initialize components
         initComponents();
+
+        // - - - - - RESIZE ICON LOGO - - - - - //
+        ImageIcon logoIcon = new ImageIcon(getClass().getResource("/resources/icons/Logo.png"));
+        Image scaled_logo = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        ImageIcon resizedLogo = new ImageIcon(scaled_logo);
+        Logo_lbl.setIcon(resizedLogo);
 
         this.currentUser = user;
 
@@ -139,13 +148,13 @@ public class Navbar extends javax.swing.JPanel {
             addNavButton("Dashboard", "dashboard.Dashboard", true);
 
             // Add feature-specific navigation
-            addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.MainPanel");
+            addNavButtonIfPermitted(Feature.ITEM_ENTRY, "Item Management", "itemmanagement.ItemList");
             addNavButtonIfPermitted(Feature.ITEM_LIST, "Item List", "itemmanagement.ViewItemList");
             addNavButtonIfPermitted(Feature.SUPPLIER_ENTRY, "Supplier Management", "SupplierManagement.UI");
             addNavButtonIfPermitted(Feature.SUPPLIER_LIST, "Supplier List", "SupplierManagement.View_Supplier_UI");
             addNavButtonIfPermitted(Feature.DAILY_SALES, Feature.DAILY_SALES, "DailySalesManagement.View_DailySales_List");
             addNavButtonIfPermitted(Feature.SALES_ENTRY, Feature.SALES_ENTRY, "DailySalesManagement.DailySalesUI");
-            addNavButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PRMain");
+            addNavButtonIfPermitted(Feature.PURCHASE_REQUISITION, "Create Purchase Requisition", "PurchaseRequisition.PurchaseRequisitionGenerationUI");
             addNavButtonIfPermitted(Feature.DISPLAY_REQUISITION, Feature.DISPLAY_REQUISITION, "PurchaseOrder.View_PRList"); //To be PR LIST
             addNavButtonIfPermitted(Feature.GENERATE_PURCHASE_ORDER, Feature.GENERATE_PURCHASE_ORDER, "PurchaseOrder.Main_PO");
             addNavButtonIfPermitted(Feature.PURCHASE_ORDERS_LIST, "Purchase Order List", "PurchaseOrder.PO_Panel");
@@ -158,6 +167,7 @@ public class Navbar extends javax.swing.JPanel {
             addNavButtonIfPermitted(Feature.STOCK_REPORTS, Feature.STOCK_REPORTS, "ReportManagement.InventoryReportMain");
             addNavButtonIfPermitted(Feature.SALES_REPORT, Feature.SALES_REPORT, "ReportManagement.SalesReportMain");
             addNavButtonIfPermitted(Feature.SUPPLIER_PAYMENTS, Feature.SUPPLIER_PAYMENTS, "ReportManagement.Payment_UI");
+            addNavButtonIfPermitted(Feature.VIEW_PROCESSED_PAYMENTS, Feature.VIEW_PROCESSED_PAYMENTS, "ReportManagement.Payment_List_UI");
             addNavButtonIfPermitted(Feature.PURCHASING_REPORT, Feature.PURCHASING_REPORT, "ReportManagement.PurchaseReportMain");
 
             // Add logout button at the bottom

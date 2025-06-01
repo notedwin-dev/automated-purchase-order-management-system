@@ -1,9 +1,6 @@
-AppleKorean,SP1AP,SP001,ChingChoongSDNBHD,600,1.2,3.5,false
-AppleJapan,SP2AP,SP002,TungSahurSDNBHD,900,2.2,4.7,false
-BananaThailand,SP1BN,SP001,ChingChoongSDNBHD,1000,1.3,3.0,false
-BananaIraq,SP2BN,SP002,TungSahurSDNBHD,1000,5.0,6.7,false
-CocoMelon,SP2CM,SP002,TungSahurSDNBHD,700,7.0,11.2,false
-DeezNuts,SP1DN,SP001,ChingChoongSDNBHD,772,2.5,5.0,false
-Mango,SP9MG,SP009,TestSupplier,1000,2.2,3.3,false
-Durian,SP9DR,SP009,TestSupplier,700,10.0,40.0,false
-OrangeArab,SP4OR,SP004,Supplier 4,0,1.05,3.10,false
+Apple,SP1AP,SP0002,knn_company sdn bhd,990,2.2,3.3,false
+orange,SP1OR,SP0001,LDN_Company,1000,1.1,2.2,false
+Banana,SP2BN,SP0002,knn_company sdn bhd,1000,2.2,3.2,false
+Kiwi,SP2KW,SP0002,knn_company sdn bhd,1000,1.2,3.4,false
+Apple,SP3AP,SP0003,cids_company sdn bhd,1000,1.4,5.3,false
+Mango,SP3MG,SP0003,cids_company sdn bhd,1000,3.4,6.7,false

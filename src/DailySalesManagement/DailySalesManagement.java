@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
  * @author user
  */
 public class DailySalesManagement {
-    private static final String ItemFile = "src/InventoryManagement/Items.txt";
+    private static final String ItemFile = "src/itemmanagement/Items.txt";
     private static final String SalesFile = "src/DailySalesManagement/sales.txt";
     private List<Sales> salesData = new ArrayList<>();
     
