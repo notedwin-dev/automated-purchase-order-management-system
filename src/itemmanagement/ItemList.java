@@ -394,9 +394,9 @@ public class ItemList extends javax.swing.JFrame {
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ItemEntryLayout.createSequentialGroup()
                             .addComponent(itemDescription_lbl)
                             .addGap(119, 119, 119))))
-                .addGap(29, 29, 29)
-                .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 848, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addComponent(itemTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 807, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47))
         );
         ItemEntryLayout.setVerticalGroup(
             ItemEntryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
