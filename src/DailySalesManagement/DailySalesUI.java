@@ -414,7 +414,7 @@ public class DailySalesUI extends javax.swing.JFrame {
         String salesDate = sdf.format(selectedDate);
         String itemCode = (String)jComboBox1.getSelectedItem();
         String itemName = jTextField2.getText().trim();
-        String quantitySoldString = jTextField3.getText().trim(); //convert to string to validate is it empty field
+        String quantitySoldString = jTextField3.getText().trim(); 
         
         if(itemName.isEmpty() || quantitySoldString.isEmpty()){
             JOptionPane.showMessageDialog(this, "There are empty fields");
@@ -433,10 +433,14 @@ public class DailySalesUI extends javax.swing.JFrame {
             return;
         }
         
-        Sales newSale = dailySalesManagement.addSales(salesDate, itemCode, itemName, quantitySold);
-        if(!dailySalesManagement.updateStockWhenAdd(newSale)){
-            return;
+        Sales tempSale = new Sales(salesDate, itemCode, itemName, quantitySold, 0.0, 0.0);
+
+        if (!dailySalesManagement.updateStockWhenAdd(tempSale)) {
+            return; 
         }
+
+        Sales newSale = dailySalesManagement.addSales(salesDate, itemCode, itemName, quantitySold);
+
         JOptionPane.showMessageDialog(this, "Daily Item Sales added successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
         displayTotalSales();
         filterSalesWithDate();
@@ -450,7 +454,7 @@ public class DailySalesUI extends javax.swing.JFrame {
         String salesDate = sdf.format(selectedDate);
         String itemCode = (String)jComboBox1.getSelectedItem();
         String itemName = jTextField2.getText().trim();
-        String quantitySoldString = jTextField3.getText().trim(); //convert to string to validate is it empty field
+        String quantitySoldString = jTextField3.getText().trim(); 
         
         if(itemName.isEmpty() || quantitySoldString.isEmpty()){
             JOptionPane.showMessageDialog(this, "There are empty fields");
@@ -469,21 +473,29 @@ public class DailySalesUI extends javax.swing.JFrame {
             return;
         }
         
-        Sales oldSale = dailySalesManagement.updateSales(salesDate, itemCode, itemName, quantitySold);
-        if(oldSale == null){
+        Sales oldSale = null;
+        List<Sales> allSales = dailySalesManagement.getAllSales(); 
+        for (Sales s : allSales) {
+            if (s.getSalesDate().equals(salesDate)
+                    && s.getItemCode().equals(itemCode)
+                    && s.getItemName().equalsIgnoreCase(itemName)) {
+                oldSale = s;
+                break;
+            }
+        }
+
+        if (oldSale == null) {
             JOptionPane.showMessageDialog(this, "Sale not found. Cannot update.");
             return;
         }
-        
         double retailPrice = oldSale.getRetailPrice();
         double totalAmount = oldSale.getTotalAmount();
-        Sales newSale = new Sales(salesDate, itemCode, itemName, quantitySold, retailPrice, totalAmount);
-        
-        boolean updated = dailySalesManagement.updateStockWhenUpdate(oldSale, newSale);
-        if (!updated) {
+        Sales tempNewSale = new Sales(salesDate, itemCode, itemName, quantitySold, retailPrice, totalAmount);
+        boolean stockUpdated = dailySalesManagement.updateStockWhenUpdate(oldSale, tempNewSale);
+        if (!stockUpdated) {
             return;
         }
-        
+        Sales newSale = dailySalesManagement.updateSales(salesDate, itemCode, itemName, quantitySold);
         JOptionPane.showMessageDialog(this, "Daily Item Sales updated successfully!", "SUCCESS MESSAGE", JOptionPane.INFORMATION_MESSAGE);
         displayTotalSales();
         filterSalesWithDate();
