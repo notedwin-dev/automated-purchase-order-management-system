@@ -1,3 +1,1 @@
 PO0001,PR001,2025-05-31,PurchaseManager,U0002,SalesManager,U0001,3-6-2025,{cids_company sdn bhd,LDN_Company},{SP0003,SP0001},{Apple,orange},{SP3AP,SP1OR},{50,35},Complete,FinanceManager,U0004,Paid
-
-PO0002,PR002,2025-06-01,PurchaseManager,U0002,SalesManager,U0001,16-12-0007,{RGB_Company1 SDN BHD},{SP0002},{Mango},{SP2MG},{1000},Complete,FinanceManager,U0004,Paid

@@ -1,2 +1,1 @@
-Apple,SP1AP,SP0002,knn_company sdn bhd,990,2.2,3.3,false
 Mango,SP2MG,SP0002,RGB_Company1 SDN BHD,970,3.0,6.0,false
