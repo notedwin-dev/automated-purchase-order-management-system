@@ -66,23 +66,50 @@ public class DashboardPanel extends javax.swing.JPanel {
         // Configure main panel
         pnlMain.setLayout(new BorderLayout(10, 10));
         
-        // Configure header panel
+        // Configure header panel - replace BorderLayout with BoxLayout for better responsiveness
         pnlHeader.setBackground(new Color(153, 153, 255));
         pnlHeader.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        pnlHeader.setLayout(new BorderLayout());
+        pnlHeader.setLayout(new BoxLayout(pnlHeader, BoxLayout.Y_AXIS));
         
-        // Configure title label
+        // Create a separate panel for the header content
+        JPanel headerContentPanel = new JPanel();
+        headerContentPanel.setOpaque(false); // Make it transparent
+        headerContentPanel.setLayout(new GridBagLayout()); // Use GridBagLayout for more control
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        
+        // Configure title label - allow text wrapping
         lblTitle.setFont(new Font("Arial", Font.BOLD, 36));
         lblTitle.setForeground(Color.WHITE);
         lblTitle.setText("OMEGA WHOLESALE SDN BHD - Dashboard");
-        pnlHeader.add(lblTitle, BorderLayout.WEST);
+        
+        // Add title with constraints
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0.7; // Give title more space
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.anchor = GridBagConstraints.WEST;
+        headerContentPanel.add(lblTitle, gbc);
+        
+        // Add some space between components
+        gbc.gridx = 1;
+        gbc.weightx = 0.05;
+        headerContentPanel.add(Box.createHorizontalStrut(20), gbc);
         
         // Configure welcome label
         lblWelcome.setFont(new Font("Arial", Font.BOLD, 18));
         lblWelcome.setForeground(Color.WHITE);
         lblWelcome.setHorizontalAlignment(SwingConstants.RIGHT);
         lblWelcome.setText("Welcome, User");
-        pnlHeader.add(lblWelcome, BorderLayout.EAST);
+        
+        // Add welcome label with constraints
+        gbc.gridx = 2;
+        gbc.weightx = 0.25;
+        gbc.anchor = GridBagConstraints.EAST;
+        headerContentPanel.add(lblWelcome, gbc);
+        
+        // Add the header content panel to the header panel
+        pnlHeader.add(headerContentPanel);
         
         pnlMain.add(pnlHeader, BorderLayout.NORTH);
         
