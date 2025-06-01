@@ -85,24 +85,7 @@ public class View_PRList extends javax.swing.JFrame {
             
     // ========== LOAD DATA INTO TABLE ========== //   
     public final void refreshTable() {
-        tablemodel.setRowCount(0); // Clear existing rows
-
-        User currentUser = Session.getInstance().getCurrentUser();
-
-        if (currentUser == null) {
-            JOptionPane.showMessageDialog(null, "Error: No user session found. ", "Session Error", JOptionPane.ERROR_MESSAGE);
-        }
-        
-        String currentID = currentUser.getID(); 
-        String role = currentUser.getRole();
-
-        if (currentID == null || currentID.isEmpty() ) {
-            JOptionPane.showMessageDialog(null, "Error: Incomplete user information. Please log in again.", "User Info Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        // Optional: Debugging printout (for development)
-        System.out.println("User ID: " + currentID + ", User: " + role);
+        tablemodel.setRowCount(0); 
 
         List<Object[]> allData = POmanage.getTableData(); 
 
@@ -110,13 +93,6 @@ public class View_PRList extends javax.swing.JFrame {
 
         int no = 1;
         for (Object[] row : allData) {
-            String prCreatedByID = row[4].toString(); 
-
-            // If the current user is not Admin and didn't create the PR, skip it
-            if (!role.equalsIgnoreCase("Administrator") && !prCreatedByID.equals(currentID)) {
-                continue;
-            }
-
             row[0] = no++;
             tablemodel.addRow(row);
         }

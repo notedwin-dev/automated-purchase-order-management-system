@@ -12,10 +12,8 @@ package itemmanagement;
 import TextFile_Handler.TextFile;
 import javax.swing.*;
 import javax.swing.table.*;
-import java.io.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import auth.Session;
 import auth.User;
 import java.util.ArrayList;
 import java.util.List;
@@ -275,7 +273,7 @@ public class ItemManagement implements ItemOperations {
                     data[7]     // Delivery Status
                 });
             } else {
-                System.out.println("Skipping malformed line: " + line);
+                System.out.println("Skipping unused line: " + line);
             }
         }
     }

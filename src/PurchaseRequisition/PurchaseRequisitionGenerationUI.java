@@ -136,7 +136,7 @@ public class PurchaseRequisitionGenerationUI extends javax.swing.JFrame {
 
         management.savePR(prList);
 
-        JOptionPane.showMessageDialog(this, "PR saved successfully to PR.txt!");
+        JOptionPane.showMessageDialog(this, "Purchase Requisition saved");
     }
 
     /**

@@ -16,7 +16,7 @@ import InventoryManagement.Inventory;
 import TextFile_Handler.TextFile;
 import auth.Session;
 import auth.User;
-import java.util.Collections;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,14 +39,9 @@ public class PO_GenerationManagement {
         
         private void readPR_List() {
             List<String> lines = TextFile.readFile(PRfile);
-            boolean isFirstLine = true;
             int rowNo = 1;
 
             for (String line : lines) {
-                if (isFirstLine) {
-                    isFirstLine = false;
-                    continue;
-                }
                 String[] data = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)");
                 if (data.length == 8) {
                     String prID = data[0].trim();
@@ -67,7 +62,7 @@ public class PO_GenerationManagement {
                 }
             }
         }
-        
+
         public List<Object[]> getTableData() {
             return tableData;  // where tableData is a List<Object[]> field
         }
@@ -79,7 +74,6 @@ public class PO_GenerationManagement {
         return prData.getTableData();
     }
 
-    
     public Inventory getItemDetailsByCode(String itemCode) {
         List<String> lines = TextFile.readFile(ItemFile);
         for (String line : lines) {
