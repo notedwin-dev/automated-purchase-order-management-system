@@ -1,3 +1,3 @@
-
-
-SP0002,RGB_Company1 SDN BHD,0112345544,rgb@gmail.com,address2,{mango, banana}
+SP0001,LDN_Company,0192730918,ldn@gmail.com,address 1,{apple, orange}
+SP0002,knn_company sdn bhd,019371921,knn@gmail.com,asgfhasokhojhp,{banana, kiwi}
+SP0003,cids_company sdn bhd,012910291,cids@gmail.com,ugawefuiuoqgogh,{apple, mango}
