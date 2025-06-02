@@ -1,1 +1,6 @@
-Mango,SP2MG,SP0002,RGB_Company1 SDN BHD,970,3.0,6.0,false
+Apple,SP1AP,SP0002,knn_company sdn bhd,960,2.2,3.3,false
+Orange,SP1OR,SP0001,LDN_Company,1000,1.1,2.2,true
+Banana,SP2BN,SP0002,knn_company sdn bhd,1000,2.2,3.2,false
+Kiwi,SP2KW,SP0002,knn_company sdn bhd,1000,1.2,3.4,false
+Apple,SP3AP,SP0003,cids_company sdn bhd,1000,1.4,5.3,true
+Mango,SP3MG,SP0003,cids_company sdn bhd,1000,3.4,6.7,false
