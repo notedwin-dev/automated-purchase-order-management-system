@@ -27,17 +27,20 @@ public class PurchaseRequisitionManagement {
         this.prlist = new ArrayList<>();
     }
     
+    public List<PurchaseRequisition> getPRList() {
+        return prlist;
+    }
+    
     public void getPRfromtxtfile() {
         this.prlist.clear(); 
         List<String> lines = TextFile.readFile(PRfile);
 
         for (String line : lines) {
-            // Skip header or invalid lines
             if (line.trim().startsWith("PR ID") || line.trim().isEmpty()) {
                 continue;
             }
 
-            String[] parts = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)"); // handles {a,b} properly
+            String[] parts = line.split(",(?=(?:[^{}]*\\{[^{}]*\\})*[^{}]*$)"); 
 
             if (parts.length == 8) {
                 String prID = parts[0].trim();
@@ -77,8 +80,6 @@ public class PurchaseRequisitionManagement {
         }
         return null;
     }
-
-    
     
     public static String generatePRID() {
         List<String> lines = TextFile.readFile(PRfile);

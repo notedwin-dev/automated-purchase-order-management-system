@@ -6,6 +6,7 @@ package PurchaseOrder;
 
 import InventoryManagement.Inventory;
 import PurchaseRequisition.PurchaseRequisition;
+import PurchaseRequisition.PurchaseRequisitionManagement;
 
 import auth.Session;
 import auth.User;
@@ -125,24 +126,34 @@ public class PO_GenerationUI extends javax.swing.JFrame {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        
 
-        String itemCode = existingPR.getItemcode().trim();
-        int quantity = existingPR.getQuantity(); 
+        PurchaseRequisitionManagement prMgmt = new PurchaseRequisitionManagement();
+        prMgmt.getPRfromtxtfile(); 
+        List<PurchaseRequisition> matchedItems = new ArrayList<>();
+        for (PurchaseRequisition pr : prMgmt.getPRList()) {
+            if (pr.getPrid().equals(existingPR.getPrid())) {
+                matchedItems.add(pr);
+            }
+        }
 
         int no = 1;
-        Inventory item = management.getItemDetailsByCode(itemCode);
-        if (item != null) {
-            tableModel.addRow(new Object[]{
-                no++,
-                item.getItemName(),
-                item.getItemCode(),
-                item.getSupplierName(),
-                item.getSupplierID(),
-                String.valueOf(quantity)
-            });
-        } else {
-            System.out.println("Item not found: " + itemCode);
+        for (PurchaseRequisition pr : matchedItems) {
+            String itemCode = pr.getItemcode().trim();
+            int quantity = pr.getQuantity();
+
+            Inventory item = management.getItemDetailsByCode(itemCode);
+            if (item != null) {
+                tableModel.addRow(new Object[]{
+                    no++,
+                    item.getItemName(),
+                    item.getItemCode(),
+                    item.getSupplierName(),
+                    item.getSupplierID(),
+                    String.valueOf(quantity)
+                });
+            } else {
+                System.out.println("Item not found: " + itemCode);
+            }
         }
     }
     

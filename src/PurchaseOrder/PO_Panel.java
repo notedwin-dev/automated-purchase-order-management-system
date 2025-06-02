@@ -153,21 +153,21 @@ public class PO_Panel extends javax.swing.JFrame {
 //        return prmanagement.findprid(prid);
 //    }
     private PurchaseRequisition getSelectedPR() {
-    int selectedRow = prTable.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(null, "Please select a row", "Selection Error", JOptionPane.ERROR_MESSAGE);
-        return null;
-    }
+        int selectedRow = prTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a row", "Selection Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
 
-    String prid = prTable.getValueAt(selectedRow, 1).toString(); // PR ID at column 1
-    System.out.println("Selected PR ID from table: " + prid);  // Debug
+        String prid = prTable.getValueAt(selectedRow, 1).toString();
+        System.out.println("Selected PR ID from table: " + prid);  
 
-    PurchaseRequisition pr = prmanagement.findprid(prid);
-    if (pr == null) {
-        System.out.println("PR not found for ID: " + prid);  // Debug
+        PurchaseRequisition pr = prmanagement.findprid(prid);
+        if (pr == null) {
+            System.out.println("PR not found for ID: " + prid);  
+        }
+        return pr;
     }
-    return pr;
-}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -311,8 +311,8 @@ public class PO_Panel extends javax.swing.JFrame {
         System.out.println("Selected PR: " + selectedPR);
 
         if (selectedPR != null) {
-            String status = selectedPR.getStatus();  // Assuming you have a getStatus() method
-            System.out.println("PR Status: " + status); // DEBUG
+            String status = selectedPR.getStatus();  
+            System.out.println("PR Status: " + status); 
 
 
             if (status.equalsIgnoreCase("Approved") || status.equalsIgnoreCase("Rejected")) {
@@ -322,7 +322,7 @@ public class PO_Panel extends javax.swing.JFrame {
                     JOptionPane.WARNING_MESSAGE);
                 return;
             }
-            // ----- Proceed to generate PO ----- //
+            
             System.out.println("Generating PO UI for PR: " + selectedPR.getPrid());
             new PO_GenerationUI(selectedPR).setVisible(true);
             this.dispose();
