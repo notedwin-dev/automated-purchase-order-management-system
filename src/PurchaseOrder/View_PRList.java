@@ -4,12 +4,8 @@
  */
 package PurchaseOrder;
 
-import auth.Session;
-import auth.User;
 import java.awt.Component;
-import java.util.Arrays;
 import java.util.List;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
