@@ -84,7 +84,7 @@ public class PurchaseRequisitionManagement {
     public static String generatePRID() {
         List<String> lines = TextFile.readFile(PRfile);
         if (lines.isEmpty()) {
-            return "PR001";
+            return "PR0001";
         }
 
         String lastLine = lines.get(lines.size() - 1);
@@ -94,13 +94,13 @@ public class PurchaseRequisitionManagement {
             String lastID = parts[0];
             try {
                 int num = Integer.parseInt(lastID.substring(3));
-                return String.format("PR%03d", num + 1);
+                return String.format("PR%04d", num + 1);
             } catch (NumberFormatException e) {
                 // fallback if format is wrong
-                return "PR001";
+                return "PR0001";
             }
         }
-        return "PR001";
+        return "PR0001";
     }
     
     public static String getCurrentDate() {
